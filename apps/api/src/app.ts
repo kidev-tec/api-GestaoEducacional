@@ -18,17 +18,24 @@ import {
   auditCount,
 } from '@erp/infra/src/repositories.js';
 
+import {
+  resolveRequestId,
+  safeLogLine,
+} from './obs.js';
+
 export interface BuildOptions {
   pool: Pool;
   logger?: boolean;
   /** Origens permitidas para CORS (dev: Vite 5173). */
   corsOrigins?: string[];
+  /** RF-018: destino das linhas de log seguras (testes injetam sink). */
+  logSink?: (line: string) => void;
 }
 
 const TENANT_HEADER = 'x-tenant-id';
 
 /** Mapeia erros de domínio para HTTP status sem vazar stack. */
-function mapDomainError(e: unknown): { status: number; message: string } {
+export function mapDomainError(e: unknown): { status: number; message: string } {
   const msg = e instanceof Error ? e.message : 'internal error';
   if (/different payload|conflict/i.test(msg)) return { status: 409, message: msg };
   if (/invalid .* transition/i.test(msg)) return { status: 422, message: msg };
@@ -61,9 +68,41 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.decorateRequest('tenantId', '');
+  app.decorateRequest('requestId', '');
+
+  // RF-018: request-id sempre presente (UUID válido aceito, senão gerado).
   app.addHook('onRequest', async (request, reply) => {
-    // /health e /docs são públicos (sem tenant)
-    if (request.url === '/health' || request.url.startsWith('/docs') || request.url === '/openapi.json') {
+    request.requestId = resolveRequestId(request.headers['x-request-id'] as string | undefined);
+    reply.header('x-request-id', request.requestId);
+  });
+
+  // RF-019: readiness real contra o Postgres (200 ready / 503 sem stack).
+  app.get('/ready', async (_request, reply) => {
+    try {
+      await opts.pool.query('SELECT 1');
+      return reply.send({ status: 'ready' });
+    } catch {
+      return reply.status(503).send({ status: 'unavailable', error: 'database unavailable' });
+    }
+  });
+
+  // RF-018: log seguro por request — só requestId/tenant/method/route/status/duration.
+  app.addHook('onResponse', async (request, reply) => {
+    opts.logSink?.(
+      safeLogLine({
+        requestId: request.requestId,
+        tenantId: request.tenantId,
+        method: request.method,
+        route: request.routeOptions?.url ?? request.url,
+        status: reply.statusCode,
+        durationMs: Math.round(reply.elapsedTime),
+      }),
+    );
+  });
+
+  app.addHook('onRequest', async (request, reply) => {
+    // /health, /ready e /docs são públicos (sem tenant)
+    if (request.url === '/health' || request.url === '/ready' || request.url.startsWith('/docs') || request.url === '/openapi.json') {
       return;
     }
     const tenant = request.headers[TENANT_HEADER];
@@ -222,5 +261,6 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 declare module 'fastify' {
   interface FastifyRequest {
     tenantId: string;
+    requestId: string;
   }
 }

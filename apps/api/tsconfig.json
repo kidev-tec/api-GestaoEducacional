@@ -6,5 +6,5 @@
     "module": "ESNext",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "test/**/*.d.ts", "../../scripts/*.d.ts"]
 }
