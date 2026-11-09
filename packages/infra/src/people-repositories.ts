@@ -68,10 +68,10 @@ export async function insertUnit(client: Pool | PoolClient, params: { tenantId: 
   return { id: r.id, tenantId: r.tenant_id, name: r.name, parentId: r.parent_id };
 }
 
-/** Sobe a cadeia de pais (limite MAX_UNIT_DEPTH); se alcançar `excludeId`, é ciclo. */
+/** Sobe a cadeia de pais (limite MAX_UNIT_DEPTH - 1 hops; mais que isso = cadeia funda demais/ciclo). */
 export async function assertNoCycle(client: Pool | PoolClient, tenantId: string, startId: string, excludeId: string | null): Promise<void> {
   let current: string | null = startId;
-  for (let depth = 0; depth < MAX_UNIT_DEPTH && current !== null; depth++) {
+  for (let depth = 0; depth < MAX_UNIT_DEPTH - 1 && current !== null; depth++) {
     if (excludeId !== null && current === excludeId) throw new UnitCycleError();
     const res: { rows: { parent_id: string | null }[]; rowCount: number | null } = await client.query('SELECT parent_id FROM units WHERE id = $1 AND tenant_id = $2', [current, tenantId]);
     const row = res.rows[0];
@@ -128,8 +128,9 @@ export async function listPeople(pool: Pool, tenantId: string, filter: { kind?: 
     clauses.push(`unit_id = $${values.length}`);
   }
   if (filter.nameQuery) {
-    values.push(`%${filter.nameQuery}%`);
-    clauses.push(`name ILIKE $${values.length}`);
+    const escaped = `%${filter.nameQuery.replace(/[\\%_]/g, (m) => `\\${m}`)}%`;
+    values.push(escaped);
+    clauses.push(`name ILIKE $${values.length} ESCAPE '\\'`);
   }
   const res = await pool.query(
     `SELECT id, tenant_id, unit_id, kind, name, document, email, phone, active FROM people WHERE ${clauses.join(' AND ')} ORDER BY name`,
@@ -187,12 +188,14 @@ export async function linkGuardian(client: Pool | PoolClient, params: {
   );
   if (dup.rowCount) throw new ConflictError('guardianship already exists');
   await client.query(
-    'INSERT INTO guardianships (id, tenant_id, guardian_id, student_id, relation, is_primary) VALUES ($1,$2,$3,$4,$5,$6)',
+    'INSERT INTO guardianships (id, tenant_id, guardian_id, student_id, relation, is_primary) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT (guardian_id, student_id) DO NOTHING',
     [randomUUID(), params.tenantId, params.guardianId, params.studentId, params.relation, params.isPrimary ?? false],
   );
 }
 
 export async function listGuardians(pool: Pool, tenantId: string, studentId: string): Promise<PersonRow[]> {
+  const student = await getPerson(pool, tenantId, studentId);
+  if (student.kind !== 'STUDENT') throw new GuardianRuleError('student must have kind STUDENT');
   const res = await pool.query(
     `SELECT p.id, p.tenant_id, p.unit_id, p.kind, p.name, p.document, p.email, p.phone, p.active
      FROM guardianships g JOIN people p ON p.id = g.guardian_id

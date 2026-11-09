@@ -206,11 +206,21 @@ describe('linkGuardian / listGuardians', () => {
       .rejects.toBeInstanceOf(ConflictError);
   });
 
-  it('listGuardians faz join por student do tenant', async () => {
-    const pool = fakeClient(() => ({ rows: [guardian], rowCount: 1 })) as never as Parameters<typeof listGuardians>[0];
+  it('listGuardians valida student e faz join por student do tenant', async () => {
+    let call = 0;
+    const pool = fakeClient(() => {
+      call += 1;
+      return call === 1 ? { rows: [student], rowCount: 1 } : { rows: [guardian], rowCount: 1 };
+    }) as never as Parameters<typeof listGuardians>[0];
     const list = await listGuardians(pool, 'A', 's1');
     expect(list).toHaveLength(1);
-    expect((pool as unknown as { calls: Q[] }).calls[0].text).toContain('JOIN people');
+    expect((pool as unknown as { calls: Q[] }).calls[1].text).toContain('JOIN people');
+    // student inexistente/outro tenant → NotFound (não lista vazia)
+    const gone = fakeClient(() => empty) as never as Parameters<typeof listGuardians>[0];
+    await expect(listGuardians(gone, 'A', 'ghost')).rejects.toBeInstanceOf(NotFoundError);
+    // student com kind errado → GuardianRuleError
+    const notStudent = fakeClient(() => ({ rows: [{ ...student, kind: 'STAFF' }], rowCount: 1 })) as never as Parameters<typeof listGuardians>[0];
+    await expect(listGuardians(notStudent, 'A', 's1')).rejects.toBeInstanceOf(GuardianRuleError);
   });
 });
 

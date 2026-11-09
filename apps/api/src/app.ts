@@ -349,11 +349,15 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     return { count: await auditCount(opts.pool, request.tenantId) };
   });
 
+const NAME_MAX = 200;
+const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLength: max });
+const uuid = { type: 'string' as const, format: 'uuid' as const };
+
   // ─── E05-A: unidades, pessoas e responsáveis ───
   app.post('/v1/units', {
     preHandler: [writeGuard],
     schema: {
-      body: { type: 'object', required: ['name'], properties: { name: { type: 'string' }, parentId: { type: 'string' } } },
+      body: { type: 'object', additionalProperties: false, required: ['name'], properties: { name: str(120), parentId: uuid } },
     },
   }, async (request, reply) => {
     const body = request.body as { name: string; parentId?: string };
@@ -376,11 +380,11 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     preHandler: [writeGuard],
     schema: {
       body: {
-        type: 'object', required: ['kind', 'name', 'unitId'],
+        type: 'object', additionalProperties: false, required: ['kind', 'name', 'unitId'],
         properties: {
           kind: { type: 'string', enum: ['STUDENT', 'GUARDIAN', 'STAFF'] },
-          name: { type: 'string' }, unitId: { type: 'string' },
-          document: { type: 'string' }, email: { type: 'string' }, phone: { type: 'string' },
+          name: str(), unitId: uuid,
+          document: str(64), email: str(320), phone: str(32),
         },
       },
     },
@@ -395,14 +399,23 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     }
   });
 
-  app.get('/v1/people', async (request, reply) => {
-    const q = request.query as { kind?: string; unitId?: string; name?: string };
-    const kind = q.kind === 'STUDENT' || q.kind === 'GUARDIAN' || q.kind === 'STAFF' ? q.kind : undefined;
-    return { people: await listPeople(opts.pool, request.tenantId, { ...(kind && { kind }), ...(q.unitId && { unitId: q.unitId }), ...(q.name && { nameQuery: q.name }) }) };
+  app.get('/v1/people', {
+    schema: {
+      querystring: {
+        type: 'object', additionalProperties: false,
+        properties: {
+          kind: { type: 'string', enum: ['STUDENT', 'GUARDIAN', 'STAFF'] },
+          unitId: uuid, name: str(120),
+        },
+      },
+    },
+  }, async (request) => {
+    const q = request.query as { kind?: PersonRow['kind']; unitId?: string; name?: string };
+    return { people: await listPeople(opts.pool, request.tenantId, { ...(q.kind && { kind: q.kind }), ...(q.unitId && { unitId: q.unitId }), ...(q.name && { nameQuery: q.name }) }) };
   });
 
   app.get('/v1/people/:id', {
-    schema: { params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } } },
+    schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
     try {
@@ -417,10 +430,10 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   app.patch('/v1/people/:id', {
     preHandler: [writeGuard],
     schema: {
-      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      params: { type: 'object', required: ['id'], properties: { id: uuid } },
       body: {
-        type: 'object',
-        properties: { name: { type: 'string' }, unitId: { type: 'string' }, document: { type: ['string', 'null'] }, email: { type: ['string', 'null'] }, phone: { type: ['string', 'null'] }, active: { type: 'boolean' } },
+        type: 'object', additionalProperties: false,
+        properties: { name: str(), unitId: uuid, document: { type: ['string', 'null'], maxLength: 64 }, email: { type: ['string', 'null'], maxLength: 320 }, phone: { type: ['string', 'null'], maxLength: 32 }, active: { type: 'boolean' } },
       },
     },
   }, async (request, reply) => {
@@ -438,8 +451,8 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   app.post('/v1/people/:id/guardians', {
     preHandler: [writeGuard],
     schema: {
-      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
-      body: { type: 'object', required: ['guardianId', 'relation'], properties: { guardianId: { type: 'string' }, relation: { type: 'string' }, isPrimary: { type: 'boolean' } } },
+      params: { type: 'object', required: ['id'], properties: { id: uuid } },
+      body: { type: 'object', additionalProperties: false, required: ['guardianId', 'relation'], properties: { guardianId: uuid, relation: str(64), isPrimary: { type: 'boolean' } } },
     },
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
@@ -456,10 +469,15 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.get('/v1/people/:id/guardians', {
-    schema: { params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } } },
-  }, async (request) => {
+    schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
     const { id } = request.params as { id: string };
-    return { guardians: await listGuardians(opts.pool, request.tenantId, id) };
+    try {
+      return { guardians: await listGuardians(opts.pool, request.tenantId, id) };
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
   });
 
   return app;
