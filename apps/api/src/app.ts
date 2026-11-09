@@ -31,6 +31,21 @@ import {
   type AuthenticatedRequest,
 } from './auth.js';
 import { EmailTakenError, SessionInvalidError } from '../../../packages/infra/src/auth-repositories.js';
+import {
+  getPerson,
+  insertPerson,
+  ConflictError,
+  GuardianRuleError,
+  NotFoundError,
+  UnitCycleError,
+  insertUnit,
+  linkGuardian,
+  listGuardians,
+  listPeople,
+  listUnits,
+  updatePerson,
+  type PersonRow,
+} from '../../../packages/infra/src/people-repositories.js';
 
 const LOGIN_WINDOW_MS = 60_000;
 const LOGIN_ATTEMPTS_PER_WINDOW = 10;
@@ -67,11 +82,11 @@ const TENANT_HEADER = 'x-tenant-id';
 /** Mapeia erros de domínio para HTTP status sem vazar stack. */
 export function mapDomainError(e: unknown): { status: number; message: string } {
   const msg = e instanceof Error ? e.message : 'internal error';
-  if (/different payload|conflict/i.test(msg)) return { status: 409, message: msg };
-  if (/invalid .* transition/i.test(msg)) return { status: 422, message: msg };
-  if (/not found|must reference the original|cannot reverse/i.test(msg)) {
+  if (e instanceof ConflictError || /different payload|conflict|already linked/i.test(msg)) return { status: 409, message: msg };
+  if (e instanceof NotFoundError || /not found|must reference the original|cannot reverse|parent unit/i.test(msg)) {
     return { status: 404, message: msg };
   }
+  if (e instanceof UnitCycleError || e instanceof GuardianRuleError || /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own/i.test(msg)) return { status: 422, message: msg };
   if (/integer cents|denied/i.test(msg)) return { status: 400, message: msg };
   return { status: 500, message: 'internal error' };
 }
@@ -332,6 +347,119 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 
   app.get('/v1/audit/count', async (request) => {
     return { count: await auditCount(opts.pool, request.tenantId) };
+  });
+
+  // ─── E05-A: unidades, pessoas e responsáveis ───
+  app.post('/v1/units', {
+    preHandler: [writeGuard],
+    schema: {
+      body: { type: 'object', required: ['name'], properties: { name: { type: 'string' }, parentId: { type: 'string' } } },
+    },
+  }, async (request, reply) => {
+    const body = request.body as { name: string; parentId?: string };
+    try {
+      const unit = await withTransaction(opts.pool, (c) =>
+        insertUnit(c, { tenantId: request.tenantId, name: body.name, ...(body.parentId !== undefined && { parentId: body.parentId }) }),
+      ) as { id: string; name: string; parentId: string | null };
+      return reply.status(201).send({ id: unit.id, name: unit.name, parentId: unit.parentId });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/units', async (request) => {
+    return { units: await listUnits(opts.pool, request.tenantId) };
+  });
+
+  app.post('/v1/people', {
+    preHandler: [writeGuard],
+    schema: {
+      body: {
+        type: 'object', required: ['kind', 'name', 'unitId'],
+        properties: {
+          kind: { type: 'string', enum: ['STUDENT', 'GUARDIAN', 'STAFF'] },
+          name: { type: 'string' }, unitId: { type: 'string' },
+          document: { type: 'string' }, email: { type: 'string' }, phone: { type: 'string' },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    const body = request.body as { kind: PersonRow['kind']; name: string; unitId: string; document?: string; email?: string; phone?: string };
+    try {
+      const person = await withTransaction(opts.pool, (c) => insertPerson(c, { tenantId: request.tenantId, ...body })) as { id: string; kind: PersonRow['kind']; name: string };
+      return reply.status(201).send({ id: person.id, kind: person.kind, name: person.name });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/people', async (request, reply) => {
+    const q = request.query as { kind?: string; unitId?: string; name?: string };
+    const kind = q.kind === 'STUDENT' || q.kind === 'GUARDIAN' || q.kind === 'STAFF' ? q.kind : undefined;
+    return { people: await listPeople(opts.pool, request.tenantId, { ...(kind && { kind }), ...(q.unitId && { unitId: q.unitId }), ...(q.name && { nameQuery: q.name }) }) };
+  });
+
+  app.get('/v1/people/:id', {
+    schema: { params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } } },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const person = await getPerson(opts.pool, request.tenantId, id);
+      return reply.send({ id: person.id, kind: person.kind, name: person.name, active: person.active, unitId: person.unitId });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.patch('/v1/people/:id', {
+    preHandler: [writeGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        properties: { name: { type: 'string' }, unitId: { type: 'string' }, document: { type: ['string', 'null'] }, email: { type: ['string', 'null'] }, phone: { type: ['string', 'null'] }, active: { type: 'boolean' } },
+      },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as Parameters<typeof updatePerson>[3];
+    try {
+      const person = await withTransaction(opts.pool, (c) => updatePerson(c, request.tenantId, id, body)) as { id: string; name: string; active: boolean; unitId: string };
+      return reply.send({ id: person.id, name: person.name, active: person.active, unitId: person.unitId });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.post('/v1/people/:id/guardians', {
+    preHandler: [writeGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: { type: 'object', required: ['guardianId', 'relation'], properties: { guardianId: { type: 'string' }, relation: { type: 'string' }, isPrimary: { type: 'boolean' } } },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as { guardianId: string; relation: string; isPrimary?: boolean };
+    try {
+      await withTransaction(opts.pool, (c) =>
+        linkGuardian(c, { tenantId: request.tenantId, studentId: id, guardianId: body.guardianId, relation: body.relation, ...(body.isPrimary !== undefined && { isPrimary: body.isPrimary }) }),
+      );
+      return reply.status(201).send({ linked: true });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/people/:id/guardians', {
+    schema: { params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } } },
+  }, async (request) => {
+    const { id } = request.params as { id: string };
+    return { guardians: await listGuardians(opts.pool, request.tenantId, id) };
   });
 
   return app;

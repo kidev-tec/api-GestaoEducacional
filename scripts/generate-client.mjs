@@ -48,11 +48,13 @@ let code = `/* GERADO por scripts/generate-client.mjs — NÃO EDITAR À MÃO (R
 export interface ApiConfig {
   baseUrl: string;
   getTenantId: () => string;
+  getAccessToken: () => string;
 }
 
 let config: ApiConfig = {
   baseUrl: import.meta.env?.VITE_API_URL ?? 'http://localhost:3000',
   getTenantId: () => localStorage.getItem('erp-tenant') ?? '',
+  getAccessToken: () => localStorage.getItem('erp-access-token') ?? '',
 };
 
 export function configureApi(cfg: Partial<ApiConfig>): void {
@@ -76,7 +78,7 @@ async function request<T>(method: string, path: string, opts: { body?: unknown; 
     method,
     headers: {
       'content-type': 'application/json',
-      'x-tenant-id': config.getTenantId(),
+      ...(config.getAccessToken() ? { authorization: \`Bearer \${config.getAccessToken()}\` } : {}),
       ...opts.headers,
     },
     ...(opts.body !== undefined ? { body: JSON.stringify(opts.body) } : {}),
