@@ -70,11 +70,12 @@ export async function generateTuition(
 ): Promise<TuitionRow> {
   if (!REFERENCE_RE.test(params.reference)) throw new TuitionRuleError('reference must be YYYY-MM');
   const plan = await client.query(
-    'SELECT id, tenant_id, name, amount_cents, due_day FROM tuition_plans WHERE id = $1 AND tenant_id = $2',
+    'SELECT id, tenant_id, name, amount_cents, due_day, active FROM tuition_plans WHERE id = $1 AND tenant_id = $2',
     [params.planId, params.tenantId],
   );
   if (!plan.rowCount) throw new NotFoundError('plan');
-  const p = plan.rows[0] as { id: string; amount_cents: number; due_day: number };
+  const p = plan.rows[0] as { id: string; amount_cents: number; due_day: number; active: boolean };
+  if (!p.active) throw new TuitionRuleError('plan inactive');
 
   const student = await client.query(
     'SELECT id, tenant_id, kind, active FROM people WHERE id = $1 AND tenant_id = $2',
@@ -117,7 +118,7 @@ export async function settleTuition(
   if (!Number.isInteger(params.paymentAmountCents) || params.paymentAmountCents <= 0) {
     throw new TuitionRuleError('payment must be positive integer cents');
   }
-  const t = await getTuitionRow(client, params.tenantId, params.tuitionId);
+  const t = await getTuitionRow(client, params.tenantId, params.tuitionId, true);
   // Replay idempotente: se a tuition já está SETTLED com alocação da MESMA key, o PAYMENT
   // original é retornado (postLedger faria o mesmo); não é erro.
   if (t.status !== 'OPEN') {
@@ -152,17 +153,16 @@ export async function settleTuition(
 }
 
 export async function cancelTuition(client: PoolClient, tenantId: string, tuitionId: string): Promise<TuitionRow> {
-  const t = await getTuitionRow(client, tenantId, tuitionId);
+  const t = await getTuitionRow(client, tenantId, tuitionId, true);
   if (t.status !== 'OPEN') throw new TuitionRuleError(`tuition is ${t.status}, only OPEN can cancel`);
   if (t.ledgerEntryId === null) throw new TuitionRuleError('tuition has no charge to reverse');
-  const { entry } = await postLedger(client, {
+  await postLedger(client, {
     entryId: randomUUID(), tenantId, type: 'REVERSAL', amountCents: -t.amountCents, reverses: t.ledgerEntryId,
   });
   const res = await client.query(
     "UPDATE tuitions SET status = 'CANCELED' WHERE id = $1 AND tenant_id = $2 AND status = 'OPEN' RETURNING id, tenant_id, plan_id, student_id, reference, amount_cents, due_date, status, ledger_entry_id",
     [tuitionId, tenantId],
   );
-  void entry;
   return toTuition(res.rows[0]);
 }
 
@@ -187,9 +187,14 @@ export async function getTuition(pool: Pool | PoolClient, tenantId: string, id: 
   return getTuitionRow(clientLike(pool), tenantId, id);
 }
 
-async function getTuitionRow(client: PoolClient | { query: Pool['query'] }, tenantId: string, id: string): Promise<TuitionRow> {
+async function getTuitionRow(
+  client: PoolClient | { query: Pool['query'] },
+  tenantId: string,
+  id: string,
+  forUpdate = false,
+): Promise<TuitionRow> {
   const res = await client.query(
-    'SELECT id, tenant_id, plan_id, student_id, reference, amount_cents, due_date, status, ledger_entry_id FROM tuitions WHERE id = $1 AND tenant_id = $2',
+    `SELECT id, tenant_id, plan_id, student_id, reference, amount_cents, due_date, status, ledger_entry_id FROM tuitions WHERE id = $1 AND tenant_id = $2${forUpdate ? ' FOR UPDATE' : ''}`,
     [id, tenantId],
   );
   if (!res.rowCount) throw new NotFoundError('tuition');

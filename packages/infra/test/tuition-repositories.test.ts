@@ -76,6 +76,12 @@ describe('generateTuition', () => {
     });
   }
 
+  it('plano inativo → TuitionRuleError', async () => {
+    const c = genClient({ plan: [planRow({ active: false })] });
+    await expect(generateTuition(c, { tenantId: 'A', planId: 'p1', studentId: 's1', reference: '2026-03' }))
+      .rejects.toThrow('plan inactive');
+  });
+
   it('gera tuition OPEN + CHARGE transacional; dueDate default do plano', async () => {
     const c = genClient();
     const t = await generateTuition(c, { tenantId: 'A', planId: 'p1', studentId: 's1', reference: '2026-03' });
@@ -201,11 +207,11 @@ describe('settleTuition', () => {
 describe('cancelTuition', () => {
   function cancelClient(t: Record<string, unknown>, reversalOk = true) {
     return fakeClient((q) => {
+      if (q.text.includes('FROM tuitions WHERE id')) return { rows: [t], rowCount: 1 };
       if (q.text.includes('FOR UPDATE')) {
         // SELECT do original p/ REVERSAL: retorna o charge le1 (CHARGE +50000)
         return { rows: [{ type: 'CHARGE', amount_cents: 50000, tenant_id: 'A' }], rowCount: 1 };
       }
-      if (q.text.includes('FROM tuitions WHERE id')) return { rows: [t], rowCount: 1 };
       if (q.text.includes('INSERT INTO ledger_entries')) {
         if (!reversalOk) throw new Error('ledger boom');
         return { rows: [{ id: 'rev1', tenant_id: 'A', type: 'REVERSAL', amount_cents: -50000, reverses: 'le1' }], rowCount: 1 };
