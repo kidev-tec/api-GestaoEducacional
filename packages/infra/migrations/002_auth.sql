@@ -1,6 +1,8 @@
 -- E04-A: autenticação real — usuários e sessões (idempotente)
 -- Review findings: id UUID (não TEXT) e email citext (único case-insensitive no banco).
+-- pgcrypto: gen_random_uuid() em PG <13 precisa da extensão; idempotente em PG ≥13.
 -- Senhas: argon2id (hash no app, nunca plaintext). Tokens: SHA-256 do token, nunca o token.
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE TABLE IF NOT EXISTS users (
