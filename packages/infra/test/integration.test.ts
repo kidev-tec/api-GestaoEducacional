@@ -145,6 +145,24 @@ describe('ledger: idempotência e concorrência', () => {
     expect(ok.idempotentReplay).toBe(false);
   });
 
+  it('ROLLBACK executa e o pool sobrevive mesmo quando fn lança erro não-HTTP', async () => {
+    // segundo caminho do catch: erro lançado após operações, provando ROLLBACK + release
+    for (let i = 0; i < 15; i++) {
+      await expect(
+        withTransaction(pool, async (c) => {
+          await c.query('SELECT 1');
+          throw new TypeError(`boom-${i}`);
+        }),
+      ).rejects.toThrow(`boom-${i}`);
+    }
+    // pool íntegro: transação subsequente comita normalmente
+    const r = await withTransaction(pool, (c) =>
+      postLedger(c, { entryId: nextId('led'), tenantId: 'B', type: 'PAYMENT', amountCents: 77 }),
+    );
+    expect(r.idempotentReplay).toBe(false);
+    expect(await ledgerBalance(pool, 'B')).toBeGreaterThan(0);
+  });
+
   it('REVERSAL: vínculo validado na transação; cadeia e cross-tenant bloqueados', async () => {
     const charge = await withTransaction(pool, (c) =>
       postLedger(c, { entryId: nextId('led'), tenantId: 'A', type: 'CHARGE', amountCents: 700 }),
@@ -234,5 +252,59 @@ describe('enrollment: persistência e transições', () => {
     await expect(
       pool.query("INSERT INTO enrollments (id, tenant_id, student_id, offer_id, state) VALUES ('hack-1', 'A', 's', 'o', 'HACKED')"),
     ).rejects.toThrow();
+  });
+});
+
+describe('cobertura de branches de guarda (G4)', () => {
+  it('REVERSAL com valor que não nega exatamente o original → erro específico', async () => {
+    const charge = await withTransaction(pool, (c) =>
+      postLedger(c, { entryId: nextId('led'), tenantId: 'A', type: 'CHARGE', amountCents: 300 }),
+    );
+    await expect(
+      withTransaction(pool, (c) =>
+        postLedger(c, { entryId: nextId('led'), tenantId: 'A', type: 'REVERSAL', amountCents: -299, reverses: charge.entry.id }),
+      ),
+    ).rejects.toThrow('reversal amount must exactly negate the original entry');
+    // nada gravado com valor errado
+    const res = await pool.query("SELECT COUNT(*) AS n FROM ledger_entries WHERE type='REVERSAL' AND amount_cents=-299");
+    expect(Number((res.rows[0] as { n: string }).n)).toBe(0);
+  });
+
+  it('COMMIT falha (conexão destruída pós-fn) → catch→ROLLBACK e erro propagado', async () => {
+    let calls = 0;
+    await expect(
+      withTransaction(pool, async (c) => {
+        calls++;
+        await c.query('SELECT 1');
+        // absorve o 'error' emitido pelo pg quando o socket morre (senão vira unhandled)
+        c.on('error', () => {});
+        // destrói o socket após fn resolver: COMMIT não pode completar
+        (c as unknown as { connection: { stream: { destroy: () => void } } }).connection.stream.destroy();
+      }),
+    ).rejects.toThrow();
+    expect(calls).toBe(1);
+    // pool sobrevive à conexão morta
+    const r = await withTransaction(pool, (c) =>
+      postLedger(c, { entryId: nextId('led'), tenantId: 'B', type: 'PAYMENT', amountCents: 55 }),
+    );
+    expect(r.idempotentReplay).toBe(false);
+  });
+
+  it('getLedgerEntry inexistente → not found', async () => {
+    const { getLedgerEntry } = await import('../src/repositories.js');
+    await expect(withTransaction(pool, (c) => getLedgerEntry(c, 'led-inexistente-xyz', 'A'))).rejects.toThrow(/not found/);
+  });
+
+  it('enrollment: mesma key com payload divergente → conflito, nada gravado', async () => {
+    await withTransaction(pool, (c) =>
+      createEnrollment(c, { id: nextId('enr'), tenantId: 'B', studentId: 's1', offerId: 'o1', idempotencyKey: 'enr-conflict' }),
+    );
+    await expect(
+      withTransaction(pool, (c) =>
+        createEnrollment(c, { id: nextId('enr'), tenantId: 'B', studentId: 's2', offerId: 'o1', idempotencyKey: 'enr-conflict' }),
+      ),
+    ).rejects.toThrow(/reused with different payload/);
+    const res = await pool.query("SELECT COUNT(*) AS n FROM enrollments WHERE tenant_id='B' AND student_id='s2' AND offer_id='o1'");
+    expect(Number((res.rows[0] as { n: string }).n)).toBe(0);
   });
 });

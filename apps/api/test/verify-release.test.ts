@@ -12,13 +12,13 @@ import { fileURLToPath } from 'node:url';
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), '../../../scripts/verify-release.mjs');
 
-let dir;
+let dir: string;
 beforeEach(() => {
   dir = mkdtempSync(join(tmpdir(), 'verifyrel-'));
 });
 afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
-function fakeRelease(shaOf) {
+function fakeRelease(shaOf: 'good' | 'bad') {
   const content = Buffer.from('fake-artifact-content-1234567890');
   const artifactPath = join(dir, 'ERP Platform-0.1.0.AppImage');
   writeFileSync(artifactPath, content, { mode: 0o755 });
@@ -58,7 +58,7 @@ function runExpectFail() {
   try {
     execFileSync('node', [scriptCopy], { encoding: 'utf8', stdio: 'pipe' });
     return null;
-  } catch (e) {
+  } catch (e: unknown) {
     return e;
   }
 }
@@ -79,7 +79,7 @@ describe('verify-release.mjs (RF-026)', () => {
     fakeRelease('bad');
     const e = runExpectFail();
     expect(e).toBeTruthy();
-    expect(String(e.stderr)).toContain('SHA-256 divergiu');
+    expect(String((e as { stderr?: unknown })?.stderr ?? '')).toContain('SHA-256 divergiu');
   });
 
   it('FALHA sem manifest', () => {
@@ -93,11 +93,11 @@ describe('verify-release.mjs (RF-026)', () => {
         writeFileSync(scriptCopy, src);
         execFileSync('node', [scriptCopy], { encoding: 'utf8', stdio: 'pipe' });
         return null;
-      } catch (err) {
+      } catch (err: unknown) {
         return err;
       }
     })();
     expect(e).toBeTruthy();
-    expect(String(e.stderr)).toContain('release-manifest.json ausente');
+    expect(String((e as { stderr?: unknown })?.stderr ?? '')).toContain('release-manifest.json ausente');
   });
 });
