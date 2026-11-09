@@ -1,0 +1,17 @@
+## Gates finais PÓS-fix QA (2026-11-08T22:59:29-03:00)
+### B1 Coverage
+      Tests  54 passed (54)
+All files      |     100 |      100 |     100 |     100 |                   
+### B2 Mutation
+src/enrollment.ts:20:43
+src/enrollment.ts:21:32
+src/enrollment.ts:21:44
+src/enrollment.ts:23:14
+src/enrollment.ts:25:13
+src/ledger.ts:86:25
+src/ledger.ts:95:9
+src/ledger.ts:114:9
+All files      |  95.21 |   95.21 |      159 |         0 |          8 |        0 |        0 |
+ enrollment.ts |  92.06 |   92.06 |       58 |         0 |          5 |        0 |        0 |
+ ledger.ts     |  97.12 |   97.12 |      101 |         0 |          3 |        0 |        0 |
+[32m23:00:09 (1098131) INFO MutationTestReportHelper[39m Final mutation score of 95.21 is greater than or equal to break threshold 95

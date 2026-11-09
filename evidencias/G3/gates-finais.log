@@ -1,0 +1,25 @@
+# G3 — evidências finais (2026-11-08T22:53:42-03:00)
+
+## Coverage (B1)
+ ✓ test/enrollment.test.ts (13 tests) 21ms
+ ✓ test/ledger.test.ts (11 tests) 60ms
+ ✓ test/ledger-idempotency-killers.test.ts (3 tests) 12ms
+ ✓ test/index.test.ts (1 test) 9ms
+      Tests  42 passed (42)
+All files      |     100 |      100 |     100 |     100 |                   
+ enrollment.ts |     100 |      100 |     100 |     100 |                   
+ index.ts      |     100 |      100 |     100 |     100 |                   
+ ledger.ts     |     100 |      100 |     100 |     100 |                   
+
+## Mutation (B2)
+src/enrollment.ts:20:43
+src/enrollment.ts:21:32
+src/enrollment.ts:21:44
+src/enrollment.ts:23:14
+src/enrollment.ts:25:13
+src/ledger.ts:91:9
+src/ledger.ts:110:9
+All files      |  95.60 |   95.60 |      152 |         0 |          7 |        0 |        0 |
+ enrollment.ts |  92.06 |   92.06 |       58 |         0 |          5 |        0 |        0 |
+ ledger.ts     |  97.92 |   97.92 |       94 |         0 |          2 |        0 |        0 |
+[32m22:54:17 (1084813) INFO MutationTestReportHelper[39m Final mutation score of 95.60 is greater than or equal to break threshold 95

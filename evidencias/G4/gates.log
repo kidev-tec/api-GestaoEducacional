@@ -1,0 +1,11 @@
+# G4 — gates (2026-11-08T23:17:33-03:00)
+## Integração Postgres real (testcontainers, postgres:16-alpine, porta efêmera, banco descartável)
+- 12/12 testes de integração PASS
+- Migration idempotente: rodou 2× sem erro
+- Concorrência: 10 transações paralelas no mesmo (tenant,key) → EXATAMENTE 1 lançamento (pg_advisory_xact_lock + unique index)
+- Idempotência escopada por tenant: mesma key em A e B = lançamentos independentes; replay em A retorna o de A
+- Rollback em falha parcial: audit do lançamento crashado NÃO persiste; pool recuperável
+- Cross-tenant: get/transição/reversão de outro tenant = not found sem oracle; CHECK constraint bloqueia estado inválido direto no SQL
+- REVERSAL: cadeia bloqueada no banco; vínculo com valor exatamente oposto validado FOR UPDATE
+## Zero contato com produção
+- Postgres descartável efêmero (testcontainers); nenhum DATABASE_URL/DSN de produção no projeto; API HTTP ainda não existe (G5)
