@@ -1,27 +1,48 @@
 /**
  * Bootstrap de Postgres de teste via testcontainers (porta efêmera).
- * Migration roda na subida; idempotência testada rodando 2×.
+ * Migrations rodam na subida (todas, em ordem); idempotência testada rodando 2×.
  */
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Pool } from 'pg';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** Localiza packages/infra/migrations/001_init.sql subindo a árvore (independe de cwd). */
-function findMigration(startDir: string = process.cwd()): string {
+/** Localiza packages/infra/migrations subindo a árvore (independe de cwd). */
+export function findMigrationsDir(startDir: string = process.cwd()): string {
   let dir = startDir;
   for (let i = 0; i < 6; i++) {
-    const candidate = join(dir, 'packages/infra/migrations/001_init.sql');
+    const candidate = join(dir, 'packages/infra/migrations');
     try {
-      return readFileSync(candidate, 'utf-8');
+      readdirSync(candidate);
+      return candidate;
     } catch {
       dir = join(dir, '..');
     }
   }
-  throw new Error('packages/infra/migrations/001_init.sql não encontrado a partir de ' + startDir);
+  throw new Error('packages/infra/migrations não encontrado a partir de ' + startDir);
 }
 
-export { findMigration };
+/** Lê todas as migrations em ordem alfabética (001_init.sql, 002_auth.sql, ...). */
+export function readMigrations(startDir: string = process.cwd()): string[] {
+  const dir = findMigrationsDir(startDir);
+  return readdirSync(dir).filter((f) => f.endsWith('.sql')).sort().map((f) => readFileSync(join(dir, f), 'utf-8'));
+}
+
+/**
+ * Compat (E04-A): conteúdo SQL de uma migration específica subindo a árvore.
+ * Preservado porque testes e callers externos dependem do export.
+ */
+export function findMigration(startDir: string = process.cwd(), filename: string = '001_init.sql'): string {
+  let dir = startDir;
+  for (let i = 0; i < 6; i++) {
+    try {
+      return readFileSync(join(dir, 'packages/infra/migrations', filename), 'utf-8');
+    } catch {
+      dir = join(dir, '..');
+    }
+  }
+  throw new Error(`${filename} não encontrado a partir de ${startDir}`);
+}
 
 export interface TestDb {
   pool: Pool;
@@ -33,10 +54,14 @@ export async function startTestDb(): Promise<TestDb> {
   const container = await new PostgreSqlContainer('postgres:16-alpine').start();
   const pool = new Pool({ connectionString: container.getConnectionUri() });
 
-  const migration = findMigration();
-  // roda 2×: prova idempotência da migration (QG-3)
-  await pool.query(migration);
-  await pool.query(migration);
+  const migrations = readMigrations();
+  // roda todas 2×: prova idempotência das migrations (QG-3)
+  for (const sql of migrations) {
+    await pool.query(sql);
+  }
+  for (const sql of migrations) {
+    await pool.query(sql);
+  }
 
   // tenants de teste
   await pool.query("INSERT INTO tenants (id) VALUES ('A'), ('B') ON CONFLICT DO NOTHING");
