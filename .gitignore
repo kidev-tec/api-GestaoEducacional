@@ -2,6 +2,9 @@ node_modules/
 dist/
 coverage/
 *.log
+!.log
+!evidences/**
+!evidencias/**
 .env
 .env.*
 !.env.example
