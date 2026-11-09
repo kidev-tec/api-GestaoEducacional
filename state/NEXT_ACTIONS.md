@@ -1,3 +1,5 @@
+- [x] Rodar primeiro TDD RED/GREEN e evidência 100/100/100/100 no núcleo.
+- [x] Criar monorepo com devcontainers/scripts e CI real. (monorepo criado; CI pendente de remote)
 # Next actions
 
 - [ ] Identificar Hermes e documentar autorização de pesquisa.
