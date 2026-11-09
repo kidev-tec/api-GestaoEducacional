@@ -1,0 +1,11 @@
+# G5 — gates (2026-11-08T23:39:37-03:00)
+## API HTTP Fastify + OpenAPI + Scalar (doc em /docs, contrato em /openapi.json)
+- 16/16 E2E HTTP real (inject) contra Postgres testcontainers
+- Rotas: health, enrollments (create/transition/get), ledger (entries/balance), audit/count — todas com OpenAPI schema
+- Scalar API Reference em /docs (decisão do usuário)
+- Tenant guard: header ausente 400, tenant desconhecido 401
+- Erros de domínio → HTTP: replay 200, criação 201, conflito key 409, transição inválida 422, cross-tenant 404 sem oracle
+- Adversarial HTTP: forjar tenant, 2 requests paralelas mesma key (1 criado+1 replay), payload malformado sem stacktrace, rota inexistente genérica, método errado, key compartilhada cross-tenant independente
+- Zero contato com produção/API real: Postgres efêmero + inject (sem listen de porta)
+## Fixes durante o gate
+- findMigration(): localização independente de cwd (monorepo multi-package)

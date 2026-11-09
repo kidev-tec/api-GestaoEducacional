@@ -236,7 +236,7 @@ export async function transitionEnrollment(
 }
 
 export async function getEnrollment(
-  client: PoolClient,
+  client: PoolClient | Pool,
   id: string,
   tenantId: string,
 ): Promise<EnrollmentRow> {
@@ -248,7 +248,7 @@ export async function getEnrollment(
   return res.rows[0] as EnrollmentRow;
 }
 
-export async function auditCount(client: PoolClient, tenantId: string): Promise<number> {
+export async function auditCount(client: PoolClient | Pool, tenantId: string): Promise<number> {
   const res = await client.query(
     'SELECT COUNT(*) AS n FROM audit_records WHERE tenant_id = $1',
     [tenantId],
