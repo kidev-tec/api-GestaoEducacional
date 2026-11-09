@@ -9,7 +9,7 @@ import {
   pgDumpArgs,
   pgRestoreArgs,
   buildToolEnv,
-} from '../../scripts/backup-local.mjs';
+} from '../../../scripts/backup-local.mjs';
 
 const LOCAL = 'postgres://erp:secret@127.0.0.1:55432/erp_dev';
 

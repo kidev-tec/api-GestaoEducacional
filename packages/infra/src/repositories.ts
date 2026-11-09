@@ -17,16 +17,25 @@ export async function withTransaction<T>(
   fn: (client: PoolClient) => Promise<T>,
 ): Promise<T> {
   const client = await pool.connect();
+  let released = false;
+  const releaseOnce = () => {
+    if (!released) {
+      released = true;
+      client.release();
+    }
+  };
   try {
     await client.query('BEGIN');
     const result = await fn(client);
     await client.query('COMMIT');
+    releaseOnce();
     return result;
   } catch (e) {
-    await client.query('ROLLBACK');
+    // ROLLBACK nunca esconde o erro original: falha de rollback é absorvida
+    // (.catch) e o erro real propaga; releaseOnce libera o client nos dois caminhos.
+    await client.query('ROLLBACK').catch(() => {});
+    releaseOnce();
     throw e;
-  } finally {
-    client.release();
   }
 }
 
