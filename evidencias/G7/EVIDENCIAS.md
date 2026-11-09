@@ -50,3 +50,8 @@ Verdict: CHANGES com 2 findings — ambos corrigidos neste commit:
    canônica [A-Za-z0-9][A-Za-z0-9_-]{0,63}; não-canônico → "[redacted]".
    Teste cobre SQL injection, newline, <script>, overflow.
 Gates pós-rework: API 53/53 (100×4), tsc clean.
+
+## Re-review r2 (deleg_5f01fea0, cx/gpt-5.6-terra): APPROVED
+- buildToolEnv allowlist confirmada; spawnSync usa buildToolEnv; sem spread de process.env.
+- tenantId canônico com [redacted] confirmado.
+- Re-execução independente: 53/53, 100×4 (app.ts + obs.ts).
