@@ -2,14 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { AuditStore, redactPii } from '../src/audit.js';
 
 describe('audit store', () => {
-  it('appends with sequential seq and timestamp', () => {
+  it('appends with sequential seq and valid ISO timestamps', () => {
     const store = new AuditStore();
     const r1 = store.append({ tenantId: 't1', actorId: 'a1', action: 'create', resourceType: 'student', resourceId: 's1' });
     const r2 = store.append({ tenantId: 't1', actorId: 'a2', action: 'update', resourceType: 'student', resourceId: 's1' });
     expect(r1.seq).toBe(1);
     expect(r2.seq).toBe(2);
-    expect(r1.at).toBeTruthy();
-    expect(r2.at).toBeTruthy();
+    expect(Number.isNaN(Date.parse(r1.at))).toBe(false);
+    expect(Number.isNaN(Date.parse(r2.at))).toBe(false);
+    expect(Date.parse(r2.at)).toBeGreaterThanOrEqual(Date.parse(r1.at));
   });
 
   it('accepts explicit at and correlationId', () => {
