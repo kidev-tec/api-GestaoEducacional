@@ -6,16 +6,30 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { startTestDb, type TestDb } from '@erp/infra/src/test-db.js';
-import { buildApp, mapDomainError } from '../src/app.js';
+import { buildApp, mapDomainError, resetLoginLimiter } from '../src/app.js';
 import { isUuid, safeLogLine, resolveRequestId } from '../src/obs.js';
 
 let db: TestDb;
 let app: FastifyInstance;
+let readyToken: string;
 const sink: string[] = [];
 
 beforeAll(async () => {
   db = await startTestDb();
   app = await buildApp({ pool: db.pool, logSink: (line) => sink.push(line) });
+  resetLoginLimiter();
+  // E04-A review: registro é admin-only → seed direto no banco
+  const argon2 = await import('argon2');
+  const hash = await argon2.hash('correct-horse-123', { type: argon2.argon2id });
+  await db.pool.query(
+    'INSERT INTO users (id, tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',
+    [crypto.randomUUID(), 'A', 'ready@test', hash, 'operator'],
+  );
+  const login = await app.inject({
+    method: 'POST', url: '/v1/auth/login',
+    payload: { email: 'ready@test', password: 'correct-horse-123' },
+  });
+  readyToken = (login.json() as { token: string }).token;
 }, 120_000);
 
 afterAll(async () => {
@@ -107,7 +121,7 @@ describe('logging seguro (RF-018)', () => {
     const res = await app.inject({
       method: 'GET',
       url: '/v1/ledger/balance',
-      headers: { 'x-tenant-id': 'A', 'x-request-id': 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+      headers: { authorization: `Bearer ${readyToken}`, 'x-request-id': 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
     });
     expect(res.statusCode).toBe(200);
     expect(sink.length).toBeGreaterThan(0);
@@ -204,5 +218,6 @@ describe('cobertura de ramos remanescentes (reforço G7)', () => {
 });
 
 function H2(tenant: string, extra: Record<string, string> = {}) {
-  return { 'x-tenant-id': tenant, ...extra };
+  void tenant; // tenant agora deriva da sessão (E04-A); header mantido só p/ compat de testes antigos
+  return { authorization: `Bearer ${readyToken}`, ...extra };
 }
