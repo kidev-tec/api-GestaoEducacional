@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: ERP Platform - CONTRACT DRAFT (NOT IMPLEMENTED)
+  version: 0.1.0-draft
+  description: Illustrative contract for discussion; not a production endpoint.
+servers:
+  - url: https://api.example.invalid/v1
+paths:
+  /health:
+    get:
+      operationId: getHealthDraft
+      tags: [system]
+      summary: Sample health contract (not implemented)
+      responses:
+        '200':
+          description: Health result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                required: [status]

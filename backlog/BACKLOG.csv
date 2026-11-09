@@ -1,0 +1,378 @@
+﻿ID,Épico,Nome do épico,Título,Tipo,Módulo,Fase,Prioridade,Esforço,Status,Dependências,Objetivo,Checklist,Critério de aceite,Benchmark,Evidência,Responsável
+E00-01,E00,"Estratégia, benchmarking e escopo",Definir ICP e segmentos educacionais,Pesquisa,Produto,Descoberta,P0,M,Backlog,,"Entrevistar clientes de cursos livres, idiomas e escolas técnicas, entregando resultado verificável para produto.","- Entrevistar clientes de cursos livres, idiomas e escolas técnicas
+- Segmentar por operação e número de unidades
+- Documentar restrições do piloto","ICP, personas e cenários validados com ao menos um representante da operação.",SAP / Oracle / Dynamics 365,evidencias/E00-01.md,
+E00-02,E00,"Estratégia, benchmarking e escopo",Mapear jornadas e tarefas críticas,Pesquisa,Produto,Descoberta,P0,M,Backlog,E00-01,"Observar processos de secretaria, comercial, financeiro e docência, entregando resultado verificável para produto.","- Observar processos de secretaria, comercial, financeiro e docência
+- Medir passos, erros e tempos
+- Listar eventos e exceções","Jornada ponta a ponta com atores, entrada, saída, exceções e tempo-base registrado.",SAP / Oracle / Dynamics 365,evidencias/E00-02.md,
+E00-03,E00,"Estratégia, benchmarking e escopo",Construir benchmark funcional F10 x líderes,Pesquisa,Produto,Descoberta,P0,M,Backlog,E00-01,"Registrar funcionalidades públicas da f10, entregando resultado verificável para produto.","- Registrar funcionalidades públicas da f10
+- Comparar padrões sap, oracle e dynamics por dimensão
+- Separar evidência de hipótese","Matriz com fonte, nota justificada e lacunas sem alegar capacidades não verificadas.",SAP / Oracle / Dynamics 365,evidencias/E00-03.md,
+E00-04,E00,"Estratégia, benchmarking e escopo",Definir proposta de valor e diferenciais,Pesquisa,Produto,Descoberta,P0,M,Backlog,E00-02,"Priorizar problemas repetitivos, retrabalho e governança, entregando resultado verificável para produto.","- Priorizar problemas repetitivos, retrabalho e governança
+- Propor centro de ações, busca universal e automação
+- Validar ganhos esperados","Cada diferencial tem hipótese, métrica, responsável e teste com usuário.",SAP / Oracle / Dynamics 365,evidencias/E00-04.md,
+E00-05,E00,"Estratégia, benchmarking e escopo",Estabelecer KPIs de produto e operação,Pesquisa,Produto,Descoberta,P0,M,Backlog,E00-02,"Definir time-to-value, tempo de matrícula, inadimplência, sla e adoção, entregando resultado verificável para produto.","- Definir time-to-value, tempo de matrícula, inadimplência, sla e adoção
+- Documentar fórmula e fonte
+- Indicar linha de base",Dicionário de KPIs aprovado e instrumentável.,SAP / Oracle / Dynamics 365,evidencias/E00-05.md,
+E00-06,E00,"Estratégia, benchmarking e escopo","Delimitar MVP, fases e riscos",Pesquisa,Produto,Descoberta,P1,M,Backlog,"E00-03,E00-04","Priorizar por valor, risco e dependência, entregando resultado verificável para produto.","- Priorizar por valor, risco e dependência
+- Fechar módulos mínimos para primeira escola
+- Aprovar exclusões e mapa de riscos",Escopo MVP e backlog por fase assinados pelo sponsor; nenhuma feature sem dono.,SAP / Oracle / Dynamics 365,evidencias/E00-06.md,
+E01-01,E01,Engenharia reversa com REA,Autorizar escopo e regras da investigação,Pesquisa,Pesquisa,Descoberta,P0,M,Backlog,E00-01,"Identificar aplicativo hermes exato, versão e relação com o erp, entregando resultado verificável para pesquisa.","- Identificar aplicativo hermes exato, versão e relação com o erp
+- Obter autorização e ambiente de teste
+- Definir proibições de coleta e dados reais","Termo de escopo, origem do artefato e contas autorizadas registrados antes de iniciar.",REA / referência autorizada,evidencias/E01-01.md,
+E01-02,E01,Engenharia reversa com REA,Configurar REA em ambiente isolado,Pesquisa,Pesquisa,Descoberta,P0,M,Backlog,E01-01,"Instalar rea da fonte oficial com revisão do setup, entregando resultado verificável para pesquisa.","- Instalar rea da fonte oficial com revisão do setup
+- Configurar agente e verificar doctor
+- Registrar versões e permissões",Setup reproduzível e verificado sem modificar o alvo.,REA / referência autorizada,evidencias/E01-02.md,
+E01-03,E01,Engenharia reversa com REA,Criar protocolo de evidências,Pesquisa,Pesquisa,Descoberta,P0,M,Backlog,E01-01,"Padronizar id da captura, data, versão, tela, papel e nível de certeza, entregando resultado verificável para pesquisa.","- Padronizar id da captura, data, versão, tela, papel e nível de certeza
+- Redigir dados pessoais
+- Armazenar notas observadas separadas de inferências",Toda afirmação rastreável ao artefato e ao cenário de teste.,REA / referência autorizada,evidencias/E01-03.md,
+E01-04,E01,Engenharia reversa com REA,Inventariar navegação e papéis,Pesquisa,Pesquisa,Descoberta,P0,M,Backlog,"E01-02,E01-03","Navegar com perfis autorizados, entregando resultado verificável para pesquisa.","- Navegar com perfis autorizados
+- Mapear menu, páginas e controles
+- Identificar permissões observáveis",Mapa navegável com screenshots redigidos e matrizes por papel.,REA / referência autorizada,evidencias/E01-04.md,
+E01-05,E01,Engenharia reversa com REA,Investigar fluxo de leads até matrícula,Pesquisa,Pesquisa,Descoberta,P0,M,Backlog,E01-04,"Executar cenários fictícios de lead, contato, proposta, aceite e matrícula, entregando resultado verificável para pesquisa.","- Executar cenários fictícios de lead, contato, proposta, aceite e matrícula
+- Registrar validações e estados
+- Mapear erros",Diagrama BPMN com casos felizes e 5 exceções observadas ou marcadas como hipótese.,REA / referência autorizada,evidencias/E01-05.md,
+E01-06,E01,Engenharia reversa com REA,Investigar secretaria e dados acadêmicos,Pesquisa,Pesquisa,Descoberta,P1,M,Backlog,E01-04,"Observar cadastro, relacionamento responsável/aluno, turma e documentos, entregando resultado verificável para pesquisa.","- Observar cadastro, relacionamento responsável/aluno, turma e documentos
+- Registrar campos e regras visíveis
+- Comparar nomenclatura","Dicionário de campos, fluxos e regras com evidência.",REA / referência autorizada,evidencias/E01-06.md,
+E01-07,E01,Engenharia reversa com REA,Investigar financeiro pela interface,Pesquisa,Pesquisa,Descoberta,P1,M,Backlog,E01-04,"Usar cobranças fictícias, entregando resultado verificável para pesquisa.","- Usar cobranças fictícias
+- Observar geração, baixa, renegociação e estorno quando permitido
+- Levantar dependências externas",Diagrama de eventos financeiros sem acesso não autorizado a dados ou endpoints.,REA / referência autorizada,evidencias/E01-07.md,
+E01-08,E01,Engenharia reversa com REA,Investigar pedagógico e presença,Pesquisa,Pesquisa,Descoberta,P1,M,Backlog,E01-04,"Simular cursos, horários, aulas, presença e avaliações, entregando resultado verificável para pesquisa.","- Simular cursos, horários, aulas, presença e avaliações
+- Documentar estados e permissões
+- Registrar exceções",Matriz de estados e tarefas por papel com evidências.,REA / referência autorizada,evidencias/E01-08.md,
+E01-09,E01,Engenharia reversa com REA,Mapear integrações somente por vias autorizadas,Pesquisa,Pesquisa,Descoberta,P1,M,Backlog,"E01-01,E01-03","Examinar documentação pública e tráfego próprio aprovado, entregando resultado verificável para pesquisa.","- Examinar documentação pública e tráfego próprio aprovado
+- Catalogar exportações e webhooks legítimos
+- Não contornar controles","Inventário de integrações com fonte, limites, dados e autorização.",REA / referência autorizada,evidencias/E01-09.md,
+E01-10,E01,Engenharia reversa com REA,Consolidar referência funcional clean-room,Pesquisa,Pesquisa,Descoberta,P1,M,Backlog,"E01-05,E01-06,E01-07,E01-08,E01-09","Classificar cada função como observado, inferido ou desejado, entregando resultado verificável para pesquisa.","- Classificar cada função como observado, inferido ou desejado
+- Abstrair requisito sem copiar código, marca ou layout
+- Apontar oportunidades de melhoria",Documento de requisitos originais e matriz de rastreabilidade aprovado.,REA / referência autorizada,evidencias/E01-10.md,
+E02-01,E02,Design system e UX original,Auditar UX atual e tarefas de alta frequência,Design,UX,Fundação,P1,M,Backlog,"E01-04,E00-02","Identificar fricções por inspeção autorizada, entregando resultado verificável para ux.","- Identificar fricções por inspeção autorizada
+- Medir cliques, carga cognitiva e erros
+- Definir baseline","Relatório heurístico priorizado por impacto e evidência, não por gosto pessoal.",Design enterprise / WCAG,evidencias/E02-01.md,
+E02-02,E02,Design system e UX original,Desenhar arquitetura de informação por função,Design,UX,Fundação,P1,M,Backlog,E02-01,"Organizar menu por tarefa e perfil, entregando resultado verificável para ux.","- Organizar menu por tarefa e perfil
+- Prever multiunidades e favoritos
+- Validar com teste de árvore",>=80% de conclusão de 5 tarefas-alvo em teste de navegação piloto.,Design enterprise / WCAG,evidencias/E02-02.md,
+E02-03,E02,Design system e UX original,Definir identidade visual exclusiva e tokens,Design,UX,Fundação,P1,M,Backlog,E02-01,"Criar marca provisória sem derivar trade dress da f10, entregando resultado verificável para ux.","- Criar marca provisória sem derivar trade dress da f10
+- Definir light/dark, grid, tipografia e tokens semânticos
+- Garantir contrastes",Biblioteca de tokens versionada e contraste WCAG 2.2 AA nas áreas aplicáveis.,Design enterprise / WCAG,evidencias/E02-03.md,
+E02-04,E02,Design system e UX original,Construir componentes do design system,Design,UX,Fundação,P1,M,Backlog,E02-03,"Especificar tabela densa, filtros, formulário, wizard, modal, timeline e indicadores, entregando resultado verificável para ux.","- Especificar tabela densa, filtros, formulário, wizard, modal, timeline e indicadores
+- Definir estados loading/empty/error
+- Testes a11y","Componentes reusáveis documentados, navegáveis por teclado e testados.",Design enterprise / WCAG,evidencias/E02-04.md,
+E02-05,E02,Design system e UX original,Projetar centro de trabalho e dashboards por papel,Design,UX,Fundação,P1,M,Backlog,"E02-02,E02-04","Mapear pendências para diretor, secretaria, financeiro, professor, entregando resultado verificável para ux.","- Mapear pendências para diretor, secretaria, financeiro, professor
+- Criar ações contextuais
+- Validar ordem de prioridade",Protótipos por papel com tarefas principais executáveis em teste moderado.,Design enterprise / WCAG,evidencias/E02-05.md,
+E02-06,E02,Design system e UX original,Projetar busca universal e comandos rápidos,Design,UX,Fundação,P1,M,Backlog,"E02-04,E04-04","Definir escopo por permissões, entregando resultado verificável para ux.","- Definir escopo por permissões
+- Pesquisar aluno, turma, fatura e ação
+- Registrar atalhos e feedback",Nenhum resultado fora da permissão e tarefas frequentes acionáveis sem percorrer menus.,Design enterprise / WCAG,evidencias/E02-06.md,
+E02-07,E02,Design system e UX original,Projetar experiências responsivas e acessíveis,Design,UX,Fundação,P1,M,Backlog,E02-04,"Desenhar desktop, tablet e celular, entregando resultado verificável para ux.","- Desenhar desktop, tablet e celular
+- Prever densidade de dados e formulário longo
+- Testar leitor de tela e teclado",Protótipos em 3 viewports com checklist de WCAG 2.2 AA.,Design enterprise / WCAG,evidencias/E02-07.md,
+E02-08,E02,Design system e UX original,Validar UI com usuários antes de codificar,Design,UX,Fundação,P1,M,Backlog,"E02-05,E02-06,E02-07","Realizar 5 testes exploratórios com tarefas reais e dados fictícios, entregando resultado verificável para ux.","- Realizar 5 testes exploratórios com tarefas reais e dados fictícios
+- Registrar tempo, sus e erros
+- Revisar prioridades",Relatório antes/depois com top 10 ajustes e decisões rastreáveis.,Design enterprise / WCAG,evidencias/E02-08.md,
+E03-01,E03,Arquitetura SaaS e core modular,Publicar ADRs e limites de arquitetura,Implementação,Plataforma,Fundação,P0,M,Backlog,E00-06,"Decidir monólito modular primeiro, integrações por contratos, infraestrutura e adrs, entregando resultado verificável para plataforma.","- Decidir monólito modular primeiro, integrações por contratos, infraestrutura e adrs
+- Justificar trade-offs
+- Documentar nfrs",ADRs revisadas e riscos conhecidos explicitados; sem microsserviços por reflexo.,SAP clean core / APIs,evidencias/E03-01.md,
+E03-02,E03,Arquitetura SaaS e core modular,Criar monorepo e padrões de engenharia,Implementação,Plataforma,Fundação,P0,M,Backlog,E03-01,"Configurar pacotes frontend, backend, shared e tooling, entregando resultado verificável para plataforma.","- Configurar pacotes frontend, backend, shared e tooling
+- Lint, typecheck e testes
+- Templates de pr e conventional commits",CI verde com exemplo end-to-end e execução local documentada.,SAP clean core / APIs,evidencias/E03-02.md,
+E03-03,E03,Arquitetura SaaS e core modular,Definir bounded contexts e dependências,Implementação,Plataforma,Fundação,P0,M,Backlog,E03-01,"Separar identidade, cadastros, comercial, financeiro e acadêmico, entregando resultado verificável para plataforma.","- Separar identidade, cadastros, comercial, financeiro e acadêmico
+- Impor regras de importação
+- Registrar owners",Teste automatizado impede dependências circulares e acessos internos indevidos.,SAP clean core / APIs,evidencias/E03-03.md,
+E03-04,E03,Arquitetura SaaS e core modular,Construir isolamento multi-tenant multiunidade,Implementação,Plataforma,Fundação,P0,M,Backlog,"E03-03,E04-03","Modelar tenant, rede, escola e unidade, entregando resultado verificável para plataforma.","- Modelar tenant, rede, escola e unidade
+- Propagar contexto em cada requisição e job
+- Testar cross-tenant","Testes de negação provam ausência de vazamento por API, filas, cache e consultas.",SAP clean core / APIs,evidencias/E03-04.md,
+E03-05,E03,Arquitetura SaaS e core modular,Definir esquema relacional e migrations seguras,Implementação,Plataforma,Fundação,P0,M,Backlog,E03-03,"Padronizar ids, timestamps, soft-delete onde aplicável, índices e migrações, entregando resultado verificável para plataforma.","- Padronizar ids, timestamps, soft-delete onde aplicável, índices e migrações
+- Definir rollback e lock strategy
+- Documentar cenários-limite, riscos e testes de regressão",Alterações de esquema executadas em base preenchida sem perda inesperada.,SAP clean core / APIs,evidencias/E03-05.md,
+E03-06,E03,Arquitetura SaaS e core modular,Criar padrões transacionais e outbox,Implementação,Plataforma,Fundação,P1,M,Backlog,E03-05,"Projetar eventos de domínio, idempotência e transactional outbox, entregando resultado verificável para plataforma.","- Projetar eventos de domínio, idempotência e transactional outbox
+- Tratar reentrega
+- Prover auditoria",Cenários de falha/retry não duplicam lançamentos ou notificações.,SAP clean core / APIs,evidencias/E03-06.md,
+E03-07,E03,Arquitetura SaaS e core modular,"Criar workers, filas e retries",Implementação,Plataforma,Fundação,P1,M,Backlog,E03-06,"Adicionar jobs duráveis, dlq, backoff e visão de reprocessamento, entregando resultado verificável para plataforma.","- Adicionar jobs duráveis, dlq, backoff e visão de reprocessamento
+- Especificar timeout e quotas
+- Documentar cenários-limite, riscos e testes de regressão",Reexecução de job idempotente com rastreio por tenant.,SAP clean core / APIs,evidencias/E03-07.md,
+E03-08,E03,Arquitetura SaaS e core modular,Padronizar APIs versionadas e contratos,Implementação,Plataforma,Fundação,P1,M,Backlog,E03-03,"Criar openapi, erros rfc-style, paginação, filtros e idempotency keys, entregando resultado verificável para plataforma.","- Criar openapi, erros rfc-style, paginação, filtros e idempotency keys
+- Incluir exemplos e sdk base
+- Documentar cenários-limite, riscos e testes de regressão",Contratos publicados com testes de compatibilidade retroativa.,SAP clean core / APIs,evidencias/E03-08.md,
+E03-09,E03,Arquitetura SaaS e core modular,"Implementar configuração, secrets e feature flags",Implementação,Plataforma,Fundação,P1,M,Backlog,"E03-04,E04-02","Distinguir ambiente, tenant, unidade, usuário e módulos habilitados, entregando resultado verificável para plataforma.","- Distinguir ambiente, tenant, unidade, usuário e módulos habilitados
+- Excluir segredo de logs
+- Registrar histórico",Flag altera acesso sem redeploy e não substitui checagem de autorização.,SAP clean core / APIs,evidencias/E03-09.md,
+E03-10,E03,Arquitetura SaaS e core modular,Criar armazenamento de arquivos e antivírus,Implementação,Plataforma,Fundação,P1,M,Backlog,"E03-04,E04-04","Definir uploads, limites, tipos, links temporários, varredura, ciclo de vida e retenção, entregando resultado verificável para plataforma.","- Definir uploads, limites, tipos, links temporários, varredura, ciclo de vida e retenção
+- Tratar documentos de menores
+- Documentar cenários-limite, riscos e testes de regressão","Upload e download isolados por tenant, com logs e casos negativos cobertos.",SAP clean core / APIs,evidencias/E03-10.md,
+E03-11,E03,Arquitetura SaaS e core modular,Implementar pesquisa indexada com ACL,Implementação,Plataforma,Fundação,P1,M,Backlog,"E03-04,E02-06","Indexar entidades selecionadas e atualizações, entregando resultado verificável para plataforma.","- Indexar entidades selecionadas e atualizações
+- Aplicar filtros de autorização na fonte
+- Testar exclusões",Zero resultados indevidos em teste cross-tenant e tempo medido em dataset piloto.,SAP clean core / APIs,evidencias/E03-11.md,
+E03-12,E03,Arquitetura SaaS e core modular,Preparar internacionalização e regionalização,Implementação,Plataforma,Fundação,P1,M,Backlog,E03-02,"Separar idioma, moeda, fuso, numeração e calendário, entregando resultado verificável para plataforma.","- Separar idioma, moeda, fuso, numeração e calendário
+- Priorizar pt-br
+- Definir formato fiscal via adaptadores","Datas/moedas consistentes em UI, API, exports e jobs, com testes de fusos.",SAP clean core / APIs,evidencias/E03-12.md,
+E04-01,E04,"Identidade, segurança e LGPD",Modelar ameaças e riscos do ERP escolar,Implementação,Plataforma,Fundação,P0,M,Backlog,E03-01,"Realizar threat modeling para menor de idade, dados financeiros e multi-tenant, entregando resultado verificável para plataforma.","- Realizar threat modeling para menor de idade, dados financeiros e multi-tenant
+- Criar mitigações e owners
+- Revisar antes do mvp","Riscos classificados, mitigação dos críticos testada e pendências explícitas.",OWASP ASVS / ANPD,evidencias/E04-01.md,
+E04-02,E04,"Identidade, segurança e LGPD",Implementar autenticação segura e sessões,Implementação,Plataforma,Fundação,P0,M,Backlog,E03-02,"Definir sso/oidc, mfa para privilegiados, recuperação e rotação, entregando resultado verificável para plataforma.","- Definir sso/oidc, mfa para privilegiados, recuperação e rotação
+- Expiração e revogação
+- Limitar brute force",Testes funcionais e negativos de sessões e recuperação passam.,OWASP ASVS / ANPD,evidencias/E04-02.md,
+E04-03,E04,"Identidade, segurança e LGPD","Projetar roles, policies e segregação de funções",Implementação,Plataforma,Fundação,P0,M,Backlog,E04-02,"Mapear rbac+atributos por tenant e unidade, entregando resultado verificável para plataforma.","- Mapear rbac+atributos por tenant e unidade
+- Evitar poder excessivo
+- Formalizar sod financeira",Cada operação protegida por policy no backend e matriz de papéis revisada.,OWASP ASVS / ANPD,evidencias/E04-03.md,
+E04-04,E04,"Identidade, segurança e LGPD",Implementar autorização em todos os canais,Implementação,Plataforma,Fundação,P0,M,Backlog,"E04-03,E03-04","Aplicar política a apis, relatórios, busca, exportação, jobs e websocket, entregando resultado verificável para plataforma.","- Aplicar política a apis, relatórios, busca, exportação, jobs e websocket
+- Testes por papel/tenant
+- Negar padrão",Bateria de testes não encontra caminho alternativo sem autorização.,OWASP ASVS / ANPD,evidencias/E04-04.md,
+E04-05,E04,"Identidade, segurança e LGPD",Implementar trilha de auditoria imutável logicamente,Implementação,Plataforma,Fundação,P0,M,Backlog,"E03-06,E04-03","Registrar quem/quando/o quê/de-para em eventos críticos, entregando resultado verificável para plataforma.","- Registrar quem/quando/o quê/de-para em eventos críticos
+- Mascarar pii
+- Prever retenção e busca","Matrícula, preço, desconto, boleto e permissão rastreáveis sem armazenar senha/token.",OWASP ASVS / ANPD,evidencias/E04-05.md,
+E04-06,E04,"Identidade, segurança e LGPD",Definir programa LGPD e dados de menores,Implementação,Plataforma,Fundação,P1,M,Backlog,"E04-01,E05-01","Mapear finalidade, bases legais, controlador/operador, retenção e direitos, entregando resultado verificável para plataforma.","- Mapear finalidade, bases legais, controlador/operador, retenção e direitos
+- Tratar dados de menores com revisão jurídica
+- Dpia conforme risco",Registro de tratamento e fluxos de atendimento a titulares documentados.,OWASP ASVS / ANPD,evidencias/E04-06.md,
+E04-07,E04,"Identidade, segurança e LGPD",Preparar criptografia e gestão de segredos,Implementação,Plataforma,Fundação,P1,M,Backlog,E04-02,"Usar tls, criptografia em repouso conforme risco, secret manager, rotação e scanner, entregando resultado verificável para plataforma.","- Usar tls, criptografia em repouso conforme risco, secret manager, rotação e scanner
+- Definir resposta a incidente
+- Documentar cenários-limite, riscos e testes de regressão",Nenhum segredo em repositório/log e rotação documentada/testada.,OWASP ASVS / ANPD,evidencias/E04-07.md,
+E04-08,E04,"Identidade, segurança e LGPD","Definir política de exportação, retenção e exclusão",Implementação,Plataforma,Fundação,P1,M,Backlog,"E04-05,E04-06","Configurar exportações auditáveis, exclusão/anonimização quando legalmente cabível e legal hold, entregando resultado verificável para plataforma.","- Configurar exportações auditáveis, exclusão/anonimização quando legalmente cabível e legal hold
+- Evitar deleção financeira indevida
+- Documentar cenários-limite, riscos e testes de regressão",Testes demonstram portabilidade e retenção fiscal sem vazamento.,OWASP ASVS / ANPD,evidencias/E04-08.md,
+E04-09,E04,"Identidade, segurança e LGPD",Criar gates de segurança OWASP ASVS,Implementação,Plataforma,Fundação,P1,M,Backlog,"E04-01,E14-01","Mapear requisitos asvs aplicáveis, entregando resultado verificável para plataforma.","- Mapear requisitos asvs aplicáveis
+- Incluir sast, sca, secret scan e dast controlado
+- Registrar exceções aprovadas",Checklist ASVS com evidências e nenhuma vulnerabilidade crítica em aberto no release.,OWASP ASVS / ANPD,evidencias/E04-09.md,
+E05-01,E05,Cadastros e jornada de matrícula,"Modelar pessoas, alunos e responsáveis",Implementação,Secretaria,MVP,P0,M,Backlog,"E03-05,E04-03","Criar identidade de pessoa independente de papel, entregando resultado verificável para secretaria.","- Criar identidade de pessoa independente de papel
+- Suportar aluno, responsável, contato e pagador
+- Padronizar vínculos","Uma pessoa pode ter múltiplos papéis sem duplicação, preservando histórico.",ERP educacional / qualidade de dados,evidencias/E05-01.md,
+E05-02,E05,Cadastros e jornada de matrícula,Cadastrar organizações e unidades escolares,Implementação,Secretaria,MVP,P0,M,Backlog,E03-04,"Definir rede, campus, unidade e permissões, entregando resultado verificável para secretaria.","- Definir rede, campus, unidade e permissões
+- Campos por segmento
+- Importação inicial",Cadastro hierárquico testado com duas unidades isoladas.,ERP educacional / qualidade de dados,evidencias/E05-02.md,
+E05-03,E05,Cadastros e jornada de matrícula,"Definir calendário letivo, cursos e períodos",Implementação,Secretaria,MVP,P0,M,Backlog,E05-02,"Modelar períodos, curso, modalidade, carga horária e oferta, entregando resultado verificável para secretaria.","- Modelar períodos, curso, modalidade, carga horária e oferta
+- Validar estados
+- Criar dados de seed",Regras de vigência e conflito testadas em dois calendários.,ERP educacional / qualidade de dados,evidencias/E05-03.md,
+E05-04,E05,Cadastros e jornada de matrícula,Construir cadastro completo com validação,Implementação,Secretaria,MVP,P0,M,Backlog,"E05-01,E02-04","Formulário por etapa, documentos, contato e histórico, entregando resultado verificável para secretaria.","- Formulário por etapa, documentos, contato e histórico
+- Validações brasileiras
+- Evitar coleta excessiva",Usuário conclui cadastro e correção sem redigitar dados já existentes.,ERP educacional / qualidade de dados,evidencias/E05-04.md,
+E05-05,E05,Cadastros e jornada de matrícula,"Implementar matrículas, rematrículas e status",Implementação,Secretaria,MVP,P1,M,Backlog,"E05-01,E05-03,E03-06","Mapear elegibilidade, reservas, matrícula ativa/trancada/cancelada, entregando resultado verificável para secretaria.","- Mapear elegibilidade, reservas, matrícula ativa/trancada/cancelada
+- Versionar mudanças
+- Disparar eventos",Máquina de estados com transições válidas e inválidas coberta por testes.,ERP educacional / qualidade de dados,evidencias/E05-05.md,
+E05-06,E05,Cadastros e jornada de matrícula,"Gerenciar contratos, consentimentos e anexos",Implementação,Secretaria,MVP,P1,M,Backlog,"E05-05,E03-10,E04-05","Modelar versões e aceites, entregando resultado verificável para secretaria.","- Modelar versões e aceites
+- Anexar documentos
+- Guardar evidências e retenção
+- Delegar assinatura a provedor",Contrato associado à matrícula com auditoria e anexos protegidos.,ERP educacional / qualidade de dados,evidencias/E05-06.md,
+E05-07,E05,Cadastros e jornada de matrícula,Controlar qualidade e deduplicação de dados,Implementação,Secretaria,MVP,P1,M,Backlog,"E05-01,E04-05","Normalizar, detectar homônimos e duplicidades, entregando resultado verificável para secretaria.","- Normalizar, detectar homônimos e duplicidades
+- Permitir merge auditado
+- Documentar prevenção",Merge preserva vínculos e possui trilha de reversão ou correção controlada.,ERP educacional / qualidade de dados,evidencias/E05-07.md,
+E06-01,E06,CRM e comercial educacional,Cadastrar leads com origem e consentimento,Implementação,CRM,MVP,P0,M,Backlog,"E03-08,E04-06","Capturar contato, origem, campanha e preferências, entregando resultado verificável para crm.","- Capturar contato, origem, campanha e preferências
+- Deduplicar
+- Aplicar base legal
+- Padronizar formulários","Lead entra com fonte e consentimento quando aplicável, sem duplicação indevida.",Dynamics 365 / processos,evidencias/E06-01.md,
+E06-02,E06,CRM e comercial educacional,Construir funis configuráveis e Kanban,Implementação,CRM,MVP,P0,M,Backlog,"E06-01,E02-04","Configurar estágios e motivos de perda, entregando resultado verificável para crm.","- Configurar estágios e motivos de perda
+- Registrar histórico e métricas
+- Oferecer acessibilidade no drag-drop","Funil respeita regras, histórico e uso pelo teclado.",Dynamics 365 / processos,evidencias/E06-02.md,
+E06-03,E06,CRM e comercial educacional,"Criar tarefas, agenda e distribuição de leads",Implementação,CRM,MVP,P0,M,Backlog,"E06-02,E03-07","Distribuir por unidade/equipe e round-robin, entregando resultado verificável para crm.","- Distribuir por unidade/equipe e round-robin
+- Definir sla de contato
+- Registrar atividades","Atribuição previsível e auditável, sem perda no reprocessamento.",Dynamics 365 / processos,evidencias/E06-03.md,
+E06-04,E06,CRM e comercial educacional,Criar propostas e tabela de preços versionada,Implementação,CRM,MVP,P0,M,Backlog,"E06-02,E04-03","Gerir curso, duração, preço, descontos, vigência, entregando resultado verificável para crm.","- Gerir curso, duração, preço, descontos, vigência
+- Exigir aprovação por alçada
+- Simular total",Alteração de preço não muda proposta assinada e desconto acima do limite bloqueia.,Dynamics 365 / processos,evidencias/E06-04.md,
+E06-05,E06,CRM e comercial educacional,Converter oportunidade em matrícula,Implementação,CRM,MVP,P1,M,Backlog,"E06-04,E05-05,E05-06","Reutilizar pessoa, curso, proposta e contrato, entregando resultado verificável para crm.","- Reutilizar pessoa, curso, proposta e contrato
+- Evitar digitação repetida
+- Emitir evento financeiro",Uma ação gera matrícula válida com referências e sem duplicação por retry.,Dynamics 365 / processos,evidencias/E06-05.md,
+E06-06,E06,CRM e comercial educacional,Gerenciar comissões e metas comerciais,Implementação,CRM,MVP,P1,M,Backlog,"E06-05,E07-06","Definir regras versionadas e elegibilidade, entregando resultado verificável para crm.","- Definir regras versionadas e elegibilidade
+- Detectar cancelamento/chargeback
+- Calcular com precisão",Comissão reproduzível por versão de regra e conciliada com eventos financeiros.,Dynamics 365 / processos,evidencias/E06-06.md,
+E06-07,E06,CRM e comercial educacional,"Medir funil, CAC e canais",Implementação,CRM,MVP,P1,M,Backlog,"E06-02,E11-01","Instrumentar origem e etapa, entregando resultado verificável para crm.","- Instrumentar origem e etapa
+- Documentar atribuição e taxa de conversão
+- Segmentar por unidade",Dashboard confere com amostra auditada de negócios e matrículas.,Dynamics 365 / processos,evidencias/E06-07.md,
+E06-08,E06,CRM e comercial educacional,Mapear automações comerciais seguras,Implementação,CRM,MVP,P1,M,Backlog,"E06-03,E09-02","Criar lembretes e follow-up sob opt-in, entregando resultado verificável para crm.","- Criar lembretes e follow-up sob opt-in
+- Limites de envio, supervisão e opt-out
+- Registrar resultados",Nenhum disparo sem política válida e toda automação pode ser desligada.,Dynamics 365 / processos,evidencias/E06-08.md,
+E07-01,E07,Financeiro e cobrança,"Modelar contas a receber, pagar e centros de custo",Implementação,Financeiro,MVP,P0,M,Backlog,"E03-06,E05-05","Criar lançamentos, vencimentos, categorias e centros de custo, entregando resultado verificável para financeiro.","- Criar lançamentos, vencimentos, categorias e centros de custo
+- Regras de competência
+- Conciliar com matrícula","Lançamentos têm origem, status e histórico, sem ambiguidade contábil.",Oracle / integridade financeira,evidencias/E07-01.md,
+E07-02,E07,Financeiro e cobrança,Definir subledger e reconciliação financeira,Implementação,Financeiro,MVP,P0,M,Backlog,"E07-01,E04-05","Projetar partidas equilibradas quando adotadas, entregando resultado verificável para financeiro.","- Projetar partidas equilibradas quando adotadas
+- Lançar correções por estorno, nunca alterar histórico
+- Construir relatório de integridade",Invariantes financeiros automatizados e trilha imutável logicamente.,Oracle / integridade financeira,evidencias/E07-02.md,
+E07-03,E07,Financeiro e cobrança,"Gerar mensalidades, parcelas e recorrências",Implementação,Financeiro,MVP,P0,M,Backlog,"E07-01,E06-05","Modelar plano, parcelas, juros/multas configurados legalmente, descontos e feriados, entregando resultado verificável para financeiro.","- Modelar plano, parcelas, juros/multas configurados legalmente, descontos e feriados
+- Prevenir duplicação
+- Documentar cenários-limite, riscos e testes de regressão",Simulação e emissão conferem com contrato e retry não duplica parcela.,Oracle / integridade financeira,evidencias/E07-03.md,
+E07-04,E07,Financeiro e cobrança,Integrar Pix via PSP oficial,Implementação,Financeiro,MVP,P0,M,Backlog,"E07-03,E12-05","Escolher psp, entregando resultado verificável para financeiro.","- Escolher psp
+- Homologar cobrança, pagamento, expiração e webhook assinado
+- Usar idempotência","Pagamento duplica notificação sem duplicar baixa, com teste em sandbox.",Oracle / integridade financeira,evidencias/E07-04.md,
+E07-05,E07,Financeiro e cobrança,Integrar boleto e cobrança bancária,Implementação,Financeiro,MVP,P1,M,Backlog,"E07-03,E12-05","Modelar registro, remessa/retorno quando aplicável e status, entregando resultado verificável para financeiro.","- Modelar registro, remessa/retorno quando aplicável e status
+- Homologar fornecedor
+- Tratar retorno tardio",Boleto registrado e baixado corretamente em cenários de reenvio e atraso.,Oracle / integridade financeira,evidencias/E07-05.md,
+E07-06,E07,Financeiro e cobrança,"Processar baixas, estornos e chargebacks",Implementação,Financeiro,MVP,P1,M,Backlog,"E07-02,E04-03","Definir transições e compensações, entregando resultado verificável para financeiro.","- Definir transições e compensações
+- Separar autorização e execução
+- Notificar sistemas dependentes",Estorno exige alçada e valor conciliado após reversão.,Oracle / integridade financeira,evidencias/E07-06.md,
+E07-07,E07,Financeiro e cobrança,Implementar renegociação e acordos,Implementação,Financeiro,MVP,P1,M,Backlog,"E07-03,E07-06","Simular negociação, regras de desconto e cronograma, entregando resultado verificável para financeiro.","- Simular negociação, regras de desconto e cronograma
+- Preservar dívida original e histórico
+- Gerar novo instrumento","Total e vencimentos reproduzíveis, acordo auditável e reversível segundo política.",Oracle / integridade financeira,evidencias/E07-07.md,
+E07-08,E07,Financeiro e cobrança,Criar conciliação e fechamento de caixa,Implementação,Financeiro,MVP,P1,M,Backlog,"E07-04,E07-05,E07-06","Importar extratos autorizados, entregando resultado verificável para financeiro.","- Importar extratos autorizados
+- Conciliar automático e manual
+- Sinalizar divergências
+- Bloquear fechamento inconsistente",Relatório de divergências zera no cenário de teste e ajustes têm justificativa.,Oracle / integridade financeira,evidencias/E07-08.md,
+E07-09,E07,Financeiro e cobrança,Criar indicadores de inadimplência e aging,Implementação,Financeiro,MVP,P1,M,Backlog,"E07-03,E07-08,E11-01","Calcular aging por data, unidade e turma, entregando resultado verificável para financeiro.","- Calcular aging por data, unidade e turma
+- Excluir anulações
+- Reconciliar com contas a receber",KPIs batem com relatório de títulos e amostra validada.,Oracle / integridade financeira,evidencias/E07-09.md,
+E07-10,E07,Financeiro e cobrança,Planejar notas fiscais e conformidade tributária,Implementação,Financeiro,Evolução,P2,M,Backlog,"E07-01,E12-05","Levantar município/regime/provedor com contabilidade, entregando resultado verificável para financeiro.","- Levantar município/regime/provedor com contabilidade
+- Desenhar adaptador nfs-e
+- Classificar regras regionais e validação jurídica",Especificação fiscal aprovada; emissão somente após homologação por município.,Oracle / integridade financeira,evidencias/E07-10.md,
+E08-01,E08,Acadêmico e pedagógico,"Estruturar turmas, ofertas, professores e capacidade",Implementação,Acadêmico,MVP,P0,M,Backlog,"E05-03,E05-05","Definir capacidade, unidade, requisitos de professor e oferta, entregando resultado verificável para acadêmico.","- Definir capacidade, unidade, requisitos de professor e oferta
+- Validar sobreposição
+- Modelar estados",Turma respeita capacidade e restrições configuradas.,ERP educacional / UX,evidencias/E08-01.md,
+E08-02,E08,Acadêmico e pedagógico,"Criar grade, horários e calendários de aula",Implementação,Acadêmico,MVP,P0,M,Backlog,"E08-01,E03-12","Modelar recorrências, feriados, remarcações e salas, entregando resultado verificável para acadêmico.","- Modelar recorrências, feriados, remarcações e salas
+- Detectar conflitos
+- Notificar mudanças","Testes cobrem horário de verão/fuso, conflito e cancelamento.",ERP educacional / UX,evidencias/E08-02.md,
+E08-03,E08,Acadêmico e pedagógico,Implementar chamada e presença auditável,Implementação,Acadêmico,MVP,P0,M,Backlog,"E08-02,E04-05","Suportar professor, justificativa e atraso, entregando resultado verificável para acadêmico.","- Suportar professor, justificativa e atraso
+- Registrar revisão e trilha
+- Exportar dados por turma",Percentuais e histórico conferem com chamada original.,ERP educacional / UX,evidencias/E08-03.md,
+E08-04,E08,Acadêmico e pedagógico,Projetar chamada offline com sincronização,Implementação,Acadêmico,Evolução,P0,M,Backlog,"E08-03,E10-04","Mapear pwa no dispositivo confiável, entregando resultado verificável para acadêmico.","- Mapear pwa no dispositivo confiável
+- Armazenar mínimo
+- Resolver conflitos de edição
+- Expirar cache",Reconexão sincroniza sem sobrescrever silenciosamente registro mais recente.,ERP educacional / UX,evidencias/E08-04.md,
+E08-05,E08,Acadêmico e pedagógico,"Definir avaliações, notas e aprovação",Implementação,Acadêmico,MVP,P1,M,Backlog,"E08-01,E04-03","Configurar critérios, períodos e recuperação, entregando resultado verificável para acadêmico.","- Configurar critérios, períodos e recuperação
+- Calcular médias com regras versionadas
+- Bloquear publicação indevida",Mesmo conjunto de dados sempre produz resultado idêntico e auditável.,ERP educacional / UX,evidencias/E08-05.md,
+E08-06,E08,Acadêmico e pedagógico,Criar diário de classe e atividades,Implementação,Acadêmico,MVP,P1,M,Backlog,"E08-02,E03-10","Registrar conteúdo ministrado, materiais e tarefas, entregando resultado verificável para acadêmico.","- Registrar conteúdo ministrado, materiais e tarefas
+- Restringir por papel
+- Vincular ao horário",Histórico por aula consulta registros e anexos com permissão.,ERP educacional / UX,evidencias/E08-06.md,
+E08-07,E08,Acadêmico e pedagógico,Gerar certificados e documentos acadêmicos,Implementação,Acadêmico,Evolução,P2,M,Backlog,"E08-05,E05-06","Criar templates e emissão com código verificador, entregando resultado verificável para acadêmico.","- Criar templates e emissão com código verificador
+- Regras de conclusão
+- Revogação auditável",Certificado só emite com elegibilidade válida e validação pública sem expor PII.,ERP educacional / UX,evidencias/E08-07.md,
+E08-08,E08,Acadêmico e pedagógico,"Gerenciar transferência, trancamento e conclusão",Implementação,Acadêmico,MVP,P1,M,Backlog,"E08-01,E05-05,E07-03","Mapear migração de turma e unidade, aproveitamento e histórico, entregando resultado verificável para acadêmico.","- Mapear migração de turma e unidade, aproveitamento e histórico
+- Refletir efeitos financeiros
+- Registrar aprovações","Transições mantêm integridade de frequência, notas e cobranças.",ERP educacional / UX,evidencias/E08-08.md,
+E09-01,E09,Comunicação omnichannel,Definir matriz de eventos e comunicações,Implementação,Comunicação,Evolução,P2,M,Backlog,"E04-06,E05-05","Catalogar eventos de matrícula, aula e cobrança, entregando resultado verificável para comunicação.","- Catalogar eventos de matrícula, aula e cobrança
+- Diferenciar transacional e marketing
+- Consentimentos e frequência","Cada evento tem destinatário, canal, opt-out e política de retenção.",APIs oficiais / governança,evidencias/E09-01.md,
+E09-02,E09,Comunicação omnichannel,Construir templates versionados e variáveis,Implementação,Comunicação,Evolução,P2,M,Backlog,E09-01,"Criar editor restrito, preview e revisão, entregando resultado verificável para comunicação.","- Criar editor restrito, preview e revisão
+- Validar placeholders e idioma
+- Incluir proteção a pii",Templates têm histórico e falham fechado em variáveis ausentes.,APIs oficiais / governança,evidencias/E09-02.md,
+E09-03,E09,Comunicação omnichannel,Integrar mensageria por provedores oficiais,Implementação,Comunicação,Evolução,P2,M,Backlog,"E09-02,E12-05","Modelar adapters e webhooks, entregando resultado verificável para comunicação.","- Modelar adapters e webhooks
+- Homologar whatsapp business api, e-mail e sms conforme contrato
+- Respeitar políticas","Sandbox comprova envio, entrega, erro e opt-out sem usar automação não oficial.",APIs oficiais / governança,evidencias/E09-03.md,
+E09-04,E09,Comunicação omnichannel,Criar inbox unificada com atribuição,Implementação,Comunicação,Evolução,P2,M,Backlog,"E09-03,E04-04","Armazenar threads e eventos autorizados, entregando resultado verificável para comunicação.","- Armazenar threads e eventos autorizados
+- Roteamento por unidade
+- Mascaramento e tempo de resposta",Atendimento pode ser transferido sem perder contexto e respeita acesso.,APIs oficiais / governança,evidencias/E09-04.md,
+E09-05,E09,Comunicação omnichannel,Criar campanhas segmentadas com limites,Implementação,Comunicação,Evolução,P2,M,Backlog,"E09-03,E09-04","Construir segmentação, janelas de envio, opt-out e aprovação, entregando resultado verificável para comunicação.","- Construir segmentação, janelas de envio, opt-out e aprovação
+- Pré-visualizar público
+- Limite por tenant",Teste impede envio sem autorização/consentimento aplicável.,APIs oficiais / governança,evidencias/E09-05.md,
+E09-06,E09,Comunicação omnichannel,Criar preferências e central de notificações,Implementação,Comunicação,Evolução,P2,M,Backlog,"E09-01,E10-01","Permitir configuração por responsável/aluno e evento, entregando resultado verificável para comunicação.","- Permitir configuração por responsável/aluno e evento
+- Notificação in-app
+- Preferências por canal","Preferências são respeitadas, com exceções transacionais documentadas.",APIs oficiais / governança,evidencias/E09-06.md,
+E10-01,E10,"Portais, app e AVA",Criar portal do aluno com dados essenciais,Implementação,Experiência,Evolução,P2,M,Backlog,"E08-03,E08-05,E04-04","Exibir aulas, frequência, notas, comunicados e documentos autorizados, entregando resultado verificável para experiência.","- Exibir aulas, frequência, notas, comunicados e documentos autorizados
+- Projetar mobile-first
+- A11y",Aluno visualiza apenas seus dados e executa tarefas em celular.,Acessibilidade / self-service,evidencias/E10-01.md,
+E10-02,E10,"Portais, app e AVA",Criar portal do responsável e pagador,Implementação,Experiência,Evolução,P2,M,Backlog,"E05-01,E07-03,E04-04","Permitir vínculos verificados, notificações, documentos e faturas, entregando resultado verificável para experiência.","- Permitir vínculos verificados, notificações, documentos e faturas
+- Separar responsável legal e financeiro
+- Trilha","Visibilidade compatível com vínculo e permissão, sem acesso entre alunos.",Acessibilidade / self-service,evidencias/E10-02.md,
+E10-03,E10,"Portais, app e AVA",Disponibilizar pagamentos e segunda via self-service,Implementação,Experiência,Evolução,P2,M,Backlog,"E10-02,E07-04,E07-05","Integrar links seguros de cobrança, comprovante e renegociação permitida, entregando resultado verificável para experiência.","- Integrar links seguros de cobrança, comprovante e renegociação permitida
+- Sem manipular cartão bruto
+- Documentar cenários-limite, riscos e testes de regressão",Pagamento e baixa refletidos no portal com reconciliação e proteção contra dupla cobrança.,Acessibilidade / self-service,evidencias/E10-03.md,
+E10-04,E10,"Portais, app e AVA",Publicar PWA responsivo com offline controlado,Implementação,Experiência,Evolução,P2,M,Backlog,"E02-07,E04-04","Criar manifest, caching seletivo, atualização segura e fallbacks, entregando resultado verificável para experiência.","- Criar manifest, caching seletivo, atualização segura e fallbacks
+- Não persistir dados sensíveis sem justificativa
+- Documentar cenários-limite, riscos e testes de regressão",App funciona nos dispositivos-alvo e limpa dados em logout.,Acessibilidade / self-service,evidencias/E10-04.md,
+E10-05,E10,"Portais, app e AVA",Especificar AVA e conteúdo didático,Implementação,Experiência,Evolução,P2,M,Backlog,"E08-01,E03-10","Modelar trilhas, anexos, progresso e permissões, entregando resultado verificável para experiência.","- Modelar trilhas, anexos, progresso e permissões
+- Avaliar construir x integrar lms
+- Importar conteúdo licenciado","Prova de conceito aprovada, com métrica de progresso e conformidade de direitos autorais.",Acessibilidade / self-service,evidencias/E10-05.md,
+E10-06,E10,"Portais, app e AVA",Criar portal docente e tarefas pedagógicas,Implementação,Experiência,Evolução,P2,M,Backlog,"E08-03,E08-05,E08-06","Priorizar chamada, avaliações, diário e comunicados, entregando resultado verificável para experiência.","- Priorizar chamada, avaliações, diário e comunicados
+- Simplificar fluxo para tablets
+- Validar com professor",Professor conclui chamada e lançamento sem acesso a turmas de terceiros.,Acessibilidade / self-service,evidencias/E10-06.md,
+E11-01,E11,"Dados, BI, automações e IA",Construir catálogo de métricas e fontes,Implementação,Inteligência,Evolução,P2,M,Backlog,"E00-05,E03-05","Definir fórmulas, granularidade, timezone e owner, entregando resultado verificável para inteligência.","- Definir fórmulas, granularidade, timezone e owner
+- Garantir coerência financeiro/crm/acadêmico
+- Versionar",Dicionário aprovado com testes de reconciliação de 10 métricas-chave.,BI governado / IA assistida,evidencias/E11-01.md,
+E11-02,E11,"Dados, BI, automações e IA",Criar camada semântica e governança BI,Implementação,Inteligência,Evolução,P2,M,Backlog,"E11-01,E04-04","Modelar visões com contexto de tenant/unidade, entregando resultado verificável para inteligência.","- Modelar visões com contexto de tenant/unidade
+- Classificação pii
+- Atualizações incrementais
+- Custo",Queries auditadas respeitam escopo e resultados reconciliados com transacional.,BI governado / IA assistida,evidencias/E11-02.md,
+E11-03,E11,"Dados, BI, automações e IA",Criar dashboards acionáveis por perfil,Implementação,Inteligência,Evolução,P2,M,Backlog,"E11-02,E02-05","Dar contexto, tendência e próxima ação, entregando resultado verificável para inteligência.","- Dar contexto, tendência e próxima ação
+- Exportações seguras
+- Tratamento de dados ausentes","Direção, comercial e financeiro validam decisões em dados piloto.",BI governado / IA assistida,evidencias/E11-03.md,
+E11-04,E11,"Dados, BI, automações e IA",Construir alertas e detecção de anomalias,Implementação,Inteligência,Evolução,P2,M,Backlog,E11-03,"Criar regras explicáveis para atraso, evasão e matrícula parada, entregando resultado verificável para inteligência.","- Criar regras explicáveis para atraso, evasão e matrícula parada
+- Evitar discriminação
+- Permitir ajuste","Alertas exibem razão, limiar e ação humana; falso-positivo medido.",BI governado / IA assistida,evidencias/E11-04.md,
+E11-05,E11,"Dados, BI, automações e IA",Implementar workflow builder com aprovações,Implementação,Inteligência,Evolução,P2,M,Backlog,"E03-06,E04-04","Definir gatilhos/eventos, condições e ações permitidas, entregando resultado verificável para inteligência.","- Definir gatilhos/eventos, condições e ações permitidas
+- Dry-run e versionamento
+- Evitar loops",Execução auditável e idempotente; usuários só automatizam ações autorizadas.,BI governado / IA assistida,evidencias/E11-05.md,
+E11-06,E11,"Dados, BI, automações e IA",Projetar copiloto IA com RAG e autorização,Implementação,Inteligência,Evolução,P2,M,Backlog,"E11-02,E04-04","Restringir contexto por tenant/role, citar origem, filtrar pii, logs mínimos, entregando resultado verificável para inteligência.","- Restringir contexto por tenant/role, citar origem, filtrar pii, logs mínimos
+- Testar prompt injection
+- Documentar cenários-limite, riscos e testes de regressão",IA não acessa dados fora do escopo nem executa ação sensível sem confirmação.,BI governado / IA assistida,evidencias/E11-06.md,
+E11-07,E11,"Dados, BI, automações e IA",Criar recomendações explicáveis e opt-in,Implementação,Inteligência,Evolução,P2,M,Backlog,"E11-04,E11-06","Sugerir próximas tarefas, risco de inadimplência e reposição, entregando resultado verificável para inteligência.","- Sugerir próximas tarefas, risco de inadimplência e reposição
+- Definir fairness e feedback
+- Comparar baseline",Recomendação explica base e pode ser recusada; sem decisões automáticas irreversíveis.,BI governado / IA assistida,evidencias/E11-07.md,
+E12-01,E12,Integrações e migração,Mapear integrações e conectores prioritários,Implementação,Integrações,MVP,P0,M,Backlog,"E00-02,E01-09","Entrevistar cliente e fornecedores, entregando resultado verificável para integrações.","- Entrevistar cliente e fornecedores
+- Catalogar crm, psp, assinatura, contabilidade e lms
+- Definir contratos",Matriz prioridade/custo/risco com fonte e owner.,APIs enterprise / reversibilidade,evidencias/E12-01.md,
+E12-02,E12,Integrações e migração,Criar importador CSV/XLSX com prévia,Implementação,Integrações,MVP,P0,M,Backlog,"E05-01,E03-10","Upload autorizado, entregando resultado verificável para integrações.","- Upload autorizado
+- Mapeamento de colunas
+- Validação e dry-run
+- Relatório de erros por linha",Importação idempotente com amostra de 1k linhas e dados inválidos.,APIs enterprise / reversibilidade,evidencias/E12-02.md,
+E12-03,E12,Integrações e migração,Definir estratégia de migração do legado,Implementação,Integrações,Fundação,P0,M,Backlog,"E12-01,E12-02,E01-10","Mapear entidades, ids externos, deduplicação e histórico, entregando resultado verificável para integrações.","- Mapear entidades, ids externos, deduplicação e histórico
+- Negociar exportação autorizada
+- Criar rollback","Plano de cutover e rollback aprovado, sem requerer acesso indevido ao F10.",APIs enterprise / reversibilidade,evidencias/E12-03.md,
+E12-04,E12,Integrações e migração,Implementar ensaio de migração e conciliação,Implementação,Integrações,Piloto,P0,M,Backlog,"E12-03,E07-08","Rodar carga fictícia/anonimizada, entregando resultado verificável para integrações.","- Rodar carga fictícia/anonimizada
+- Comparar contagens, valores e relacionamentos
+- Simular erros e reexecução",Relatório zero divergência crítica e evidência de rollback executável.,APIs enterprise / reversibilidade,evidencias/E12-04.md,
+E12-05,E12,Integrações e migração,Construir plataforma de webhooks e adapters,Implementação,Integrações,MVP,P0,M,Backlog,"E03-06,E03-08","Validar assinatura, timestamp, retries, dlq e ids, entregando resultado verificável para integrações.","- Validar assinatura, timestamp, retries, dlq e ids
+- Catalogar rate limits
+- Monitorar integração",Testes de replay e reordenação preservam consistência.,APIs enterprise / reversibilidade,evidencias/E12-05.md,
+E12-06,E12,Integrações e migração,Criar API pública e portal de desenvolvedor,Implementação,Integrações,MVP,P1,M,Backlog,"E03-08,E04-04","Publicar scopes, exemplos, sandbox, api keys rotacionáveis e limites, entregando resultado verificável para integrações.","- Publicar scopes, exemplos, sandbox, api keys rotacionáveis e limites
+- Versionar e depreciar
+- Documentar cenários-limite, riscos e testes de regressão","App externa integra em sandbox sem suporte manual, com auditoria.",APIs enterprise / reversibilidade,evidencias/E12-06.md,
+E12-07,E12,Integrações e migração,Planejar portabilidade e exportação completa,Implementação,Integrações,MVP,P1,M,Backlog,"E04-08,E12-02","Exportar dados e anexos em formatos abertos, entregando resultado verificável para integrações.","- Exportar dados e anexos em formatos abertos
+- Documentar esquema
+- Verificar autorização e lgpd",Cliente autorizado exporta e verifica amostra sem dependência comercial do fornecedor.,APIs enterprise / reversibilidade,evidencias/E12-07.md,
+E12-08,E12,Integrações e migração,Homologar provedores por contrato e ambiente,Implementação,Integrações,MVP,P1,M,Backlog,"E12-01,E12-05","Validar psp, assinatura, mensageria e fiscal, entregando resultado verificável para integrações.","- Validar psp, assinatura, mensageria e fiscal
+- Credenciais segregadas, sandbox e custos
+- Registrar falhas",Matriz de homologação e fallback assinada pelo responsável.,APIs enterprise / reversibilidade,evidencias/E12-08.md,
+E12-09,E12,Integrações e migração,Monitorar qualidade e contratos de integração,Implementação,Integrações,MVP,P1,M,Backlog,"E12-05,E14-07","Criar monitor de sync, dead letters, versão e alertas, entregando resultado verificável para integrações.","- Criar monitor de sync, dead letters, versão e alertas
+- Permitir reprocessamento com aprovação
+- Documentar cenários-limite, riscos e testes de regressão",Falhas visíveis e recuperáveis com rastreio end-to-end por transação.,APIs enterprise / reversibilidade,evidencias/E12-09.md,
+E13-01,E13,Catálogo comercial e módulos SaaS,Definir catálogo de módulos vendáveis,Implementação,Comercialização,Fundação,P1,M,Backlog,E00-06,"Separar core gratuito/incluso, secretaria, crm, financeiro, acadêmico, portais, mensageria, bi e ia, entregando resultado verificável para comercialização.","- Separar core gratuito/incluso, secretaria, crm, financeiro, acadêmico, portais, mensageria, bi e ia
+- Modelar dependências
+- Documentar cenários-limite, riscos e testes de regressão","Catálogo com dependências, pré-requisitos e dados persistentes ao desativar.",SaaS enterprise / entitlements,evidencias/E13-01.md,
+E13-02,E13,Catálogo comercial e módulos SaaS,Implementar entitlements por tenant e unidade,Implementação,Comercialização,Fundação,P1,M,Backlog,"E13-01,E03-09","Validar licença no servidor, entregando resultado verificável para comercialização.","- Validar licença no servidor
+- Controlar features, seats e limites
+- Registrar mudanças
+- Não bloquear exportação",Toggle reflete direito contratado sem ocultar dados por falha de cache.,SaaS enterprise / entitlements,evidencias/E13-02.md,
+E13-03,E13,Catálogo comercial e módulos SaaS,"Criar planos, add-ons e limites transparentes",Implementação,Comercialização,Fundação,P1,M,Backlog,E13-01,"Modelar mensal/anual, piloto e franquia, entregando resultado verificável para comercialização.","- Modelar mensal/anual, piloto e franquia
+- Atribuir limites claros
+- Versionar tabela comercial",Simulador calcula valor por unidade/assento sem regras escondidas.,SaaS enterprise / entitlements,evidencias/E13-03.md,
+E13-04,E13,Catálogo comercial e módulos SaaS,"Preparar trials, upgrade e downgrade seguros",Implementação,Comercialização,Fundação,P1,M,Backlog,"E13-02,E13-03","Provisionar workspace isolado, entregando resultado verificável para comercialização.","- Provisionar workspace isolado
+- Upgrade sem migração destrutiva
+- Downgrade preserva dados e oferece exportação",Testes mostram transições sem perda e trilha de aceite.,SaaS enterprise / entitlements,evidencias/E13-04.md,
+E13-05,E13,Catálogo comercial e módulos SaaS,Implementar medição de consumo e quotas,Implementação,Comercialização,Evolução,P2,M,Backlog,"E13-02,E03-07","Medir mensagens, storage, usuários e automações sem expor pii, entregando resultado verificável para comercialização.","- Medir mensagens, storage, usuários e automações sem expor pii
+- Alertas de consumo
+- Reconciliação",Uso mensal reproduzível e excedente não gera cobrança surpresa.,SaaS enterprise / entitlements,evidencias/E13-05.md,
+E13-06,E13,Catálogo comercial e módulos SaaS,Criar faturamento da assinatura SaaS,Implementação,Comercialização,Evolução,P2,M,Backlog,"E13-03,E12-08","Integrar provedor de cobrança, entregando resultado verificável para comercialização.","- Integrar provedor de cobrança
+- Notas conforme operação própria
+- Dunning proporcional
+- Conciliação e impostos com contador","Cobrança, renovação, cancelamento e estorno funcionam em sandbox.",SaaS enterprise / entitlements,evidencias/E13-06.md,
+E13-07,E13,Catálogo comercial e módulos SaaS,Construir console de suporte e provisionamento,Implementação,Comercialização,Piloto,P2,M,Backlog,"E13-02,E04-05","Suporte com acesso temporário aprovado, trilha, impersonation controlada e dados mascarados, entregando resultado verificável para comercialização.","- Suporte com acesso temporário aprovado, trilha, impersonation controlada e dados mascarados
+- Onboarding autoatendido
+- Documentar cenários-limite, riscos e testes de regressão",Suporte não acessa dados de cliente sem autorização e ação auditada.,SaaS enterprise / entitlements,evidencias/E13-07.md,
+E14-01,E14,"Qualidade, SRE e lançamento",Definir pirâmide de testes e Definition of Done,Implementação,Qualidade,Fundação,P0,M,Backlog,E03-02,"Padronizar unit, integração, contrato, e2e e evidências, entregando resultado verificável para qualidade.","- Padronizar unit, integração, contrato, e2e e evidências
+- Template issue/pr
+- Red-green-refactor para regras","PR exige testes, docs, revisão e evidência alinhada ao risco.",Microsoft Well-Architected,evidencias/E14-01.md,
+E14-02,E14,"Qualidade, SRE e lançamento",Construir CI com gates de qualidade,Implementação,Qualidade,Fundação,P0,M,Backlog,"E14-01,E04-09","Pipeline paralelo de lint, tipos, testes, scan e build, entregando resultado verificável para qualidade.","- Pipeline paralelo de lint, tipos, testes, scan e build
+- Branch protection
+- Ambiente de preview sem dados reais",Branch padrão bloqueia merge quando gate crítico falha.,Microsoft Well-Architected,evidencias/E14-02.md,
+E14-03,E14,"Qualidade, SRE e lançamento",Criar testes E2E de jornadas cross-module,Implementação,Qualidade,MVP,P0,M,Backlog,"E06-05,E07-03,E08-03","Automatizar lead→matrícula→cobrança→turma→presença, entregando resultado verificável para qualidade.","- Automatizar lead→matrícula→cobrança→turma→presença
+- Acessibilidade e permissão
+- Seed determinística",Suite verde em staging e captura relatório de falhas.,Microsoft Well-Architected,evidencias/E14-03.md,
+E14-04,E14,"Qualidade, SRE e lançamento",Criar testes de propriedade para regras financeiras,Implementação,Qualidade,MVP,P0,M,Backlog,"E07-02,E07-06","Gerar cenários de parcelamento, estorno, conciliação e retry, entregando resultado verificável para qualidade.","- Gerar cenários de parcelamento, estorno, conciliação e retry
+- Checar invariantes
+- Usar valores monetários seguros","1k cenários gerados sem desequilíbrio ou duplicação, seed reproduzível.",Microsoft Well-Architected,evidencias/E14-04.md,
+E14-05,E14,"Qualidade, SRE e lançamento",Definir baseline e testes de carga por jornada,Implementação,Qualidade,Piloto,P0,M,Backlog,"E14-03,E03-04","Medir latência p50/p95, throughput e erros com dataset realista fictício, entregando resultado verificável para qualidade.","- Medir latência p50/p95, throughput e erros com dataset realista fictício
+- Estabelecer budget por endpoint
+- Analisar gargalo",Relatório reproduzível e SLO proposto com benchmark transparente.,Microsoft Well-Architected,evidencias/E14-05.md,
+E14-06,E14,"Qualidade, SRE e lançamento",Criar pipeline de deploy e rollback,Implementação,Qualidade,Fundação,P1,M,Backlog,"E14-02,E03-05","Infra as code, migrations expand/contract, preview e canary, entregando resultado verificável para qualidade.","- Infra as code, migrations expand/contract, preview e canary
+- Flags de kill switch
+- Rollback testado",Release em staging revertida sem perda de consistência.,Microsoft Well-Architected,evidencias/E14-06.md,
+E14-07,E14,"Qualidade, SRE e lançamento",Instrumentar observabilidade e suporte,Implementação,Qualidade,Fundação,P1,M,Backlog,"E14-02,E03-07","Adicionar logs estruturados, traces, métricas, dashboards e alertas, entregando resultado verificável para qualidade.","- Adicionar logs estruturados, traces, métricas, dashboards e alertas
+- Correlação por tenant sem pii
+- Runbook",Incidente de teste diagnosticável com trace ID sem vazamento.,Microsoft Well-Architected,evidencias/E14-07.md,
+E14-08,E14,"Qualidade, SRE e lançamento","Projetar disponibilidade, backup e recuperação",Implementação,Qualidade,Piloto,P1,M,Backlog,"E14-06,E04-07","Definir rto/rpo por contrato, backups cifrados e teste de restore, entregando resultado verificável para qualidade.","- Definir rto/rpo por contrato, backups cifrados e teste de restore
+- Incident response
+- Plano de continuidade",Restore ensaiado e resultados atendem metas pactuadas.,Microsoft Well-Architected,evidencias/E14-08.md,
+E14-09,E14,"Qualidade, SRE e lançamento",Realizar UAT e piloto controlado com cliente,Implementação,Qualidade,Piloto,P1,M,Backlog,"E14-03,E14-04,E14-05,E14-08","Validar 10 jornadas reais anonimizadas, treinamento e observação, entregando resultado verificável para qualidade.","- Validar 10 jornadas reais anonimizadas, treinamento e observação
+- Coletar defeitos e tempo de tarefa
+- Gate go/no-go","Termo UAT e plano de contingência aprovados, bloqueadores zerados.",Microsoft Well-Architected,evidencias/E14-09.md,
+E14-10,E14,"Qualidade, SRE e lançamento",Preparar lançamento e ciclo contínuo de feedback,Implementação,Qualidade,Evolução,P1,M,Backlog,"E14-09,E13-07","Publicar docs, changelog, suporte, roadmap, métricas de adoção e processo de triagem, entregando resultado verificável para qualidade.","- Publicar docs, changelog, suporte, roadmap, métricas de adoção e processo de triagem
+- Revisar pós-piloto
+- Documentar cenários-limite, riscos e testes de regressão","Primeiro release tem playbook, rollback, incidentes e priorização de feedback.",Microsoft Well-Architected,evidencias/E14-10.md,

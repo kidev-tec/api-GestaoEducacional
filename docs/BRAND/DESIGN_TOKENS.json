@@ -1,0 +1,77 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "ERP Platform Brand Concept",
+    "status": "DRAFT",
+    "concept": "A receita do sucesso",
+    "note": "semantic design tokens, not a copy of other ERP"
+  },
+  "brand": {
+    "navy": "#14243A",
+    "teal": "#0F8E98",
+    "violet": "#6254C7",
+    "green": "#2A986E",
+    "gold": "#C19B55"
+  },
+  "space": {
+    "1": 4,
+    "2": 8,
+    "3": 12,
+    "4": 16,
+    "5": 20,
+    "6": 24,
+    "8": 32,
+    "10": 40,
+    "12": 48
+  },
+  "radius": {
+    "sm": 6,
+    "md": 10,
+    "lg": 14,
+    "xl": 20
+  },
+  "typography": {
+    "family": "system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+    "size": {
+      "xs": 12,
+      "sm": 14,
+      "md": 16,
+      "lg": 20,
+      "xl": 24
+    },
+    "lineHeight": {
+      "body": 1.5,
+      "heading": 1.2
+    }
+  },
+  "light": {
+    "bg": "#F7F9FC",
+    "surface": "#FFFFFF",
+    "surfaceMuted": "#EDF2F6",
+    "text": "#14243A",
+    "textMuted": "#40546A",
+    "border": "#C6D2DE",
+    "interactive": "#086B72",
+    "interactiveText": "#FFFFFF",
+    "focus": "#6254C7",
+    "danger": "#A52531",
+    "success": "#176B4B"
+  },
+  "dark": {
+    "bg": "#0C1423",
+    "surface": "#152235",
+    "surfaceMuted": "#1D3148",
+    "text": "#F2F6FA",
+    "textMuted": "#D0DEE9",
+    "border": "#506981",
+    "interactive": "#63CFD1",
+    "interactiveText": "#0B1A23",
+    "focus": "#D0C8FF",
+    "danger": "#FF8994",
+    "success": "#77D9AE"
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "note": "Check computed states and combinations, not only palette literals."
+  }
+}

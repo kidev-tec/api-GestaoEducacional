@@ -1,0 +1,22 @@
+# Template only; copy to an ignored file for local use, no credentials/PII.
+project:
+  id: erp-platform
+  lifecycle: discovery
+  name: TBD
+  first_vertical: education
+  industry_expansion: conditional
+  source_repository: TBD
+  active_card: null
+  qa:
+    critical_domain_coverage:
+      statements: 100
+      branches: 100
+      functions: 100
+      lines: 100
+    all_p0_journeys_automated: true
+  stack_decision: PENDING_ADR
+  brand_concept: a-receita-do-sucesso
+research:
+  hermes_target: UNIDENTIFIED
+  approval: NOT_GRANTED
+  real_data_permitted: false

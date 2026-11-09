@@ -1,0 +1,16 @@
+/* DRAFT: base semantic tokens derived from DESIGN_TOKENS.json. Treat JSON as source of truth. */
+:root, [data-theme="light"] {
+  --color-bg: #F7F9FC; --color-surface:#FFFFFF;
+  --color-text:#14243A; --color-muted:#40546A; --color-border:#C6D2DE;
+  --color-primary:#086B72; --color-on-primary:#FFFFFF;
+  --color-focus:#6254C7; --color-danger:#A52531; --color-success:#176B4B;
+  --radius-md:10px; --radius-lg:14px; --spacing-unit:4px;
+}
+[data-theme="dark"] {
+  --color-bg: #0C1423; --color-surface:#152235;
+  --color-text:#F2F6FA; --color-muted:#D0DEE9; --color-border:#506981;
+  --color-primary:#63CFD1; --color-on-primary:#0B1A23;
+  --color-focus:#D0C8FF; --color-danger:#FF8994; --color-success:#77D9AE;
+}
+:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+@media (prefers-reduced-motion: reduce) {*, *::before, *::after { animation-duration:0.01ms!important;transition-duration:0.01ms!important; }}

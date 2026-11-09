@@ -1,0 +1,1478 @@
+[
+  {
+    "id": "E00-01",
+    "title": "[E00-01] Definir ICP e segmentos educacionais",
+    "body": "## Objetivo\nEntrevistar clientes de cursos livres, idiomas e escolas técnicas, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Entrevistar clientes de cursos livres, idiomas e escolas técnicas.\n- [ ] Segmentar por operação e número de unidades.\n- [ ] Documentar restrições do piloto.\n\n## Critério de aceite\n- [ ] ICP, personas e cenários validados com ao menos um representante da operação.\n\n## Dependências\nNenhuma\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E00-02",
+    "title": "[E00-02] Mapear jornadas e tarefas críticas",
+    "body": "## Objetivo\nObservar processos de secretaria, comercial, financeiro e docência, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Observar processos de secretaria, comercial, financeiro e docência.\n- [ ] Medir passos, erros e tempos.\n- [ ] Listar eventos e exceções.\n\n## Critério de aceite\n- [ ] Jornada ponta a ponta com atores, entrada, saída, exceções e tempo-base registrado.\n\n## Dependências\nE00-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E00-03",
+    "title": "[E00-03] Construir benchmark funcional F10 x líderes",
+    "body": "## Objetivo\nRegistrar funcionalidades públicas da f10, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Registrar funcionalidades públicas da f10.\n- [ ] Comparar padrões sap, oracle e dynamics por dimensão.\n- [ ] Separar evidência de hipótese.\n\n## Critério de aceite\n- [ ] Matriz com fonte, nota justificada e lacunas sem alegar capacidades não verificadas.\n\n## Dependências\nE00-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E00-04",
+    "title": "[E00-04] Definir proposta de valor e diferenciais",
+    "body": "## Objetivo\nPriorizar problemas repetitivos, retrabalho e governança, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Priorizar problemas repetitivos, retrabalho e governança.\n- [ ] Propor centro de ações, busca universal e automação.\n- [ ] Validar ganhos esperados.\n\n## Critério de aceite\n- [ ] Cada diferencial tem hipótese, métrica, responsável e teste com usuário.\n\n## Dependências\nE00-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E00-05",
+    "title": "[E00-05] Estabelecer KPIs de produto e operação",
+    "body": "## Objetivo\nDefinir time-to-value, tempo de matrícula, inadimplência, sla e adoção, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Definir time-to-value, tempo de matrícula, inadimplência, sla e adoção.\n- [ ] Documentar fórmula e fonte.\n- [ ] Indicar linha de base.\n\n## Critério de aceite\n- [ ] Dicionário de KPIs aprovado e instrumentável.\n\n## Dependências\nE00-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E00-06",
+    "title": "[E00-06] Delimitar MVP, fases e riscos",
+    "body": "## Objetivo\nPriorizar por valor, risco e dependência, entregando resultado verificável para produto.\n\n## Checklist\n- [ ] Priorizar por valor, risco e dependência.\n- [ ] Fechar módulos mínimos para primeira escola.\n- [ ] Aprovar exclusões e mapa de riscos.\n\n## Critério de aceite\n- [ ] Escopo MVP e backlog por fase assinados pelo sponsor; nenhuma feature sem dono.\n\n## Dependências\nE00-03,E00-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E00-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP / Oracle / Dynamics 365\n",
+    "labels": [
+      "epic:E00",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:produto"
+    ]
+  },
+  {
+    "id": "E01-01",
+    "title": "[E01-01] Autorizar escopo e regras da investigação",
+    "body": "## Objetivo\nIdentificar aplicativo hermes exato, versão e relação com o erp, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Identificar aplicativo hermes exato, versão e relação com o erp.\n- [ ] Obter autorização e ambiente de teste.\n- [ ] Definir proibições de coleta e dados reais.\n\n## Critério de aceite\n- [ ] Termo de escopo, origem do artefato e contas autorizadas registrados antes de iniciar.\n\n## Dependências\nE00-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-02",
+    "title": "[E01-02] Configurar REA em ambiente isolado",
+    "body": "## Objetivo\nInstalar rea da fonte oficial com revisão do setup, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Instalar rea da fonte oficial com revisão do setup.\n- [ ] Configurar agente e verificar doctor.\n- [ ] Registrar versões e permissões.\n\n## Critério de aceite\n- [ ] Setup reproduzível e verificado sem modificar o alvo.\n\n## Dependências\nE01-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-03",
+    "title": "[E01-03] Criar protocolo de evidências",
+    "body": "## Objetivo\nPadronizar id da captura, data, versão, tela, papel e nível de certeza, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Padronizar id da captura, data, versão, tela, papel e nível de certeza.\n- [ ] Redigir dados pessoais.\n- [ ] Armazenar notas observadas separadas de inferências.\n\n## Critério de aceite\n- [ ] Toda afirmação rastreável ao artefato e ao cenário de teste.\n\n## Dependências\nE01-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-04",
+    "title": "[E01-04] Inventariar navegação e papéis",
+    "body": "## Objetivo\nNavegar com perfis autorizados, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Navegar com perfis autorizados.\n- [ ] Mapear menu, páginas e controles.\n- [ ] Identificar permissões observáveis.\n\n## Critério de aceite\n- [ ] Mapa navegável com screenshots redigidos e matrizes por papel.\n\n## Dependências\nE01-02,E01-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-05",
+    "title": "[E01-05] Investigar fluxo de leads até matrícula",
+    "body": "## Objetivo\nExecutar cenários fictícios de lead, contato, proposta, aceite e matrícula, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Executar cenários fictícios de lead, contato, proposta, aceite e matrícula.\n- [ ] Registrar validações e estados.\n- [ ] Mapear erros.\n\n## Critério de aceite\n- [ ] Diagrama BPMN com casos felizes e 5 exceções observadas ou marcadas como hipótese.\n\n## Dependências\nE01-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P0",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-06",
+    "title": "[E01-06] Investigar secretaria e dados acadêmicos",
+    "body": "## Objetivo\nObservar cadastro, relacionamento responsável/aluno, turma e documentos, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Observar cadastro, relacionamento responsável/aluno, turma e documentos.\n- [ ] Registrar campos e regras visíveis.\n- [ ] Comparar nomenclatura.\n\n## Critério de aceite\n- [ ] Dicionário de campos, fluxos e regras com evidência.\n\n## Dependências\nE01-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-07",
+    "title": "[E01-07] Investigar financeiro pela interface",
+    "body": "## Objetivo\nUsar cobranças fictícias, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Usar cobranças fictícias.\n- [ ] Observar geração, baixa, renegociação e estorno quando permitido.\n- [ ] Levantar dependências externas.\n\n## Critério de aceite\n- [ ] Diagrama de eventos financeiros sem acesso não autorizado a dados ou endpoints.\n\n## Dependências\nE01-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-08",
+    "title": "[E01-08] Investigar pedagógico e presença",
+    "body": "## Objetivo\nSimular cursos, horários, aulas, presença e avaliações, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Simular cursos, horários, aulas, presença e avaliações.\n- [ ] Documentar estados e permissões.\n- [ ] Registrar exceções.\n\n## Critério de aceite\n- [ ] Matriz de estados e tarefas por papel com evidências.\n\n## Dependências\nE01-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-09",
+    "title": "[E01-09] Mapear integrações somente por vias autorizadas",
+    "body": "## Objetivo\nExaminar documentação pública e tráfego próprio aprovado, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Examinar documentação pública e tráfego próprio aprovado.\n- [ ] Catalogar exportações e webhooks legítimos.\n- [ ] Não contornar controles.\n\n## Critério de aceite\n- [ ] Inventário de integrações com fonte, limites, dados e autorização.\n\n## Dependências\nE01-01,E01-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E01-10",
+    "title": "[E01-10] Consolidar referência funcional clean-room",
+    "body": "## Objetivo\nClassificar cada função como observado, inferido ou desejado, entregando resultado verificável para pesquisa.\n\n## Checklist\n- [ ] Classificar cada função como observado, inferido ou desejado.\n- [ ] Abstrair requisito sem copiar código, marca ou layout.\n- [ ] Apontar oportunidades de melhoria.\n\n## Critério de aceite\n- [ ] Documento de requisitos originais e matriz de rastreabilidade aprovado.\n\n## Dependências\nE01-05,E01-06,E01-07,E01-08,E01-09\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E01-10.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nREA / referência autorizada\n",
+    "labels": [
+      "epic:E01",
+      "fase:descoberta",
+      "prio:P1",
+      "tipo:pesquisa",
+      "modulo:pesquisa"
+    ]
+  },
+  {
+    "id": "E02-01",
+    "title": "[E02-01] Auditar UX atual e tarefas de alta frequência",
+    "body": "## Objetivo\nIdentificar fricções por inspeção autorizada, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Identificar fricções por inspeção autorizada.\n- [ ] Medir cliques, carga cognitiva e erros.\n- [ ] Definir baseline.\n\n## Critério de aceite\n- [ ] Relatório heurístico priorizado por impacto e evidência, não por gosto pessoal.\n\n## Dependências\nE01-04,E00-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-02",
+    "title": "[E02-02] Desenhar arquitetura de informação por função",
+    "body": "## Objetivo\nOrganizar menu por tarefa e perfil, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Organizar menu por tarefa e perfil.\n- [ ] Prever multiunidades e favoritos.\n- [ ] Validar com teste de árvore.\n\n## Critério de aceite\n- [ ] >=80% de conclusão de 5 tarefas-alvo em teste de navegação piloto.\n\n## Dependências\nE02-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-03",
+    "title": "[E02-03] Definir identidade visual exclusiva e tokens",
+    "body": "## Objetivo\nCriar marca provisória sem derivar trade dress da f10, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Criar marca provisória sem derivar trade dress da f10.\n- [ ] Definir light/dark, grid, tipografia e tokens semânticos.\n- [ ] Garantir contrastes.\n\n## Critério de aceite\n- [ ] Biblioteca de tokens versionada e contraste WCAG 2.2 AA nas áreas aplicáveis.\n\n## Dependências\nE02-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-04",
+    "title": "[E02-04] Construir componentes do design system",
+    "body": "## Objetivo\nEspecificar tabela densa, filtros, formulário, wizard, modal, timeline e indicadores, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Especificar tabela densa, filtros, formulário, wizard, modal, timeline e indicadores.\n- [ ] Definir estados loading/empty/error.\n- [ ] Testes a11y.\n\n## Critério de aceite\n- [ ] Componentes reusáveis documentados, navegáveis por teclado e testados.\n\n## Dependências\nE02-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-05",
+    "title": "[E02-05] Projetar centro de trabalho e dashboards por papel",
+    "body": "## Objetivo\nMapear pendências para diretor, secretaria, financeiro, professor, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Mapear pendências para diretor, secretaria, financeiro, professor.\n- [ ] Criar ações contextuais.\n- [ ] Validar ordem de prioridade.\n\n## Critério de aceite\n- [ ] Protótipos por papel com tarefas principais executáveis em teste moderado.\n\n## Dependências\nE02-02,E02-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-06",
+    "title": "[E02-06] Projetar busca universal e comandos rápidos",
+    "body": "## Objetivo\nDefinir escopo por permissões, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Definir escopo por permissões.\n- [ ] Pesquisar aluno, turma, fatura e ação.\n- [ ] Registrar atalhos e feedback.\n\n## Critério de aceite\n- [ ] Nenhum resultado fora da permissão e tarefas frequentes acionáveis sem percorrer menus.\n\n## Dependências\nE02-04,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-07",
+    "title": "[E02-07] Projetar experiências responsivas e acessíveis",
+    "body": "## Objetivo\nDesenhar desktop, tablet e celular, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Desenhar desktop, tablet e celular.\n- [ ] Prever densidade de dados e formulário longo.\n- [ ] Testar leitor de tela e teclado.\n\n## Critério de aceite\n- [ ] Protótipos em 3 viewports com checklist de WCAG 2.2 AA.\n\n## Dependências\nE02-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E02-08",
+    "title": "[E02-08] Validar UI com usuários antes de codificar",
+    "body": "## Objetivo\nRealizar 5 testes exploratórios com tarefas reais e dados fictícios, entregando resultado verificável para ux.\n\n## Checklist\n- [ ] Realizar 5 testes exploratórios com tarefas reais e dados fictícios.\n- [ ] Registrar tempo, sus e erros.\n- [ ] Revisar prioridades.\n\n## Critério de aceite\n- [ ] Relatório antes/depois com top 10 ajustes e decisões rastreáveis.\n\n## Dependências\nE02-05,E02-06,E02-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E02-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDesign enterprise / WCAG\n",
+    "labels": [
+      "epic:E02",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:design",
+      "modulo:ux"
+    ]
+  },
+  {
+    "id": "E03-01",
+    "title": "[E03-01] Publicar ADRs e limites de arquitetura",
+    "body": "## Objetivo\nDecidir monólito modular primeiro, integrações por contratos, infraestrutura e adrs, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Decidir monólito modular primeiro, integrações por contratos, infraestrutura e adrs.\n- [ ] Justificar trade-offs.\n- [ ] Documentar nfrs.\n\n## Critério de aceite\n- [ ] ADRs revisadas e riscos conhecidos explicitados; sem microsserviços por reflexo.\n\n## Dependências\nE00-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-02",
+    "title": "[E03-02] Criar monorepo e padrões de engenharia",
+    "body": "## Objetivo\nConfigurar pacotes frontend, backend, shared e tooling, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Configurar pacotes frontend, backend, shared e tooling.\n- [ ] Lint, typecheck e testes.\n- [ ] Templates de pr e conventional commits.\n\n## Critério de aceite\n- [ ] CI verde com exemplo end-to-end e execução local documentada.\n\n## Dependências\nE03-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-03",
+    "title": "[E03-03] Definir bounded contexts e dependências",
+    "body": "## Objetivo\nSeparar identidade, cadastros, comercial, financeiro e acadêmico, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Separar identidade, cadastros, comercial, financeiro e acadêmico.\n- [ ] Impor regras de importação.\n- [ ] Registrar owners.\n\n## Critério de aceite\n- [ ] Teste automatizado impede dependências circulares e acessos internos indevidos.\n\n## Dependências\nE03-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-04",
+    "title": "[E03-04] Construir isolamento multi-tenant multiunidade",
+    "body": "## Objetivo\nModelar tenant, rede, escola e unidade, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Modelar tenant, rede, escola e unidade.\n- [ ] Propagar contexto em cada requisição e job.\n- [ ] Testar cross-tenant.\n\n## Critério de aceite\n- [ ] Testes de negação provam ausência de vazamento por API, filas, cache e consultas.\n\n## Dependências\nE03-03,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-05",
+    "title": "[E03-05] Definir esquema relacional e migrations seguras",
+    "body": "## Objetivo\nPadronizar ids, timestamps, soft-delete onde aplicável, índices e migrações, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Padronizar ids, timestamps, soft-delete onde aplicável, índices e migrações.\n- [ ] Definir rollback e lock strategy.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Alterações de esquema executadas em base preenchida sem perda inesperada.\n\n## Dependências\nE03-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-06",
+    "title": "[E03-06] Criar padrões transacionais e outbox",
+    "body": "## Objetivo\nProjetar eventos de domínio, idempotência e transactional outbox, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Projetar eventos de domínio, idempotência e transactional outbox.\n- [ ] Tratar reentrega.\n- [ ] Prover auditoria.\n\n## Critério de aceite\n- [ ] Cenários de falha/retry não duplicam lançamentos ou notificações.\n\n## Dependências\nE03-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-07",
+    "title": "[E03-07] Criar workers, filas e retries",
+    "body": "## Objetivo\nAdicionar jobs duráveis, dlq, backoff e visão de reprocessamento, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Adicionar jobs duráveis, dlq, backoff e visão de reprocessamento.\n- [ ] Especificar timeout e quotas.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Reexecução de job idempotente com rastreio por tenant.\n\n## Dependências\nE03-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-08",
+    "title": "[E03-08] Padronizar APIs versionadas e contratos",
+    "body": "## Objetivo\nCriar openapi, erros rfc-style, paginação, filtros e idempotency keys, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Criar openapi, erros rfc-style, paginação, filtros e idempotency keys.\n- [ ] Incluir exemplos e sdk base.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Contratos publicados com testes de compatibilidade retroativa.\n\n## Dependências\nE03-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-09",
+    "title": "[E03-09] Implementar configuração, secrets e feature flags",
+    "body": "## Objetivo\nDistinguir ambiente, tenant, unidade, usuário e módulos habilitados, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Distinguir ambiente, tenant, unidade, usuário e módulos habilitados.\n- [ ] Excluir segredo de logs.\n- [ ] Registrar histórico.\n\n## Critério de aceite\n- [ ] Flag altera acesso sem redeploy e não substitui checagem de autorização.\n\n## Dependências\nE03-04,E04-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-10",
+    "title": "[E03-10] Criar armazenamento de arquivos e antivírus",
+    "body": "## Objetivo\nDefinir uploads, limites, tipos, links temporários, varredura, ciclo de vida e retenção, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Definir uploads, limites, tipos, links temporários, varredura, ciclo de vida e retenção.\n- [ ] Tratar documentos de menores.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Upload e download isolados por tenant, com logs e casos negativos cobertos.\n\n## Dependências\nE03-04,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-10.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-11",
+    "title": "[E03-11] Implementar pesquisa indexada com ACL",
+    "body": "## Objetivo\nIndexar entidades selecionadas e atualizações, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Indexar entidades selecionadas e atualizações.\n- [ ] Aplicar filtros de autorização na fonte.\n- [ ] Testar exclusões.\n\n## Critério de aceite\n- [ ] Zero resultados indevidos em teste cross-tenant e tempo medido em dataset piloto.\n\n## Dependências\nE03-04,E02-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-11.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E03-12",
+    "title": "[E03-12] Preparar internacionalização e regionalização",
+    "body": "## Objetivo\nSeparar idioma, moeda, fuso, numeração e calendário, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Separar idioma, moeda, fuso, numeração e calendário.\n- [ ] Priorizar pt-br.\n- [ ] Definir formato fiscal via adaptadores.\n\n## Critério de aceite\n- [ ] Datas/moedas consistentes em UI, API, exports e jobs, com testes de fusos.\n\n## Dependências\nE03-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E03-12.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSAP clean core / APIs\n",
+    "labels": [
+      "epic:E03",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-01",
+    "title": "[E04-01] Modelar ameaças e riscos do ERP escolar",
+    "body": "## Objetivo\nRealizar threat modeling para menor de idade, dados financeiros e multi-tenant, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Realizar threat modeling para menor de idade, dados financeiros e multi-tenant.\n- [ ] Criar mitigações e owners.\n- [ ] Revisar antes do mvp.\n\n## Critério de aceite\n- [ ] Riscos classificados, mitigação dos críticos testada e pendências explícitas.\n\n## Dependências\nE03-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-02",
+    "title": "[E04-02] Implementar autenticação segura e sessões",
+    "body": "## Objetivo\nDefinir sso/oidc, mfa para privilegiados, recuperação e rotação, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Definir sso/oidc, mfa para privilegiados, recuperação e rotação.\n- [ ] Expiração e revogação.\n- [ ] Limitar brute force.\n\n## Critério de aceite\n- [ ] Testes funcionais e negativos de sessões e recuperação passam.\n\n## Dependências\nE03-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-03",
+    "title": "[E04-03] Projetar roles, policies e segregação de funções",
+    "body": "## Objetivo\nMapear rbac+atributos por tenant e unidade, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Mapear rbac+atributos por tenant e unidade.\n- [ ] Evitar poder excessivo.\n- [ ] Formalizar sod financeira.\n\n## Critério de aceite\n- [ ] Cada operação protegida por policy no backend e matriz de papéis revisada.\n\n## Dependências\nE04-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-04",
+    "title": "[E04-04] Implementar autorização em todos os canais",
+    "body": "## Objetivo\nAplicar política a apis, relatórios, busca, exportação, jobs e websocket, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Aplicar política a apis, relatórios, busca, exportação, jobs e websocket.\n- [ ] Testes por papel/tenant.\n- [ ] Negar padrão.\n\n## Critério de aceite\n- [ ] Bateria de testes não encontra caminho alternativo sem autorização.\n\n## Dependências\nE04-03,E03-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-05",
+    "title": "[E04-05] Implementar trilha de auditoria imutável logicamente",
+    "body": "## Objetivo\nRegistrar quem/quando/o quê/de-para em eventos críticos, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Registrar quem/quando/o quê/de-para em eventos críticos.\n- [ ] Mascarar pii.\n- [ ] Prever retenção e busca.\n\n## Critério de aceite\n- [ ] Matrícula, preço, desconto, boleto e permissão rastreáveis sem armazenar senha/token.\n\n## Dependências\nE03-06,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-06",
+    "title": "[E04-06] Definir programa LGPD e dados de menores",
+    "body": "## Objetivo\nMapear finalidade, bases legais, controlador/operador, retenção e direitos, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Mapear finalidade, bases legais, controlador/operador, retenção e direitos.\n- [ ] Tratar dados de menores com revisão jurídica.\n- [ ] Dpia conforme risco.\n\n## Critério de aceite\n- [ ] Registro de tratamento e fluxos de atendimento a titulares documentados.\n\n## Dependências\nE04-01,E05-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-07",
+    "title": "[E04-07] Preparar criptografia e gestão de segredos",
+    "body": "## Objetivo\nUsar tls, criptografia em repouso conforme risco, secret manager, rotação e scanner, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Usar tls, criptografia em repouso conforme risco, secret manager, rotação e scanner.\n- [ ] Definir resposta a incidente.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Nenhum segredo em repositório/log e rotação documentada/testada.\n\n## Dependências\nE04-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-08",
+    "title": "[E04-08] Definir política de exportação, retenção e exclusão",
+    "body": "## Objetivo\nConfigurar exportações auditáveis, exclusão/anonimização quando legalmente cabível e legal hold, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Configurar exportações auditáveis, exclusão/anonimização quando legalmente cabível e legal hold.\n- [ ] Evitar deleção financeira indevida.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Testes demonstram portabilidade e retenção fiscal sem vazamento.\n\n## Dependências\nE04-05,E04-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E04-09",
+    "title": "[E04-09] Criar gates de segurança OWASP ASVS",
+    "body": "## Objetivo\nMapear requisitos asvs aplicáveis, entregando resultado verificável para plataforma.\n\n## Checklist\n- [ ] Mapear requisitos asvs aplicáveis.\n- [ ] Incluir sast, sca, secret scan e dast controlado.\n- [ ] Registrar exceções aprovadas.\n\n## Critério de aceite\n- [ ] Checklist ASVS com evidências e nenhuma vulnerabilidade crítica em aberto no release.\n\n## Dependências\nE04-01,E14-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E04-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOWASP ASVS / ANPD\n",
+    "labels": [
+      "epic:E04",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:plataforma"
+    ]
+  },
+  {
+    "id": "E05-01",
+    "title": "[E05-01] Modelar pessoas, alunos e responsáveis",
+    "body": "## Objetivo\nCriar identidade de pessoa independente de papel, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Criar identidade de pessoa independente de papel.\n- [ ] Suportar aluno, responsável, contato e pagador.\n- [ ] Padronizar vínculos.\n\n## Critério de aceite\n- [ ] Uma pessoa pode ter múltiplos papéis sem duplicação, preservando histórico.\n\n## Dependências\nE03-05,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-02",
+    "title": "[E05-02] Cadastrar organizações e unidades escolares",
+    "body": "## Objetivo\nDefinir rede, campus, unidade e permissões, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Definir rede, campus, unidade e permissões.\n- [ ] Campos por segmento.\n- [ ] Importação inicial.\n\n## Critério de aceite\n- [ ] Cadastro hierárquico testado com duas unidades isoladas.\n\n## Dependências\nE03-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-03",
+    "title": "[E05-03] Definir calendário letivo, cursos e períodos",
+    "body": "## Objetivo\nModelar períodos, curso, modalidade, carga horária e oferta, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Modelar períodos, curso, modalidade, carga horária e oferta.\n- [ ] Validar estados.\n- [ ] Criar dados de seed.\n\n## Critério de aceite\n- [ ] Regras de vigência e conflito testadas em dois calendários.\n\n## Dependências\nE05-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-04",
+    "title": "[E05-04] Construir cadastro completo com validação",
+    "body": "## Objetivo\nFormulário por etapa, documentos, contato e histórico, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Formulário por etapa, documentos, contato e histórico.\n- [ ] Validações brasileiras.\n- [ ] Evitar coleta excessiva.\n\n## Critério de aceite\n- [ ] Usuário conclui cadastro e correção sem redigitar dados já existentes.\n\n## Dependências\nE05-01,E02-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-05",
+    "title": "[E05-05] Implementar matrículas, rematrículas e status",
+    "body": "## Objetivo\nMapear elegibilidade, reservas, matrícula ativa/trancada/cancelada, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Mapear elegibilidade, reservas, matrícula ativa/trancada/cancelada.\n- [ ] Versionar mudanças.\n- [ ] Disparar eventos.\n\n## Critério de aceite\n- [ ] Máquina de estados com transições válidas e inválidas coberta por testes.\n\n## Dependências\nE05-01,E05-03,E03-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-06",
+    "title": "[E05-06] Gerenciar contratos, consentimentos e anexos",
+    "body": "## Objetivo\nModelar versões e aceites, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Modelar versões e aceites.\n- [ ] Anexar documentos.\n- [ ] Guardar evidências e retenção.\n- [ ] Delegar assinatura a provedor.\n\n## Critério de aceite\n- [ ] Contrato associado à matrícula com auditoria e anexos protegidos.\n\n## Dependências\nE05-05,E03-10,E04-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E05-07",
+    "title": "[E05-07] Controlar qualidade e deduplicação de dados",
+    "body": "## Objetivo\nNormalizar, detectar homônimos e duplicidades, entregando resultado verificável para secretaria.\n\n## Checklist\n- [ ] Normalizar, detectar homônimos e duplicidades.\n- [ ] Permitir merge auditado.\n- [ ] Documentar prevenção.\n\n## Critério de aceite\n- [ ] Merge preserva vínculos e possui trilha de reversão ou correção controlada.\n\n## Dependências\nE05-01,E04-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E05-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / qualidade de dados\n",
+    "labels": [
+      "epic:E05",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:secretaria"
+    ]
+  },
+  {
+    "id": "E06-01",
+    "title": "[E06-01] Cadastrar leads com origem e consentimento",
+    "body": "## Objetivo\nCapturar contato, origem, campanha e preferências, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Capturar contato, origem, campanha e preferências.\n- [ ] Deduplicar.\n- [ ] Aplicar base legal.\n- [ ] Padronizar formulários.\n\n## Critério de aceite\n- [ ] Lead entra com fonte e consentimento quando aplicável, sem duplicação indevida.\n\n## Dependências\nE03-08,E04-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-02",
+    "title": "[E06-02] Construir funis configuráveis e Kanban",
+    "body": "## Objetivo\nConfigurar estágios e motivos de perda, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Configurar estágios e motivos de perda.\n- [ ] Registrar histórico e métricas.\n- [ ] Oferecer acessibilidade no drag-drop.\n\n## Critério de aceite\n- [ ] Funil respeita regras, histórico e uso pelo teclado.\n\n## Dependências\nE06-01,E02-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-03",
+    "title": "[E06-03] Criar tarefas, agenda e distribuição de leads",
+    "body": "## Objetivo\nDistribuir por unidade/equipe e round-robin, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Distribuir por unidade/equipe e round-robin.\n- [ ] Definir sla de contato.\n- [ ] Registrar atividades.\n\n## Critério de aceite\n- [ ] Atribuição previsível e auditável, sem perda no reprocessamento.\n\n## Dependências\nE06-02,E03-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-04",
+    "title": "[E06-04] Criar propostas e tabela de preços versionada",
+    "body": "## Objetivo\nGerir curso, duração, preço, descontos, vigência, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Gerir curso, duração, preço, descontos, vigência.\n- [ ] Exigir aprovação por alçada.\n- [ ] Simular total.\n\n## Critério de aceite\n- [ ] Alteração de preço não muda proposta assinada e desconto acima do limite bloqueia.\n\n## Dependências\nE06-02,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-05",
+    "title": "[E06-05] Converter oportunidade em matrícula",
+    "body": "## Objetivo\nReutilizar pessoa, curso, proposta e contrato, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Reutilizar pessoa, curso, proposta e contrato.\n- [ ] Evitar digitação repetida.\n- [ ] Emitir evento financeiro.\n\n## Critério de aceite\n- [ ] Uma ação gera matrícula válida com referências e sem duplicação por retry.\n\n## Dependências\nE06-04,E05-05,E05-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-06",
+    "title": "[E06-06] Gerenciar comissões e metas comerciais",
+    "body": "## Objetivo\nDefinir regras versionadas e elegibilidade, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Definir regras versionadas e elegibilidade.\n- [ ] Detectar cancelamento/chargeback.\n- [ ] Calcular com precisão.\n\n## Critério de aceite\n- [ ] Comissão reproduzível por versão de regra e conciliada com eventos financeiros.\n\n## Dependências\nE06-05,E07-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-07",
+    "title": "[E06-07] Medir funil, CAC e canais",
+    "body": "## Objetivo\nInstrumentar origem e etapa, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Instrumentar origem e etapa.\n- [ ] Documentar atribuição e taxa de conversão.\n- [ ] Segmentar por unidade.\n\n## Critério de aceite\n- [ ] Dashboard confere com amostra auditada de negócios e matrículas.\n\n## Dependências\nE06-02,E11-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E06-08",
+    "title": "[E06-08] Mapear automações comerciais seguras",
+    "body": "## Objetivo\nCriar lembretes e follow-up sob opt-in, entregando resultado verificável para crm.\n\n## Checklist\n- [ ] Criar lembretes e follow-up sob opt-in.\n- [ ] Limites de envio, supervisão e opt-out.\n- [ ] Registrar resultados.\n\n## Critério de aceite\n- [ ] Nenhum disparo sem política válida e toda automação pode ser desligada.\n\n## Dependências\nE06-03,E09-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E06-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nDynamics 365 / processos\n",
+    "labels": [
+      "epic:E06",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:crm"
+    ]
+  },
+  {
+    "id": "E07-01",
+    "title": "[E07-01] Modelar contas a receber, pagar e centros de custo",
+    "body": "## Objetivo\nCriar lançamentos, vencimentos, categorias e centros de custo, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Criar lançamentos, vencimentos, categorias e centros de custo.\n- [ ] Regras de competência.\n- [ ] Conciliar com matrícula.\n\n## Critério de aceite\n- [ ] Lançamentos têm origem, status e histórico, sem ambiguidade contábil.\n\n## Dependências\nE03-06,E05-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-02",
+    "title": "[E07-02] Definir subledger e reconciliação financeira",
+    "body": "## Objetivo\nProjetar partidas equilibradas quando adotadas, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Projetar partidas equilibradas quando adotadas.\n- [ ] Lançar correções por estorno, nunca alterar histórico.\n- [ ] Construir relatório de integridade.\n\n## Critério de aceite\n- [ ] Invariantes financeiros automatizados e trilha imutável logicamente.\n\n## Dependências\nE07-01,E04-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-03",
+    "title": "[E07-03] Gerar mensalidades, parcelas e recorrências",
+    "body": "## Objetivo\nModelar plano, parcelas, juros/multas configurados legalmente, descontos e feriados, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Modelar plano, parcelas, juros/multas configurados legalmente, descontos e feriados.\n- [ ] Prevenir duplicação.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Simulação e emissão conferem com contrato e retry não duplica parcela.\n\n## Dependências\nE07-01,E06-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-04",
+    "title": "[E07-04] Integrar Pix via PSP oficial",
+    "body": "## Objetivo\nEscolher psp, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Escolher psp.\n- [ ] Homologar cobrança, pagamento, expiração e webhook assinado.\n- [ ] Usar idempotência.\n\n## Critério de aceite\n- [ ] Pagamento duplica notificação sem duplicar baixa, com teste em sandbox.\n\n## Dependências\nE07-03,E12-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-05",
+    "title": "[E07-05] Integrar boleto e cobrança bancária",
+    "body": "## Objetivo\nModelar registro, remessa/retorno quando aplicável e status, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Modelar registro, remessa/retorno quando aplicável e status.\n- [ ] Homologar fornecedor.\n- [ ] Tratar retorno tardio.\n\n## Critério de aceite\n- [ ] Boleto registrado e baixado corretamente em cenários de reenvio e atraso.\n\n## Dependências\nE07-03,E12-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-06",
+    "title": "[E07-06] Processar baixas, estornos e chargebacks",
+    "body": "## Objetivo\nDefinir transições e compensações, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Definir transições e compensações.\n- [ ] Separar autorização e execução.\n- [ ] Notificar sistemas dependentes.\n\n## Critério de aceite\n- [ ] Estorno exige alçada e valor conciliado após reversão.\n\n## Dependências\nE07-02,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-07",
+    "title": "[E07-07] Implementar renegociação e acordos",
+    "body": "## Objetivo\nSimular negociação, regras de desconto e cronograma, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Simular negociação, regras de desconto e cronograma.\n- [ ] Preservar dívida original e histórico.\n- [ ] Gerar novo instrumento.\n\n## Critério de aceite\n- [ ] Total e vencimentos reproduzíveis, acordo auditável e reversível segundo política.\n\n## Dependências\nE07-03,E07-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-08",
+    "title": "[E07-08] Criar conciliação e fechamento de caixa",
+    "body": "## Objetivo\nImportar extratos autorizados, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Importar extratos autorizados.\n- [ ] Conciliar automático e manual.\n- [ ] Sinalizar divergências.\n- [ ] Bloquear fechamento inconsistente.\n\n## Critério de aceite\n- [ ] Relatório de divergências zera no cenário de teste e ajustes têm justificativa.\n\n## Dependências\nE07-04,E07-05,E07-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-09",
+    "title": "[E07-09] Criar indicadores de inadimplência e aging",
+    "body": "## Objetivo\nCalcular aging por data, unidade e turma, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Calcular aging por data, unidade e turma.\n- [ ] Excluir anulações.\n- [ ] Reconciliar com contas a receber.\n\n## Critério de aceite\n- [ ] KPIs batem com relatório de títulos e amostra validada.\n\n## Dependências\nE07-03,E07-08,E11-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E07-10",
+    "title": "[E07-10] Planejar notas fiscais e conformidade tributária",
+    "body": "## Objetivo\nLevantar município/regime/provedor com contabilidade, entregando resultado verificável para financeiro.\n\n## Checklist\n- [ ] Levantar município/regime/provedor com contabilidade.\n- [ ] Desenhar adaptador nfs-e.\n- [ ] Classificar regras regionais e validação jurídica.\n\n## Critério de aceite\n- [ ] Especificação fiscal aprovada; emissão somente após homologação por município.\n\n## Dependências\nE07-01,E12-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E07-10.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nOracle / integridade financeira\n",
+    "labels": [
+      "epic:E07",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:financeiro"
+    ]
+  },
+  {
+    "id": "E08-01",
+    "title": "[E08-01] Estruturar turmas, ofertas, professores e capacidade",
+    "body": "## Objetivo\nDefinir capacidade, unidade, requisitos de professor e oferta, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Definir capacidade, unidade, requisitos de professor e oferta.\n- [ ] Validar sobreposição.\n- [ ] Modelar estados.\n\n## Critério de aceite\n- [ ] Turma respeita capacidade e restrições configuradas.\n\n## Dependências\nE05-03,E05-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-02",
+    "title": "[E08-02] Criar grade, horários e calendários de aula",
+    "body": "## Objetivo\nModelar recorrências, feriados, remarcações e salas, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Modelar recorrências, feriados, remarcações e salas.\n- [ ] Detectar conflitos.\n- [ ] Notificar mudanças.\n\n## Critério de aceite\n- [ ] Testes cobrem horário de verão/fuso, conflito e cancelamento.\n\n## Dependências\nE08-01,E03-12\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-03",
+    "title": "[E08-03] Implementar chamada e presença auditável",
+    "body": "## Objetivo\nSuportar professor, justificativa e atraso, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Suportar professor, justificativa e atraso.\n- [ ] Registrar revisão e trilha.\n- [ ] Exportar dados por turma.\n\n## Critério de aceite\n- [ ] Percentuais e histórico conferem com chamada original.\n\n## Dependências\nE08-02,E04-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-04",
+    "title": "[E08-04] Projetar chamada offline com sincronização",
+    "body": "## Objetivo\nMapear pwa no dispositivo confiável, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Mapear pwa no dispositivo confiável.\n- [ ] Armazenar mínimo.\n- [ ] Resolver conflitos de edição.\n- [ ] Expirar cache.\n\n## Critério de aceite\n- [ ] Reconexão sincroniza sem sobrescrever silenciosamente registro mais recente.\n\n## Dependências\nE08-03,E10-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:evolução",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-05",
+    "title": "[E08-05] Definir avaliações, notas e aprovação",
+    "body": "## Objetivo\nConfigurar critérios, períodos e recuperação, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Configurar critérios, períodos e recuperação.\n- [ ] Calcular médias com regras versionadas.\n- [ ] Bloquear publicação indevida.\n\n## Critério de aceite\n- [ ] Mesmo conjunto de dados sempre produz resultado idêntico e auditável.\n\n## Dependências\nE08-01,E04-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-06",
+    "title": "[E08-06] Criar diário de classe e atividades",
+    "body": "## Objetivo\nRegistrar conteúdo ministrado, materiais e tarefas, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Registrar conteúdo ministrado, materiais e tarefas.\n- [ ] Restringir por papel.\n- [ ] Vincular ao horário.\n\n## Critério de aceite\n- [ ] Histórico por aula consulta registros e anexos com permissão.\n\n## Dependências\nE08-02,E03-10\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-07",
+    "title": "[E08-07] Gerar certificados e documentos acadêmicos",
+    "body": "## Objetivo\nCriar templates e emissão com código verificador, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Criar templates e emissão com código verificador.\n- [ ] Regras de conclusão.\n- [ ] Revogação auditável.\n\n## Critério de aceite\n- [ ] Certificado só emite com elegibilidade válida e validação pública sem expor PII.\n\n## Dependências\nE08-05,E05-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E08-08",
+    "title": "[E08-08] Gerenciar transferência, trancamento e conclusão",
+    "body": "## Objetivo\nMapear migração de turma e unidade, aproveitamento e histórico, entregando resultado verificável para acadêmico.\n\n## Checklist\n- [ ] Mapear migração de turma e unidade, aproveitamento e histórico.\n- [ ] Refletir efeitos financeiros.\n- [ ] Registrar aprovações.\n\n## Critério de aceite\n- [ ] Transições mantêm integridade de frequência, notas e cobranças.\n\n## Dependências\nE08-01,E05-05,E07-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E08-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nERP educacional / UX\n",
+    "labels": [
+      "epic:E08",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:acadêmico"
+    ]
+  },
+  {
+    "id": "E09-01",
+    "title": "[E09-01] Definir matriz de eventos e comunicações",
+    "body": "## Objetivo\nCatalogar eventos de matrícula, aula e cobrança, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Catalogar eventos de matrícula, aula e cobrança.\n- [ ] Diferenciar transacional e marketing.\n- [ ] Consentimentos e frequência.\n\n## Critério de aceite\n- [ ] Cada evento tem destinatário, canal, opt-out e política de retenção.\n\n## Dependências\nE04-06,E05-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E09-02",
+    "title": "[E09-02] Construir templates versionados e variáveis",
+    "body": "## Objetivo\nCriar editor restrito, preview e revisão, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Criar editor restrito, preview e revisão.\n- [ ] Validar placeholders e idioma.\n- [ ] Incluir proteção a pii.\n\n## Critério de aceite\n- [ ] Templates têm histórico e falham fechado em variáveis ausentes.\n\n## Dependências\nE09-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E09-03",
+    "title": "[E09-03] Integrar mensageria por provedores oficiais",
+    "body": "## Objetivo\nModelar adapters e webhooks, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Modelar adapters e webhooks.\n- [ ] Homologar whatsapp business api, e-mail e sms conforme contrato.\n- [ ] Respeitar políticas.\n\n## Critério de aceite\n- [ ] Sandbox comprova envio, entrega, erro e opt-out sem usar automação não oficial.\n\n## Dependências\nE09-02,E12-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E09-04",
+    "title": "[E09-04] Criar inbox unificada com atribuição",
+    "body": "## Objetivo\nArmazenar threads e eventos autorizados, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Armazenar threads e eventos autorizados.\n- [ ] Roteamento por unidade.\n- [ ] Mascaramento e tempo de resposta.\n\n## Critério de aceite\n- [ ] Atendimento pode ser transferido sem perder contexto e respeita acesso.\n\n## Dependências\nE09-03,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E09-05",
+    "title": "[E09-05] Criar campanhas segmentadas com limites",
+    "body": "## Objetivo\nConstruir segmentação, janelas de envio, opt-out e aprovação, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Construir segmentação, janelas de envio, opt-out e aprovação.\n- [ ] Pré-visualizar público.\n- [ ] Limite por tenant.\n\n## Critério de aceite\n- [ ] Teste impede envio sem autorização/consentimento aplicável.\n\n## Dependências\nE09-03,E09-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E09-06",
+    "title": "[E09-06] Criar preferências e central de notificações",
+    "body": "## Objetivo\nPermitir configuração por responsável/aluno e evento, entregando resultado verificável para comunicação.\n\n## Checklist\n- [ ] Permitir configuração por responsável/aluno e evento.\n- [ ] Notificação in-app.\n- [ ] Preferências por canal.\n\n## Critério de aceite\n- [ ] Preferências são respeitadas, com exceções transacionais documentadas.\n\n## Dependências\nE09-01,E10-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E09-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs oficiais / governança\n",
+    "labels": [
+      "epic:E09",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comunicação"
+    ]
+  },
+  {
+    "id": "E10-01",
+    "title": "[E10-01] Criar portal do aluno com dados essenciais",
+    "body": "## Objetivo\nExibir aulas, frequência, notas, comunicados e documentos autorizados, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Exibir aulas, frequência, notas, comunicados e documentos autorizados.\n- [ ] Projetar mobile-first.\n- [ ] A11y.\n\n## Critério de aceite\n- [ ] Aluno visualiza apenas seus dados e executa tarefas em celular.\n\n## Dependências\nE08-03,E08-05,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E10-02",
+    "title": "[E10-02] Criar portal do responsável e pagador",
+    "body": "## Objetivo\nPermitir vínculos verificados, notificações, documentos e faturas, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Permitir vínculos verificados, notificações, documentos e faturas.\n- [ ] Separar responsável legal e financeiro.\n- [ ] Trilha.\n\n## Critério de aceite\n- [ ] Visibilidade compatível com vínculo e permissão, sem acesso entre alunos.\n\n## Dependências\nE05-01,E07-03,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E10-03",
+    "title": "[E10-03] Disponibilizar pagamentos e segunda via self-service",
+    "body": "## Objetivo\nIntegrar links seguros de cobrança, comprovante e renegociação permitida, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Integrar links seguros de cobrança, comprovante e renegociação permitida.\n- [ ] Sem manipular cartão bruto.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Pagamento e baixa refletidos no portal com reconciliação e proteção contra dupla cobrança.\n\n## Dependências\nE10-02,E07-04,E07-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E10-04",
+    "title": "[E10-04] Publicar PWA responsivo com offline controlado",
+    "body": "## Objetivo\nCriar manifest, caching seletivo, atualização segura e fallbacks, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Criar manifest, caching seletivo, atualização segura e fallbacks.\n- [ ] Não persistir dados sensíveis sem justificativa.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] App funciona nos dispositivos-alvo e limpa dados em logout.\n\n## Dependências\nE02-07,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E10-05",
+    "title": "[E10-05] Especificar AVA e conteúdo didático",
+    "body": "## Objetivo\nModelar trilhas, anexos, progresso e permissões, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Modelar trilhas, anexos, progresso e permissões.\n- [ ] Avaliar construir x integrar lms.\n- [ ] Importar conteúdo licenciado.\n\n## Critério de aceite\n- [ ] Prova de conceito aprovada, com métrica de progresso e conformidade de direitos autorais.\n\n## Dependências\nE08-01,E03-10\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E10-06",
+    "title": "[E10-06] Criar portal docente e tarefas pedagógicas",
+    "body": "## Objetivo\nPriorizar chamada, avaliações, diário e comunicados, entregando resultado verificável para experiência.\n\n## Checklist\n- [ ] Priorizar chamada, avaliações, diário e comunicados.\n- [ ] Simplificar fluxo para tablets.\n- [ ] Validar com professor.\n\n## Critério de aceite\n- [ ] Professor conclui chamada e lançamento sem acesso a turmas de terceiros.\n\n## Dependências\nE08-03,E08-05,E08-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E10-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAcessibilidade / self-service\n",
+    "labels": [
+      "epic:E10",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:experiência"
+    ]
+  },
+  {
+    "id": "E11-01",
+    "title": "[E11-01] Construir catálogo de métricas e fontes",
+    "body": "## Objetivo\nDefinir fórmulas, granularidade, timezone e owner, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Definir fórmulas, granularidade, timezone e owner.\n- [ ] Garantir coerência financeiro/crm/acadêmico.\n- [ ] Versionar.\n\n## Critério de aceite\n- [ ] Dicionário aprovado com testes de reconciliação de 10 métricas-chave.\n\n## Dependências\nE00-05,E03-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-02",
+    "title": "[E11-02] Criar camada semântica e governança BI",
+    "body": "## Objetivo\nModelar visões com contexto de tenant/unidade, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Modelar visões com contexto de tenant/unidade.\n- [ ] Classificação pii.\n- [ ] Atualizações incrementais.\n- [ ] Custo.\n\n## Critério de aceite\n- [ ] Queries auditadas respeitam escopo e resultados reconciliados com transacional.\n\n## Dependências\nE11-01,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-03",
+    "title": "[E11-03] Criar dashboards acionáveis por perfil",
+    "body": "## Objetivo\nDar contexto, tendência e próxima ação, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Dar contexto, tendência e próxima ação.\n- [ ] Exportações seguras.\n- [ ] Tratamento de dados ausentes.\n\n## Critério de aceite\n- [ ] Direção, comercial e financeiro validam decisões em dados piloto.\n\n## Dependências\nE11-02,E02-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-04",
+    "title": "[E11-04] Construir alertas e detecção de anomalias",
+    "body": "## Objetivo\nCriar regras explicáveis para atraso, evasão e matrícula parada, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Criar regras explicáveis para atraso, evasão e matrícula parada.\n- [ ] Evitar discriminação.\n- [ ] Permitir ajuste.\n\n## Critério de aceite\n- [ ] Alertas exibem razão, limiar e ação humana; falso-positivo medido.\n\n## Dependências\nE11-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-05",
+    "title": "[E11-05] Implementar workflow builder com aprovações",
+    "body": "## Objetivo\nDefinir gatilhos/eventos, condições e ações permitidas, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Definir gatilhos/eventos, condições e ações permitidas.\n- [ ] Dry-run e versionamento.\n- [ ] Evitar loops.\n\n## Critério de aceite\n- [ ] Execução auditável e idempotente; usuários só automatizam ações autorizadas.\n\n## Dependências\nE03-06,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-06",
+    "title": "[E11-06] Projetar copiloto IA com RAG e autorização",
+    "body": "## Objetivo\nRestringir contexto por tenant/role, citar origem, filtrar pii, logs mínimos, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Restringir contexto por tenant/role, citar origem, filtrar pii, logs mínimos.\n- [ ] Testar prompt injection.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] IA não acessa dados fora do escopo nem executa ação sensível sem confirmação.\n\n## Dependências\nE11-02,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E11-07",
+    "title": "[E11-07] Criar recomendações explicáveis e opt-in",
+    "body": "## Objetivo\nSugerir próximas tarefas, risco de inadimplência e reposição, entregando resultado verificável para inteligência.\n\n## Checklist\n- [ ] Sugerir próximas tarefas, risco de inadimplência e reposição.\n- [ ] Definir fairness e feedback.\n- [ ] Comparar baseline.\n\n## Critério de aceite\n- [ ] Recomendação explica base e pode ser recusada; sem decisões automáticas irreversíveis.\n\n## Dependências\nE11-04,E11-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E11-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nBI governado / IA assistida\n",
+    "labels": [
+      "epic:E11",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:inteligência"
+    ]
+  },
+  {
+    "id": "E12-01",
+    "title": "[E12-01] Mapear integrações e conectores prioritários",
+    "body": "## Objetivo\nEntrevistar cliente e fornecedores, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Entrevistar cliente e fornecedores.\n- [ ] Catalogar crm, psp, assinatura, contabilidade e lms.\n- [ ] Definir contratos.\n\n## Critério de aceite\n- [ ] Matriz prioridade/custo/risco com fonte e owner.\n\n## Dependências\nE00-02,E01-09\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-02",
+    "title": "[E12-02] Criar importador CSV/XLSX com prévia",
+    "body": "## Objetivo\nUpload autorizado, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Upload autorizado.\n- [ ] Mapeamento de colunas.\n- [ ] Validação e dry-run.\n- [ ] Relatório de erros por linha.\n\n## Critério de aceite\n- [ ] Importação idempotente com amostra de 1k linhas e dados inválidos.\n\n## Dependências\nE05-01,E03-10\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-03",
+    "title": "[E12-03] Definir estratégia de migração do legado",
+    "body": "## Objetivo\nMapear entidades, ids externos, deduplicação e histórico, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Mapear entidades, ids externos, deduplicação e histórico.\n- [ ] Negociar exportação autorizada.\n- [ ] Criar rollback.\n\n## Critério de aceite\n- [ ] Plano de cutover e rollback aprovado, sem requerer acesso indevido ao F10.\n\n## Dependências\nE12-01,E12-02,E01-10\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-04",
+    "title": "[E12-04] Implementar ensaio de migração e conciliação",
+    "body": "## Objetivo\nRodar carga fictícia/anonimizada, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Rodar carga fictícia/anonimizada.\n- [ ] Comparar contagens, valores e relacionamentos.\n- [ ] Simular erros e reexecução.\n\n## Critério de aceite\n- [ ] Relatório zero divergência crítica e evidência de rollback executável.\n\n## Dependências\nE12-03,E07-08\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:piloto",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-05",
+    "title": "[E12-05] Construir plataforma de webhooks e adapters",
+    "body": "## Objetivo\nValidar assinatura, timestamp, retries, dlq e ids, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Validar assinatura, timestamp, retries, dlq e ids.\n- [ ] Catalogar rate limits.\n- [ ] Monitorar integração.\n\n## Critério de aceite\n- [ ] Testes de replay e reordenação preservam consistência.\n\n## Dependências\nE03-06,E03-08\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-06",
+    "title": "[E12-06] Criar API pública e portal de desenvolvedor",
+    "body": "## Objetivo\nPublicar scopes, exemplos, sandbox, api keys rotacionáveis e limites, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Publicar scopes, exemplos, sandbox, api keys rotacionáveis e limites.\n- [ ] Versionar e depreciar.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] App externa integra em sandbox sem suporte manual, com auditoria.\n\n## Dependências\nE03-08,E04-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-07",
+    "title": "[E12-07] Planejar portabilidade e exportação completa",
+    "body": "## Objetivo\nExportar dados e anexos em formatos abertos, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Exportar dados e anexos em formatos abertos.\n- [ ] Documentar esquema.\n- [ ] Verificar autorização e lgpd.\n\n## Critério de aceite\n- [ ] Cliente autorizado exporta e verifica amostra sem dependência comercial do fornecedor.\n\n## Dependências\nE04-08,E12-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-08",
+    "title": "[E12-08] Homologar provedores por contrato e ambiente",
+    "body": "## Objetivo\nValidar psp, assinatura, mensageria e fiscal, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Validar psp, assinatura, mensageria e fiscal.\n- [ ] Credenciais segregadas, sandbox e custos.\n- [ ] Registrar falhas.\n\n## Critério de aceite\n- [ ] Matriz de homologação e fallback assinada pelo responsável.\n\n## Dependências\nE12-01,E12-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E12-09",
+    "title": "[E12-09] Monitorar qualidade e contratos de integração",
+    "body": "## Objetivo\nCriar monitor de sync, dead letters, versão e alertas, entregando resultado verificável para integrações.\n\n## Checklist\n- [ ] Criar monitor de sync, dead letters, versão e alertas.\n- [ ] Permitir reprocessamento com aprovação.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Falhas visíveis e recuperáveis com rastreio end-to-end por transação.\n\n## Dependências\nE12-05,E14-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E12-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nAPIs enterprise / reversibilidade\n",
+    "labels": [
+      "epic:E12",
+      "fase:mvp",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:integrações"
+    ]
+  },
+  {
+    "id": "E13-01",
+    "title": "[E13-01] Definir catálogo de módulos vendáveis",
+    "body": "## Objetivo\nSeparar core gratuito/incluso, secretaria, crm, financeiro, acadêmico, portais, mensageria, bi e ia, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Separar core gratuito/incluso, secretaria, crm, financeiro, acadêmico, portais, mensageria, bi e ia.\n- [ ] Modelar dependências.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Catálogo com dependências, pré-requisitos e dados persistentes ao desativar.\n\n## Dependências\nE00-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-02",
+    "title": "[E13-02] Implementar entitlements por tenant e unidade",
+    "body": "## Objetivo\nValidar licença no servidor, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Validar licença no servidor.\n- [ ] Controlar features, seats e limites.\n- [ ] Registrar mudanças.\n- [ ] Não bloquear exportação.\n\n## Critério de aceite\n- [ ] Toggle reflete direito contratado sem ocultar dados por falha de cache.\n\n## Dependências\nE13-01,E03-09\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-03",
+    "title": "[E13-03] Criar planos, add-ons e limites transparentes",
+    "body": "## Objetivo\nModelar mensal/anual, piloto e franquia, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Modelar mensal/anual, piloto e franquia.\n- [ ] Atribuir limites claros.\n- [ ] Versionar tabela comercial.\n\n## Critério de aceite\n- [ ] Simulador calcula valor por unidade/assento sem regras escondidas.\n\n## Dependências\nE13-01\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-04",
+    "title": "[E13-04] Preparar trials, upgrade e downgrade seguros",
+    "body": "## Objetivo\nProvisionar workspace isolado, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Provisionar workspace isolado.\n- [ ] Upgrade sem migração destrutiva.\n- [ ] Downgrade preserva dados e oferece exportação.\n\n## Critério de aceite\n- [ ] Testes mostram transições sem perda e trilha de aceite.\n\n## Dependências\nE13-02,E13-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-05",
+    "title": "[E13-05] Implementar medição de consumo e quotas",
+    "body": "## Objetivo\nMedir mensagens, storage, usuários e automações sem expor pii, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Medir mensagens, storage, usuários e automações sem expor pii.\n- [ ] Alertas de consumo.\n- [ ] Reconciliação.\n\n## Critério de aceite\n- [ ] Uso mensal reproduzível e excedente não gera cobrança surpresa.\n\n## Dependências\nE13-02,E03-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-06",
+    "title": "[E13-06] Criar faturamento da assinatura SaaS",
+    "body": "## Objetivo\nIntegrar provedor de cobrança, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Integrar provedor de cobrança.\n- [ ] Notas conforme operação própria.\n- [ ] Dunning proporcional.\n- [ ] Conciliação e impostos com contador.\n\n## Critério de aceite\n- [ ] Cobrança, renovação, cancelamento e estorno funcionam em sandbox.\n\n## Dependências\nE13-03,E12-08\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:evolução",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E13-07",
+    "title": "[E13-07] Construir console de suporte e provisionamento",
+    "body": "## Objetivo\nSuporte com acesso temporário aprovado, trilha, impersonation controlada e dados mascarados, entregando resultado verificável para comercialização.\n\n## Checklist\n- [ ] Suporte com acesso temporário aprovado, trilha, impersonation controlada e dados mascarados.\n- [ ] Onboarding autoatendido.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Suporte não acessa dados de cliente sem autorização e ação auditada.\n\n## Dependências\nE13-02,E04-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E13-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nSaaS enterprise / entitlements\n",
+    "labels": [
+      "epic:E13",
+      "fase:piloto",
+      "prio:P2",
+      "tipo:implementação",
+      "modulo:comercialização"
+    ]
+  },
+  {
+    "id": "E14-01",
+    "title": "[E14-01] Definir pirâmide de testes e Definition of Done",
+    "body": "## Objetivo\nPadronizar unit, integração, contrato, e2e e evidências, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Padronizar unit, integração, contrato, e2e e evidências.\n- [ ] Template issue/pr.\n- [ ] Red-green-refactor para regras.\n\n## Critério de aceite\n- [ ] PR exige testes, docs, revisão e evidência alinhada ao risco.\n\n## Dependências\nE03-02\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-01.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-02",
+    "title": "[E14-02] Construir CI com gates de qualidade",
+    "body": "## Objetivo\nPipeline paralelo de lint, tipos, testes, scan e build, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Pipeline paralelo de lint, tipos, testes, scan e build.\n- [ ] Branch protection.\n- [ ] Ambiente de preview sem dados reais.\n\n## Critério de aceite\n- [ ] Branch padrão bloqueia merge quando gate crítico falha.\n\n## Dependências\nE14-01,E04-09\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-02.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:fundação",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-03",
+    "title": "[E14-03] Criar testes E2E de jornadas cross-module",
+    "body": "## Objetivo\nAutomatizar lead→matrícula→cobrança→turma→presença, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Automatizar lead→matrícula→cobrança→turma→presença.\n- [ ] Acessibilidade e permissão.\n- [ ] Seed determinística.\n\n## Critério de aceite\n- [ ] Suite verde em staging e captura relatório de falhas.\n\n## Dependências\nE06-05,E07-03,E08-03\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-03.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-04",
+    "title": "[E14-04] Criar testes de propriedade para regras financeiras",
+    "body": "## Objetivo\nGerar cenários de parcelamento, estorno, conciliação e retry, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Gerar cenários de parcelamento, estorno, conciliação e retry.\n- [ ] Checar invariantes.\n- [ ] Usar valores monetários seguros.\n\n## Critério de aceite\n- [ ] 1k cenários gerados sem desequilíbrio ou duplicação, seed reproduzível.\n\n## Dependências\nE07-02,E07-06\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-04.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:mvp",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-05",
+    "title": "[E14-05] Definir baseline e testes de carga por jornada",
+    "body": "## Objetivo\nMedir latência p50/p95, throughput e erros com dataset realista fictício, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Medir latência p50/p95, throughput e erros com dataset realista fictício.\n- [ ] Estabelecer budget por endpoint.\n- [ ] Analisar gargalo.\n\n## Critério de aceite\n- [ ] Relatório reproduzível e SLO proposto com benchmark transparente.\n\n## Dependências\nE14-03,E03-04\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-05.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:piloto",
+      "prio:P0",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-06",
+    "title": "[E14-06] Criar pipeline de deploy e rollback",
+    "body": "## Objetivo\nInfra as code, migrations expand/contract, preview e canary, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Infra as code, migrations expand/contract, preview e canary.\n- [ ] Flags de kill switch.\n- [ ] Rollback testado.\n\n## Critério de aceite\n- [ ] Release em staging revertida sem perda de consistência.\n\n## Dependências\nE14-02,E03-05\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-06.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-07",
+    "title": "[E14-07] Instrumentar observabilidade e suporte",
+    "body": "## Objetivo\nAdicionar logs estruturados, traces, métricas, dashboards e alertas, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Adicionar logs estruturados, traces, métricas, dashboards e alertas.\n- [ ] Correlação por tenant sem pii.\n- [ ] Runbook.\n\n## Critério de aceite\n- [ ] Incidente de teste diagnosticável com trace ID sem vazamento.\n\n## Dependências\nE14-02,E03-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-07.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:fundação",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-08",
+    "title": "[E14-08] Projetar disponibilidade, backup e recuperação",
+    "body": "## Objetivo\nDefinir rto/rpo por contrato, backups cifrados e teste de restore, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Definir rto/rpo por contrato, backups cifrados e teste de restore.\n- [ ] Incident response.\n- [ ] Plano de continuidade.\n\n## Critério de aceite\n- [ ] Restore ensaiado e resultados atendem metas pactuadas.\n\n## Dependências\nE14-06,E04-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-08.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:piloto",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-09",
+    "title": "[E14-09] Realizar UAT e piloto controlado com cliente",
+    "body": "## Objetivo\nValidar 10 jornadas reais anonimizadas, treinamento e observação, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Validar 10 jornadas reais anonimizadas, treinamento e observação.\n- [ ] Coletar defeitos e tempo de tarefa.\n- [ ] Gate go/no-go.\n\n## Critério de aceite\n- [ ] Termo UAT e plano de contingência aprovados, bloqueadores zerados.\n\n## Dependências\nE14-03,E14-04,E14-05,E14-08\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-09.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:piloto",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  },
+  {
+    "id": "E14-10",
+    "title": "[E14-10] Preparar lançamento e ciclo contínuo de feedback",
+    "body": "## Objetivo\nPublicar docs, changelog, suporte, roadmap, métricas de adoção e processo de triagem, entregando resultado verificável para qualidade.\n\n## Checklist\n- [ ] Publicar docs, changelog, suporte, roadmap, métricas de adoção e processo de triagem.\n- [ ] Revisar pós-piloto.\n- [ ] Documentar cenários-limite, riscos e testes de regressão.\n\n## Critério de aceite\n- [ ] Primeiro release tem playbook, rollback, incidentes e priorização de feedback.\n\n## Dependências\nE14-09,E13-07\n\n## Evidências\nSalvar relatório de implementação/teste em `evidencias/E14-10.md` e separar observado de inferido para achados REA.\n\n## Qualidade\nCumprir Definition of Done, políticas de acesso/LGPD e testes aplicáveis.\n\n## Referência de excelência\nMicrosoft Well-Architected\n",
+    "labels": [
+      "epic:E14",
+      "fase:evolução",
+      "prio:P1",
+      "tipo:implementação",
+      "modulo:qualidade"
+    ]
+  }
+]

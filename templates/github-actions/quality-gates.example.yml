@@ -1,0 +1,32 @@
+# EXEMPLO — mover para .github/workflows/quality.yml APÓS criar o monorepo.
+# Não considerar este pipeline executado ou funcional enquanto scripts não existirem.
+name: quality-gates
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:unit:coverage
+      - run: pnpm test:integration
+      - run: pnpm openapi:lint
+      - run: pnpm orval:generate
+      - run: git diff --exit-code -- apps/web/src/api/generated apps/web/src/api/models
+      - run: pnpm storybook:test
+      - run: pnpm playwright install --with-deps
+      - run: pnpm test:e2e:p0
+      - run: pnpm security:scan

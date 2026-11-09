@@ -1,0 +1,1114 @@
+{
+  "version": "0.1",
+  "generated_from": "backlog/CARDS-DADOS.json",
+  "note": "All specs DRAFT and not approved",
+  "cards": [
+    {
+      "card_id": "E00-01",
+      "title": "Definir ICP e segmentos educacionais",
+      "spec": "specs/cards/E00-01.md",
+      "card": "cards/E00-01.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E00-02",
+      "title": "Mapear jornadas e tarefas críticas",
+      "spec": "specs/cards/E00-02.md",
+      "card": "cards/E00-02.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E00-03",
+      "title": "Construir benchmark funcional F10 x líderes",
+      "spec": "specs/cards/E00-03.md",
+      "card": "cards/E00-03.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E00-04",
+      "title": "Definir proposta de valor e diferenciais",
+      "spec": "specs/cards/E00-04.md",
+      "card": "cards/E00-04.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E00-05",
+      "title": "Estabelecer KPIs de produto e operação",
+      "spec": "specs/cards/E00-05.md",
+      "card": "cards/E00-05.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E00-06",
+      "title": "Delimitar MVP, fases e riscos",
+      "spec": "specs/cards/E00-06.md",
+      "card": "cards/E00-06.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E01-01",
+      "title": "Autorizar escopo e regras da investigação",
+      "spec": "specs/cards/E01-01.md",
+      "card": "cards/E01-01.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E01-02",
+      "title": "Configurar REA em ambiente isolado",
+      "spec": "specs/cards/E01-02.md",
+      "card": "cards/E01-02.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E01-03",
+      "title": "Criar protocolo de evidências",
+      "spec": "specs/cards/E01-03.md",
+      "card": "cards/E01-03.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E01-04",
+      "title": "Inventariar navegação e papéis",
+      "spec": "specs/cards/E01-04.md",
+      "card": "cards/E01-04.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E01-05",
+      "title": "Investigar fluxo de leads até matrícula",
+      "spec": "specs/cards/E01-05.md",
+      "card": "cards/E01-05.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E01-06",
+      "title": "Investigar secretaria e dados acadêmicos",
+      "spec": "specs/cards/E01-06.md",
+      "card": "cards/E01-06.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E01-07",
+      "title": "Investigar financeiro pela interface",
+      "spec": "specs/cards/E01-07.md",
+      "card": "cards/E01-07.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E01-08",
+      "title": "Investigar pedagógico e presença",
+      "spec": "specs/cards/E01-08.md",
+      "card": "cards/E01-08.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E01-09",
+      "title": "Mapear integrações somente por vias autorizadas",
+      "spec": "specs/cards/E01-09.md",
+      "card": "cards/E01-09.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E01-10",
+      "title": "Consolidar referência funcional clean-room",
+      "spec": "specs/cards/E01-10.md",
+      "card": "cards/E01-10.md",
+      "status": "DRAFT",
+      "phase": "Descoberta",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-01",
+      "title": "Auditar UX atual e tarefas de alta frequência",
+      "spec": "specs/cards/E02-01.md",
+      "card": "cards/E02-01.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-02",
+      "title": "Desenhar arquitetura de informação por função",
+      "spec": "specs/cards/E02-02.md",
+      "card": "cards/E02-02.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-03",
+      "title": "Definir identidade visual exclusiva e tokens",
+      "spec": "specs/cards/E02-03.md",
+      "card": "cards/E02-03.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-04",
+      "title": "Construir componentes do design system",
+      "spec": "specs/cards/E02-04.md",
+      "card": "cards/E02-04.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-05",
+      "title": "Projetar centro de trabalho e dashboards por papel",
+      "spec": "specs/cards/E02-05.md",
+      "card": "cards/E02-05.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-06",
+      "title": "Projetar busca universal e comandos rápidos",
+      "spec": "specs/cards/E02-06.md",
+      "card": "cards/E02-06.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-07",
+      "title": "Projetar experiências responsivas e acessíveis",
+      "spec": "specs/cards/E02-07.md",
+      "card": "cards/E02-07.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E02-08",
+      "title": "Validar UI com usuários antes de codificar",
+      "spec": "specs/cards/E02-08.md",
+      "card": "cards/E02-08.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-01",
+      "title": "Publicar ADRs e limites de arquitetura",
+      "spec": "specs/cards/E03-01.md",
+      "card": "cards/E03-01.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E03-02",
+      "title": "Criar monorepo e padrões de engenharia",
+      "spec": "specs/cards/E03-02.md",
+      "card": "cards/E03-02.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E03-03",
+      "title": "Definir bounded contexts e dependências",
+      "spec": "specs/cards/E03-03.md",
+      "card": "cards/E03-03.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E03-04",
+      "title": "Construir isolamento multi-tenant multiunidade",
+      "spec": "specs/cards/E03-04.md",
+      "card": "cards/E03-04.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E03-05",
+      "title": "Definir esquema relacional e migrations seguras",
+      "spec": "specs/cards/E03-05.md",
+      "card": "cards/E03-05.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E03-06",
+      "title": "Criar padrões transacionais e outbox",
+      "spec": "specs/cards/E03-06.md",
+      "card": "cards/E03-06.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-07",
+      "title": "Criar workers, filas e retries",
+      "spec": "specs/cards/E03-07.md",
+      "card": "cards/E03-07.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-08",
+      "title": "Padronizar APIs versionadas e contratos",
+      "spec": "specs/cards/E03-08.md",
+      "card": "cards/E03-08.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-09",
+      "title": "Implementar configuração, secrets e feature flags",
+      "spec": "specs/cards/E03-09.md",
+      "card": "cards/E03-09.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-10",
+      "title": "Criar armazenamento de arquivos e antivírus",
+      "spec": "specs/cards/E03-10.md",
+      "card": "cards/E03-10.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-11",
+      "title": "Implementar pesquisa indexada com ACL",
+      "spec": "specs/cards/E03-11.md",
+      "card": "cards/E03-11.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E03-12",
+      "title": "Preparar internacionalização e regionalização",
+      "spec": "specs/cards/E03-12.md",
+      "card": "cards/E03-12.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E04-01",
+      "title": "Modelar ameaças e riscos do ERP escolar",
+      "spec": "specs/cards/E04-01.md",
+      "card": "cards/E04-01.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E04-02",
+      "title": "Implementar autenticação segura e sessões",
+      "spec": "specs/cards/E04-02.md",
+      "card": "cards/E04-02.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E04-03",
+      "title": "Projetar roles, policies e segregação de funções",
+      "spec": "specs/cards/E04-03.md",
+      "card": "cards/E04-03.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E04-04",
+      "title": "Implementar autorização em todos os canais",
+      "spec": "specs/cards/E04-04.md",
+      "card": "cards/E04-04.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E04-05",
+      "title": "Implementar trilha de auditoria imutável logicamente",
+      "spec": "specs/cards/E04-05.md",
+      "card": "cards/E04-05.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E04-06",
+      "title": "Definir programa LGPD e dados de menores",
+      "spec": "specs/cards/E04-06.md",
+      "card": "cards/E04-06.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E04-07",
+      "title": "Preparar criptografia e gestão de segredos",
+      "spec": "specs/cards/E04-07.md",
+      "card": "cards/E04-07.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E04-08",
+      "title": "Definir política de exportação, retenção e exclusão",
+      "spec": "specs/cards/E04-08.md",
+      "card": "cards/E04-08.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E04-09",
+      "title": "Criar gates de segurança OWASP ASVS",
+      "spec": "specs/cards/E04-09.md",
+      "card": "cards/E04-09.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E05-01",
+      "title": "Modelar pessoas, alunos e responsáveis",
+      "spec": "specs/cards/E05-01.md",
+      "card": "cards/E05-01.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E05-02",
+      "title": "Cadastrar organizações e unidades escolares",
+      "spec": "specs/cards/E05-02.md",
+      "card": "cards/E05-02.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E05-03",
+      "title": "Definir calendário letivo, cursos e períodos",
+      "spec": "specs/cards/E05-03.md",
+      "card": "cards/E05-03.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E05-04",
+      "title": "Construir cadastro completo com validação",
+      "spec": "specs/cards/E05-04.md",
+      "card": "cards/E05-04.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E05-05",
+      "title": "Implementar matrículas, rematrículas e status",
+      "spec": "specs/cards/E05-05.md",
+      "card": "cards/E05-05.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E05-06",
+      "title": "Gerenciar contratos, consentimentos e anexos",
+      "spec": "specs/cards/E05-06.md",
+      "card": "cards/E05-06.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E05-07",
+      "title": "Controlar qualidade e deduplicação de dados",
+      "spec": "specs/cards/E05-07.md",
+      "card": "cards/E05-07.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E06-01",
+      "title": "Cadastrar leads com origem e consentimento",
+      "spec": "specs/cards/E06-01.md",
+      "card": "cards/E06-01.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E06-02",
+      "title": "Construir funis configuráveis e Kanban",
+      "spec": "specs/cards/E06-02.md",
+      "card": "cards/E06-02.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E06-03",
+      "title": "Criar tarefas, agenda e distribuição de leads",
+      "spec": "specs/cards/E06-03.md",
+      "card": "cards/E06-03.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E06-04",
+      "title": "Criar propostas e tabela de preços versionada",
+      "spec": "specs/cards/E06-04.md",
+      "card": "cards/E06-04.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E06-05",
+      "title": "Converter oportunidade em matrícula",
+      "spec": "specs/cards/E06-05.md",
+      "card": "cards/E06-05.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E06-06",
+      "title": "Gerenciar comissões e metas comerciais",
+      "spec": "specs/cards/E06-06.md",
+      "card": "cards/E06-06.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E06-07",
+      "title": "Medir funil, CAC e canais",
+      "spec": "specs/cards/E06-07.md",
+      "card": "cards/E06-07.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E06-08",
+      "title": "Mapear automações comerciais seguras",
+      "spec": "specs/cards/E06-08.md",
+      "card": "cards/E06-08.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-01",
+      "title": "Modelar contas a receber, pagar e centros de custo",
+      "spec": "specs/cards/E07-01.md",
+      "card": "cards/E07-01.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E07-02",
+      "title": "Definir subledger e reconciliação financeira",
+      "spec": "specs/cards/E07-02.md",
+      "card": "cards/E07-02.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E07-03",
+      "title": "Gerar mensalidades, parcelas e recorrências",
+      "spec": "specs/cards/E07-03.md",
+      "card": "cards/E07-03.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E07-04",
+      "title": "Integrar Pix via PSP oficial",
+      "spec": "specs/cards/E07-04.md",
+      "card": "cards/E07-04.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E07-05",
+      "title": "Integrar boleto e cobrança bancária",
+      "spec": "specs/cards/E07-05.md",
+      "card": "cards/E07-05.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-06",
+      "title": "Processar baixas, estornos e chargebacks",
+      "spec": "specs/cards/E07-06.md",
+      "card": "cards/E07-06.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-07",
+      "title": "Implementar renegociação e acordos",
+      "spec": "specs/cards/E07-07.md",
+      "card": "cards/E07-07.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-08",
+      "title": "Criar conciliação e fechamento de caixa",
+      "spec": "specs/cards/E07-08.md",
+      "card": "cards/E07-08.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-09",
+      "title": "Criar indicadores de inadimplência e aging",
+      "spec": "specs/cards/E07-09.md",
+      "card": "cards/E07-09.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E07-10",
+      "title": "Planejar notas fiscais e conformidade tributária",
+      "spec": "specs/cards/E07-10.md",
+      "card": "cards/E07-10.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E08-01",
+      "title": "Estruturar turmas, ofertas, professores e capacidade",
+      "spec": "specs/cards/E08-01.md",
+      "card": "cards/E08-01.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E08-02",
+      "title": "Criar grade, horários e calendários de aula",
+      "spec": "specs/cards/E08-02.md",
+      "card": "cards/E08-02.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E08-03",
+      "title": "Implementar chamada e presença auditável",
+      "spec": "specs/cards/E08-03.md",
+      "card": "cards/E08-03.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E08-04",
+      "title": "Projetar chamada offline com sincronização",
+      "spec": "specs/cards/E08-04.md",
+      "card": "cards/E08-04.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E08-05",
+      "title": "Definir avaliações, notas e aprovação",
+      "spec": "specs/cards/E08-05.md",
+      "card": "cards/E08-05.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E08-06",
+      "title": "Criar diário de classe e atividades",
+      "spec": "specs/cards/E08-06.md",
+      "card": "cards/E08-06.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E08-07",
+      "title": "Gerar certificados e documentos acadêmicos",
+      "spec": "specs/cards/E08-07.md",
+      "card": "cards/E08-07.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E08-08",
+      "title": "Gerenciar transferência, trancamento e conclusão",
+      "spec": "specs/cards/E08-08.md",
+      "card": "cards/E08-08.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E09-01",
+      "title": "Definir matriz de eventos e comunicações",
+      "spec": "specs/cards/E09-01.md",
+      "card": "cards/E09-01.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E09-02",
+      "title": "Construir templates versionados e variáveis",
+      "spec": "specs/cards/E09-02.md",
+      "card": "cards/E09-02.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E09-03",
+      "title": "Integrar mensageria por provedores oficiais",
+      "spec": "specs/cards/E09-03.md",
+      "card": "cards/E09-03.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E09-04",
+      "title": "Criar inbox unificada com atribuição",
+      "spec": "specs/cards/E09-04.md",
+      "card": "cards/E09-04.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E09-05",
+      "title": "Criar campanhas segmentadas com limites",
+      "spec": "specs/cards/E09-05.md",
+      "card": "cards/E09-05.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E09-06",
+      "title": "Criar preferências e central de notificações",
+      "spec": "specs/cards/E09-06.md",
+      "card": "cards/E09-06.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-01",
+      "title": "Criar portal do aluno com dados essenciais",
+      "spec": "specs/cards/E10-01.md",
+      "card": "cards/E10-01.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-02",
+      "title": "Criar portal do responsável e pagador",
+      "spec": "specs/cards/E10-02.md",
+      "card": "cards/E10-02.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-03",
+      "title": "Disponibilizar pagamentos e segunda via self-service",
+      "spec": "specs/cards/E10-03.md",
+      "card": "cards/E10-03.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-04",
+      "title": "Publicar PWA responsivo com offline controlado",
+      "spec": "specs/cards/E10-04.md",
+      "card": "cards/E10-04.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-05",
+      "title": "Especificar AVA e conteúdo didático",
+      "spec": "specs/cards/E10-05.md",
+      "card": "cards/E10-05.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E10-06",
+      "title": "Criar portal docente e tarefas pedagógicas",
+      "spec": "specs/cards/E10-06.md",
+      "card": "cards/E10-06.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-01",
+      "title": "Construir catálogo de métricas e fontes",
+      "spec": "specs/cards/E11-01.md",
+      "card": "cards/E11-01.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-02",
+      "title": "Criar camada semântica e governança BI",
+      "spec": "specs/cards/E11-02.md",
+      "card": "cards/E11-02.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-03",
+      "title": "Criar dashboards acionáveis por perfil",
+      "spec": "specs/cards/E11-03.md",
+      "card": "cards/E11-03.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-04",
+      "title": "Construir alertas e detecção de anomalias",
+      "spec": "specs/cards/E11-04.md",
+      "card": "cards/E11-04.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-05",
+      "title": "Implementar workflow builder com aprovações",
+      "spec": "specs/cards/E11-05.md",
+      "card": "cards/E11-05.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-06",
+      "title": "Projetar copiloto IA com RAG e autorização",
+      "spec": "specs/cards/E11-06.md",
+      "card": "cards/E11-06.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E11-07",
+      "title": "Criar recomendações explicáveis e opt-in",
+      "spec": "specs/cards/E11-07.md",
+      "card": "cards/E11-07.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E12-01",
+      "title": "Mapear integrações e conectores prioritários",
+      "spec": "specs/cards/E12-01.md",
+      "card": "cards/E12-01.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E12-02",
+      "title": "Criar importador CSV/XLSX com prévia",
+      "spec": "specs/cards/E12-02.md",
+      "card": "cards/E12-02.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E12-03",
+      "title": "Definir estratégia de migração do legado",
+      "spec": "specs/cards/E12-03.md",
+      "card": "cards/E12-03.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E12-04",
+      "title": "Implementar ensaio de migração e conciliação",
+      "spec": "specs/cards/E12-04.md",
+      "card": "cards/E12-04.md",
+      "status": "DRAFT",
+      "phase": "Piloto",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E12-05",
+      "title": "Construir plataforma de webhooks e adapters",
+      "spec": "specs/cards/E12-05.md",
+      "card": "cards/E12-05.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E12-06",
+      "title": "Criar API pública e portal de desenvolvedor",
+      "spec": "specs/cards/E12-06.md",
+      "card": "cards/E12-06.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E12-07",
+      "title": "Planejar portabilidade e exportação completa",
+      "spec": "specs/cards/E12-07.md",
+      "card": "cards/E12-07.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E12-08",
+      "title": "Homologar provedores por contrato e ambiente",
+      "spec": "specs/cards/E12-08.md",
+      "card": "cards/E12-08.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E12-09",
+      "title": "Monitorar qualidade e contratos de integração",
+      "spec": "specs/cards/E12-09.md",
+      "card": "cards/E12-09.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E13-01",
+      "title": "Definir catálogo de módulos vendáveis",
+      "spec": "specs/cards/E13-01.md",
+      "card": "cards/E13-01.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E13-02",
+      "title": "Implementar entitlements por tenant e unidade",
+      "spec": "specs/cards/E13-02.md",
+      "card": "cards/E13-02.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E13-03",
+      "title": "Criar planos, add-ons e limites transparentes",
+      "spec": "specs/cards/E13-03.md",
+      "card": "cards/E13-03.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E13-04",
+      "title": "Preparar trials, upgrade e downgrade seguros",
+      "spec": "specs/cards/E13-04.md",
+      "card": "cards/E13-04.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E13-05",
+      "title": "Implementar medição de consumo e quotas",
+      "spec": "specs/cards/E13-05.md",
+      "card": "cards/E13-05.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E13-06",
+      "title": "Criar faturamento da assinatura SaaS",
+      "spec": "specs/cards/E13-06.md",
+      "card": "cards/E13-06.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E13-07",
+      "title": "Construir console de suporte e provisionamento",
+      "spec": "specs/cards/E13-07.md",
+      "card": "cards/E13-07.md",
+      "status": "DRAFT",
+      "phase": "Piloto",
+      "priority": "P2"
+    },
+    {
+      "card_id": "E14-01",
+      "title": "Definir pirâmide de testes e Definition of Done",
+      "spec": "specs/cards/E14-01.md",
+      "card": "cards/E14-01.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E14-02",
+      "title": "Construir CI com gates de qualidade",
+      "spec": "specs/cards/E14-02.md",
+      "card": "cards/E14-02.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E14-03",
+      "title": "Criar testes E2E de jornadas cross-module",
+      "spec": "specs/cards/E14-03.md",
+      "card": "cards/E14-03.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E14-04",
+      "title": "Criar testes de propriedade para regras financeiras",
+      "spec": "specs/cards/E14-04.md",
+      "card": "cards/E14-04.md",
+      "status": "DRAFT",
+      "phase": "MVP",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E14-05",
+      "title": "Definir baseline e testes de carga por jornada",
+      "spec": "specs/cards/E14-05.md",
+      "card": "cards/E14-05.md",
+      "status": "DRAFT",
+      "phase": "Piloto",
+      "priority": "P0"
+    },
+    {
+      "card_id": "E14-06",
+      "title": "Criar pipeline de deploy e rollback",
+      "spec": "specs/cards/E14-06.md",
+      "card": "cards/E14-06.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E14-07",
+      "title": "Instrumentar observabilidade e suporte",
+      "spec": "specs/cards/E14-07.md",
+      "card": "cards/E14-07.md",
+      "status": "DRAFT",
+      "phase": "Fundação",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E14-08",
+      "title": "Projetar disponibilidade, backup e recuperação",
+      "spec": "specs/cards/E14-08.md",
+      "card": "cards/E14-08.md",
+      "status": "DRAFT",
+      "phase": "Piloto",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E14-09",
+      "title": "Realizar UAT e piloto controlado com cliente",
+      "spec": "specs/cards/E14-09.md",
+      "card": "cards/E14-09.md",
+      "status": "DRAFT",
+      "phase": "Piloto",
+      "priority": "P1"
+    },
+    {
+      "card_id": "E14-10",
+      "title": "Preparar lançamento e ciclo contínuo de feedback",
+      "spec": "specs/cards/E14-10.md",
+      "card": "cards/E14-10.md",
+      "status": "DRAFT",
+      "phase": "Evolução",
+      "priority": "P1"
+    }
+  ]
+}
