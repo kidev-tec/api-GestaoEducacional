@@ -6,6 +6,7 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifyApiReference from '@scalar/fastify-api-reference';
+import cors from '@fastify/cors';
 import type { Pool } from 'pg';
 import {
   withTransaction,
@@ -20,6 +21,8 @@ import {
 export interface BuildOptions {
   pool: Pool;
   logger?: boolean;
+  /** Origens permitidas para CORS (dev: Vite 5173). */
+  corsOrigins?: string[];
 }
 
 const TENANT_HEADER = 'x-tenant-id';
@@ -38,6 +41,10 @@ function mapDomainError(e: unknown): { status: number; message: string } {
 
 export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? false });
+
+  await app.register(cors, {
+    origin: opts.corsOrigins ?? ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  });
 
   await app.register(fastifySwagger, {
     openapi: {
