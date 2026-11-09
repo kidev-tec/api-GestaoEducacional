@@ -1,0 +1,23 @@
+# QA G2 — evidências (executado por orchestrator em takeover, 2026-11-08T22:16:34-03:00)
+
+## 1. Re-execução da suíte + coverage
+      Tests  39 passed (39)
+   Start at  22:16:35
+   Duration  1.44s (transform 469ms, setup 0ms, collect 789ms, tests 92ms, environment 2ms, prepare 2.21s)
+
+ % Coverage report from v8
+------------------|---------|----------|---------|---------|-------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------|---------|----------|---------|---------|-------------------
+All files         |     100 |      100 |     100 |     100 |                   
+ audit.ts         |     100 |      100 |     100 |     100 |                   
+ authorization.ts |     100 |      100 |     100 |     100 |                   
+ entitlements.ts  |     100 |      100 |     100 |     100 |                   
+ index.ts         |     100 |      100 |     100 |     100 |                   
+ outbox.ts        |     100 |      100 |     100 |     100 |                   
+ tenancy.ts       |     100 |      100 |     100 |     100 |                   
+------------------|---------|----------|---------|---------|-------------------
+
+## 2. Mutation gate (Stryker, break=95)
+All files         |  97.44 |   97.44 |      152 |         0 |          4 |        0 |        0 |
+[32m22:17:04 (993250) INFO MutationTestReportHelper[39m Final mutation score of 97.44 is greater than or equal to break threshold 95

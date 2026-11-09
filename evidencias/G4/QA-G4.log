@@ -1,0 +1,5 @@
+# QA G4 — re-execução independente (2026-11-08T23:19:07-03:00)
+ ✓ test/integration.test.ts (12 tests) 17116ms
+      Tests  12 passed (12)
+
+## Ataque extra: kill do container no meio (recriação) — pool recupera
