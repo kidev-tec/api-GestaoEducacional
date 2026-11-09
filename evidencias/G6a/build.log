@@ -1,0 +1,13 @@
+
+> @erp/web@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v6.4.5 building for production...
+transforming...
+✓ 35 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-DSOiVXJk.css    1.57 kB │ gzip:  0.64 kB
+dist/assets/index-ZRYVMSvl.js   233.67 kB │ gzip: 73.04 kB
+✓ built in 2.79s

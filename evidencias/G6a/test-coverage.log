@@ -1,0 +1,41 @@
+
+> @erp/web@0.1.0 test
+> vitest run --coverage
+
+
+ RUN  v3.2.7 /media/rafaelejosi/NovoVolume/erp-platform/apps/web
+      Coverage enabled with v8
+
+(node:57693) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57737) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57714) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57709) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ test/client.test.ts (8 tests) 53ms
+ ✓ test/domain.test.ts (7 tests) 76ms
+ ✓ test/data-hooks.test.tsx (4 tests) 587ms
+   ✓ hooks dados OpenAPI > tenant escolhido alimenta o header x-tenant-id das requisições reais  380ms
+ ✓ test/hooks.test.tsx (10 tests) 671ms
+   ✓ useTenant (RF-015) > default A quando storage vazio, e sincroniza o client  410ms
+
+ Test Files  4 passed (4)
+      Tests  29 passed (29)
+   Start at  09:00:11
+   Duration  3.67s (transform 545ms, setup 142ms, collect 1.35s, tests 1.39s, environment 4.63s, prepare 1.17s)
+
+ % Coverage report from v8
+---------------|---------|----------|---------|---------|-------------------
+File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------|---------|----------|---------|---------|-------------------
+All files      |     100 |      100 |     100 |     100 |                   
+ api-client    |     100 |      100 |     100 |     100 |                   
+  client.ts    |     100 |      100 |     100 |     100 |                   
+ hooks         |     100 |      100 |     100 |     100 |                   
+  useData.ts   |     100 |      100 |     100 |     100 |                   
+  useTenant.ts |     100 |      100 |     100 |     100 |                   
+ lib           |     100 |      100 |     100 |     100 |                   
+  domain.ts    |     100 |      100 |     100 |     100 |                   
+---------------|---------|----------|---------|---------|-------------------
