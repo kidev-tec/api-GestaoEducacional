@@ -6,5 +6,5 @@
     "module": "ESNext",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "test/**/*.d.ts", "../../scripts/*.d.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "test/**/*.d.ts", "../../scripts/*.d.ts", "../../packages/infra/src/auth-repositories.ts"]
 }

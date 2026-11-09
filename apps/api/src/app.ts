@@ -22,6 +22,36 @@ import {
   resolveRequestId,
   safeLogLine,
 } from './obs.js';
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+  requireAuth,
+  requireRole,
+  type AuthenticatedRequest,
+} from './auth.js';
+import { EmailTakenError, SessionInvalidError } from '../../../packages/infra/src/auth-repositories.js';
+
+const LOGIN_WINDOW_MS = 60_000;
+const LOGIN_ATTEMPTS_PER_WINDOW = 10;
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+
+function loginAllowed(ip: string): boolean {
+  const now = Date.now();
+  const current = loginAttempts.get(ip);
+  if (!current || current.resetAt <= now) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + LOGIN_WINDOW_MS });
+    return true;
+  }
+  if (current.count >= LOGIN_ATTEMPTS_PER_WINDOW) return false;
+  current.count += 1;
+  return true;
+}
+
+/** Reset do limiter em memória (uso: testes de integração e administrador). */
+export function resetLoginLimiter(): void {
+  loginAttempts.clear();
+}
 
 export interface BuildOptions {
   pool: Pool;
@@ -69,6 +99,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 
   app.decorateRequest('tenantId', '');
   app.decorateRequest('requestId', '');
+  app.decorateRequest('user', null);
 
   // RF-018: request-id sempre presente (UUID válido aceito, senão gerado).
   app.addHook('onRequest', async (request, reply) => {
@@ -101,19 +132,12 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.addHook('onRequest', async (request, reply) => {
-    // /health, /ready e /docs são públicos (sem tenant)
-    if (request.url === '/health' || request.url === '/ready' || request.url.startsWith('/docs') || request.url === '/openapi.json') {
-      return;
-    }
-    const tenant = request.headers[TENANT_HEADER];
-    if (typeof tenant !== 'string' || tenant.length === 0) {
-      return reply.status(400).send({ error: `missing ${TENANT_HEADER} header` });
-    }
-    const known = await opts.pool.query('SELECT id FROM tenants WHERE id = $1', [tenant]);
-    if (!known.rowCount) {
-      return reply.status(401).send({ error: 'unknown tenant' });
-    }
-    request.tenantId = tenant;
+    const path = request.url.split('?')[0] ?? '';
+    // Superfícies públicas: health/docs e auth. Demais rotas só via sessão.
+    if (path === '/health' || path === '/ready' || path.startsWith('/docs') || path === '/openapi.json' || path.startsWith('/v1/auth/')) return;
+    await requireAuth(opts.pool, request, reply);
+    if (reply.sent) return;
+    request.tenantId = (request as AuthenticatedRequest).user.tenantId;
   });
 
   app.setNotFoundHandler((_req, reply) => {
@@ -122,11 +146,64 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 
   app.get('/health', async () => ({ status: 'ok' }));
 
+  // E04-A review: registro é ADMIN-ONLY (SPEC §4) — sem auto-registro público.
+  app.post('/v1/auth/register', {
+    preHandler: [async (request, reply) => {
+      await requireAuth(opts.pool, request, reply);
+      if (reply.sent) return;
+      await requireRole('admin')(request, reply);
+    }],
+  }, async (request, reply) => {
+    const body = request.body as { email?: string; password?: string; role?: 'admin' | 'operator' | 'viewer' };
+    const role = body.role ?? 'viewer';
+    if (!body.email || !body.password || !['admin', 'operator', 'viewer'].includes(role)) {
+      return reply.status(400).send({ error: 'invalid registration' });
+    }
+    try {
+      // tenant do novo usuário = tenant do admin criador (sessão), nunca do body
+      const user = await registerUser(opts.pool, {
+        tenantId: (request as AuthenticatedRequest).user.tenantId, email: body.email, password: body.password, role,
+      });
+      return reply.status(201).send({ userId: user.id });
+    } catch (error) {
+      if (error instanceof EmailTakenError || error instanceof Error) return reply.status(400).send({ error: 'invalid registration' });
+      throw error;
+    }
+  });
+
+  app.post('/v1/auth/login', async (request, reply) => {
+    if (!loginAllowed(request.ip)) return reply.status(429).send({ error: 'too many requests' });
+    const body = request.body as { email?: string; password?: string };
+    if (!body.email || !body.password) return reply.status(401).send({ error: 'unauthorized' });
+    try {
+      return reply.send(await loginUser(opts.pool, body.email, body.password));
+    } catch (error) {
+      if (error instanceof SessionInvalidError) return reply.status(401).send({ error: 'unauthorized' });
+      throw error;
+    }
+  });
+
+  app.post('/v1/auth/logout', async (request, reply) => {
+    await requireAuth(opts.pool, request, reply);
+    if (reply.sent) return;
+    await logoutUser(opts.pool, request);
+    return reply.status(204).send();
+  });
+
+  app.get('/v1/auth/me', async (request, reply) => {
+    await requireAuth(opts.pool, request, reply);
+    if (reply.sent) return;
+    return reply.send({ user: (request as AuthenticatedRequest).user });
+  });
+
   app.get('/openapi.json', async (_req, reply) => {
     return reply.send(app.swagger());
   });
 
+  const writeGuard = requireRole('admin', 'operator');
+
   app.post('/v1/enrollments', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Cria matrícula idempotente (Idempotency-Key header)',
       body: {
@@ -163,6 +240,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.post('/v1/enrollments/:id/transition', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Transiciona estado da matrícula',
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
@@ -208,6 +286,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.post('/v1/ledger/entries', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Lança entrada no ledger (Idempotency-Key header)',
       body: {

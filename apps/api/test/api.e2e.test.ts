@@ -1,24 +1,41 @@
 /**
  * G5 — E2E da API HTTP real (Fastify inject) contra Postgres testcontainers.
- * Contrato: tenant obrigatório, erros de domínio → HTTP status, idempotência end-to-end,
- * adversarial HTTP (forjar tenant, replay paralelo, malformado, 404 sem vazamento).
+ * Contrato: sessão obrigatória (E04-A), erros de domínio → HTTP status, idempotência end-to-end,
+ * adversarial HTTP (cross-tenant por sessões distintas, replay paralelo, malformado, 404 sem vazamento).
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { startTestDb, type TestDb } from '@erp/infra/src/test-db.js';
-import { buildApp } from '../src/app.js';
+import { buildApp, resetLoginLimiter } from '../src/app.js';
 
 let db: TestDb;
 let app: FastifyInstance;
+const tokens: Record<string, string> = {};
 
+/** Headers de sessão do tenant (usuário viewer criado no beforeAll). */
 const H = (tenant: string, extra: Record<string, string> = {}) => ({
-  'x-tenant-id': tenant,
+  authorization: `Bearer ${tokens[tenant]}`,
   ...extra,
 });
 
 beforeAll(async () => {
   db = await startTestDb();
   app = await buildApp({ pool: db.pool });
+  resetLoginLimiter();
+  // E04-A review: registro é admin-only → seed direto no banco (bootstrap de teste)
+  const argon2 = await import('argon2');
+  const hash = await argon2.hash('correct-horse-123', { type: argon2.argon2id });
+  for (const tenant of ['A', 'B']) {
+    await db.pool.query(
+      'INSERT INTO users (id, tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',
+      [crypto.randomUUID(), tenant, `e2e-${tenant.toLowerCase()}@test`, hash, 'operator'],
+    );
+    const login = await app.inject({
+      method: 'POST', url: '/v1/auth/login',
+      payload: { email: `e2e-${tenant.toLowerCase()}@test`, password: 'correct-horse-123' },
+    });
+    tokens[tenant] = (login.json() as { token: string }).token;
+  }
 }, 120_000);
 
 afterAll(async () => {
@@ -61,14 +78,14 @@ describe('health & docs', () => {
   });
 });
 
-describe('tenant guard', () => {
-  it('sem header X-Tenant-Id → 400', async () => {
+describe('tenant guard (E04-A: sessão obrigatória)', () => {
+  it('sem bearer → 401', async () => {
     const res = await app.inject({ method: 'GET', url: '/v1/ledger/balance' });
-    expect(res.statusCode).toBe(400);
+    expect(res.statusCode).toBe(401);
   });
 
-  it('tenant inexistente → 401', async () => {
-    const res = await app.inject({ method: 'GET', url: '/v1/ledger/balance', headers: H('ghost') });
+  it('bearer inválido → 401', async () => {
+    const res = await app.inject({ method: 'GET', url: '/v1/ledger/balance', headers: { authorization: 'Bearer nope' } });
     expect(res.statusCode).toBe(401);
   });
 });
