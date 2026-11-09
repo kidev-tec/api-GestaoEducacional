@@ -1,0 +1,5 @@
+# QA G5 — re-execução independente (2026-11-08T23:40:51-03:00)
+ ✓ test/api.e2e.test.ts (16 tests) 17285ms
+      Tests  16 passed (16)
+
+typecheck: CLEAN
