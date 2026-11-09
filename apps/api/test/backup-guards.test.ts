@@ -8,6 +8,7 @@ import {
   assertRestoreConfirmed,
   pgDumpArgs,
   pgRestoreArgs,
+  buildToolEnv,
 } from '../../scripts/backup-local.mjs';
 
 const LOCAL = 'postgres://erp:secret@127.0.0.1:55432/erp_dev';
@@ -65,5 +66,25 @@ describe('args dos binários (spawn sem shell)', () => {
     const args = pgRestoreArgs(parseLocalDsn(LOCAL), '/tmp/erp.dump');
     expect(args).toContain('--clean');
     expect(args).toContain('--if-exists');
+  });
+});
+
+describe('buildToolEnv (review r1: override libpq bloqueado)', () => {
+  it('herda apenas allowlist (PATH/HOME/etc), NUNCA PGHOST/PGSERVICE/PGPASSFILE', () => {
+    process.env.PGHOST = 'attacker.example.com';
+    process.env.PGSERVICE = 'malicious';
+    process.env.PGPASSFILE = '/tmp/stolen-passfile';
+    try {
+      const env = buildToolEnv({ PGPASSWORD: 'dev' });
+      expect(env).not.toHaveProperty('PGHOST');
+      expect(env).not.toHaveProperty('PGSERVICE');
+      expect(env).not.toHaveProperty('PGPASSFILE');
+      expect(env.PGPASSWORD).toBe('dev');
+      expect(env.PATH).toBeDefined();
+    } finally {
+      delete process.env.PGHOST;
+      delete process.env.PGSERVICE;
+      delete process.env.PGPASSFILE;
+    }
   });
 });

@@ -57,6 +57,19 @@ describe('obs (RF-018 unidade)', () => {
     expect(parsed).not.toHaveProperty('body');
     expect(parsed).not.toHaveProperty('secret');
   });
+
+  it('tenant não-canônico vira [redacted] (log injection via header bloqueado)', () => {
+    for (const evil of ["a'; DROP--", 'tenant\ninjetado', '<script>', 'x'.repeat(200)]) {
+      const line = JSON.parse(safeLogLine({
+        requestId: 'r1', tenantId: evil, method: 'GET', route: '/x', status: 200, durationMs: 1,
+      }));
+      expect(line.tenantId).toBe('[redacted]');
+    }
+    const ok = JSON.parse(safeLogLine({
+      requestId: 'r1', tenantId: 'tenant-a', method: 'GET', route: '/x', status: 200, durationMs: 1,
+    }));
+    expect(ok.tenantId).toBe('tenant-a');
+  });
 });
 
 describe('GET /ready (RF-019, Postgres real)', () => {

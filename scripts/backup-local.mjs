@@ -70,8 +70,26 @@ export function pgRestoreArgs(dsn, inFile) {
   ];
 }
 
+/**
+ * Ambiente MÍNIMO para pg_dump/pg_restore: herdamos apenas PATH/HOME/LANG
+ * e o PGPASSWORD que nós mesmos definimos. Variáveis libpq de override
+ * (PGHOST, PGSERVICE, PGPASSFILE, PGSSLCERT etc.) NUNCA são herdadas —
+ * assim o DSN validado é a única fonte de conexão.
+ */
+const ENV_ALLOWLIST = ['PATH', 'HOME', 'LANG', 'LC_ALL', 'TMPDIR'];
+
+export function buildToolEnv(extra) {
+  const env = {};
+  for (const key of ENV_ALLOWLIST) {
+    const v = process.env[key];
+    if (v !== undefined) env[key] = v;
+  }
+  Object.assign(env, extra);
+  return env;
+}
+
 export function runLocal(tool, args, env) {
-  const result = spawnSync(tool, args, { env: { ...process.env, ...env }, stdio: 'inherit' });
+  const result = spawnSync(tool, args, { env: buildToolEnv(env), stdio: 'inherit' });
   if (result.error) {
     throw new Error(`${tool} não disponível no PATH (instale o cliente PostgreSQL)`);
   }

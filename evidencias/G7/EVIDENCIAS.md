@@ -39,3 +39,14 @@ Branch: `feat/g7-hardening` (base staging-local 76b370d). SPEC v1.2 congelada.
 - feat(web): DevBanner modo dev + diagnóstico offline (RF-020)
 - feat(scripts): backup/restore local-only (RF-021)
 - test: gates 100×4 (api 43, web 35, desktop 12)
+
+## Review independente r1 (cx/gpt-5.6-terra, deleg_1dedc6bc) → rework
+Verdict: CHANGES com 2 findings — ambos corrigidos neste commit:
+1. HIGH (backup-local.mjs): spawnSync herdava process.env → PGHOST/PGSERVICE/
+   PGPASSFILE poderiam redirecionar libpq. Fix: buildToolEnv com allowlist
+   (PATH/HOME/LANG/LC_ALL/TMPDIR) + PGPASSWORD próprio; teste prova que
+   PGHOST=attacker.example.com não vaza no env do tool.
+2. MEDIUM (obs.ts): tenant não validado ia pro log verbatim. Fix: regex
+   canônica [A-Za-z0-9][A-Za-z0-9_-]{0,63}; não-canônico → "[redacted]".
+   Teste cobre SQL injection, newline, <script>, overflow.
+Gates pós-rework: API 53/53 (100×4), tsc clean.
