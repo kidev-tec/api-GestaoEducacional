@@ -32,7 +32,7 @@ export async function withTransaction<T>(
     return result;
   } catch (e) {
     // ROLLBACK nunca esconde o erro original: falha de rollback é absorvida
-    // (conexão já está ruim; o pool descarta no release) e o erro real propaga.
+    // (.catch) e o erro real propaga; releaseOnce libera o client nos dois caminhos.
     await client.query('ROLLBACK').catch(() => {});
     releaseOnce();
     throw e;
