@@ -8,8 +8,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** Localiza packages/infra/migrations/001_init.sql subindo a árvore (independe de cwd). */
-function findMigration(): string {
-  let dir = process.cwd();
+function findMigration(startDir: string = process.cwd()): string {
+  let dir = startDir;
   for (let i = 0; i < 6; i++) {
     const candidate = join(dir, 'packages/infra/migrations/001_init.sql');
     try {
@@ -18,8 +18,10 @@ function findMigration(): string {
       dir = join(dir, '..');
     }
   }
-  throw new Error('packages/infra/migrations/001_init.sql não encontrado a partir de ' + process.cwd());
+  throw new Error('packages/infra/migrations/001_init.sql não encontrado a partir de ' + startDir);
 }
+
+export { findMigration };
 
 export interface TestDb {
   pool: Pool;
