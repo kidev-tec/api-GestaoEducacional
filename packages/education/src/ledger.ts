@@ -81,6 +81,10 @@ export class Ledger {
         // original inexistente ou de outro tenant: sem vazamento de existência
         throw new ReversalWithoutOriginError();
       }
+      // REVERSAL não é reversível: cadeias de reversão criariam lançamentos fantasma
+      if (original.type === 'REVERSAL') {
+        throw new Error('cannot reverse a reversal; reverse the original CHARGE/PAYMENT');
+      }
       // reversão explicita vínculo com valor oposto do original
       if (amount.cents !== -original.amountCents) {
         throw new Error('reversal amount must exactly negate the original entry');
@@ -89,7 +93,7 @@ export class Ledger {
 
     const fingerprint = JSON.stringify([type, amountCents, opts.reverses ?? null]);
     if (opts.idempotencyKey) {
-      const previous = this.idempotency.get(opts.idempotencyKey);
+      const previous = this.idempotency.get(`${tenantCtx.tenantId}:${opts.idempotencyKey}`);
       if (previous) {
         if (previous.fingerprint !== fingerprint) {
           throw new IdempotencyConflictError(opts.idempotencyKey);
@@ -108,7 +112,7 @@ export class Ledger {
     });
     this.entries.push(entry);
     if (opts.idempotencyKey) {
-      this.idempotency.set(opts.idempotencyKey, { fingerprint, entryId: entry.id });
+      this.idempotency.set(`${tenantCtx.tenantId}:${opts.idempotencyKey}`, { fingerprint, entryId: entry.id });
     }
     this.audit.append({
       tenantId: tenantCtx.tenantId,
