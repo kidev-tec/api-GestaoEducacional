@@ -32,6 +32,16 @@ import {
 } from './auth.js';
 import { EmailTakenError, SessionInvalidError } from '../../../packages/infra/src/auth-repositories.js';
 import {
+  insertPlan,
+  listPlans,
+  generateTuition,
+  settleTuition,
+  cancelTuition,
+  listTuitions,
+  getTuition,
+  TuitionRuleError,
+} from '../../../packages/infra/src/tuition-repositories.js';
+import {
   getPerson,
   insertPerson,
   ConflictError,
@@ -82,11 +92,14 @@ const TENANT_HEADER = 'x-tenant-id';
 /** Mapeia erros de domínio para HTTP status sem vazar stack. */
 export function mapDomainError(e: unknown): { status: number; message: string } {
   const msg = e instanceof Error ? e.message : 'internal error';
-  if (e instanceof ConflictError || /different payload|conflict|already linked/i.test(msg)) return { status: 409, message: msg };
+  if (e instanceof ConflictError || /different payload|conflict|already linked|already generated/i.test(msg)) return { status: 409, message: msg };
   if (e instanceof NotFoundError || /not found|must reference the original|cannot reverse|parent unit/i.test(msg)) {
     return { status: 404, message: msg };
   }
-  if (e instanceof UnitCycleError || e instanceof GuardianRuleError || /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own/i.test(msg)) return { status: 422, message: msg };
+  if (
+    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError ||
+    /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer/i.test(msg)
+  ) return { status: 422, message: msg };
   if (/integer cents|denied/i.test(msg)) return { status: 400, message: msg };
   return { status: 500, message: 'internal error' };
 }
@@ -474,6 +487,127 @@ const uuid = { type: 'string' as const, format: 'uuid' as const };
     const { id } = request.params as { id: string };
     try {
       return { guardians: await listGuardians(opts.pool, request.tenantId, id) };
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  // ── E07-A: mensalidades ────────────────────────────────────────────────
+  const cents = { type: 'integer' as const, minimum: 1, maximum: 100_000_000 };
+  const referenceSchema = { type: 'string' as const, pattern: '^\\d{4}-(0[1-9]|1[0-2])$' };
+
+  app.post('/v1/tuition/plans', {
+    preHandler: [writeGuard],
+    schema: {
+      body: {
+        type: 'object',
+        required: ['name', 'amountCents', 'dueDay'],
+        additionalProperties: false,
+        properties: { name: str(120), amountCents: cents, dueDay: { type: 'integer', minimum: 1, maximum: 12 } },
+      },
+    },
+  }, async (request, reply) => {
+    const body = request.body as { name: string; amountCents: number; dueDay: number };
+    try {
+      const plan = await withTransaction(opts.pool, (c) =>
+        insertPlan(c, { tenantId: request.tenantId, name: body.name, amountCents: body.amountCents, dueDay: body.dueDay }),
+      );
+      return reply.status(201).send(plan);
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/tuition/plans', async (_request, reply) => {
+    return { plans: await listPlans(opts.pool, _request.tenantId) };
+  });
+
+  app.post('/v1/tuition/generate', {
+    preHandler: [writeGuard],
+    schema: {
+      body: {
+        type: 'object',
+        required: ['planId', 'studentId', 'reference'],
+        additionalProperties: false,
+        properties: { planId: uuid, studentId: uuid, reference: referenceSchema, dueDate: { type: 'string', format: 'date' } },
+      },
+    },
+  }, async (request, reply) => {
+    const body = request.body as { planId: string; studentId: string; reference: string; dueDate?: string };
+    try {
+      const tuition = await withTransaction(opts.pool, (c) =>
+        generateTuition(c, { tenantId: request.tenantId, planId: body.planId, studentId: body.studentId, reference: body.reference, ...(body.dueDate !== undefined && { dueDate: body.dueDate }) }),
+      );
+      return reply.status(201).send(tuition);
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.post('/v1/tuition/:id/settle', {
+    preHandler: [writeGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: uuid } },
+      body: {
+        type: 'object',
+        required: ['paymentAmountCents', 'idempotencyKey'],
+        additionalProperties: false,
+        properties: { paymentAmountCents: cents, idempotencyKey: { type: 'string', minLength: 1, maxLength: 200 } },
+      },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as { paymentAmountCents: number; idempotencyKey: string };
+    try {
+      const result = await withTransaction(opts.pool, (c) =>
+        settleTuition(c, { tenantId: request.tenantId, tuitionId: id, paymentAmountCents: body.paymentAmountCents, idempotencyKey: body.idempotencyKey }),
+      );
+      return reply.status(200).send({ tuition: result.tuition, ledgerEntryId: result.ledgerEntryId });
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.post('/v1/tuition/:id/cancel', {
+    preHandler: [writeGuard],
+    schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => cancelTuition(c, request.tenantId, id)));
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/tuition', {
+    schema: {
+      querystring: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          status: { type: 'string', enum: ['OPEN', 'SETTLED', 'CANCELED'] },
+          studentId: uuid,
+          reference: referenceSchema,
+        },
+      },
+    },
+  }, async (request) => {
+    const q = request.query as { status?: 'OPEN' | 'SETTLED' | 'CANCELED'; studentId?: string; reference?: string };
+    return { tuitions: await listTuitions(opts.pool, request.tenantId, q) };
+  });
+
+  app.get('/v1/tuition/:id', {
+    schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return await getTuition(opts.pool, request.tenantId, id);
     } catch (e) {
       const { status, message } = mapDomainError(e);
       return reply.status(status).send({ error: message });
