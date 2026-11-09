@@ -5,10 +5,21 @@
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Pool } from 'pg';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+/** Localiza packages/infra/migrations/001_init.sql subindo a árvore (independe de cwd). */
+function findMigration(): string {
+  let dir = process.cwd();
+  for (let i = 0; i < 6; i++) {
+    const candidate = join(dir, 'packages/infra/migrations/001_init.sql');
+    try {
+      return readFileSync(candidate, 'utf-8');
+    } catch {
+      dir = join(dir, '..');
+    }
+  }
+  throw new Error('packages/infra/migrations/001_init.sql não encontrado a partir de ' + process.cwd());
+}
 
 export interface TestDb {
   pool: Pool;
@@ -20,7 +31,7 @@ export async function startTestDb(): Promise<TestDb> {
   const container = await new PostgreSqlContainer('postgres:16-alpine').start();
   const pool = new Pool({ connectionString: container.getConnectionUri() });
 
-  const migration = readFileSync(join(process.cwd(), 'migrations/001_init.sql'), 'utf-8');
+  const migration = findMigration();
   // roda 2×: prova idempotência da migration (QG-3)
   await pool.query(migration);
   await pool.query(migration);
