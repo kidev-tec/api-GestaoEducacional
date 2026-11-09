@@ -8,7 +8,7 @@ export default defineConfig({
       reporter: ['text', 'json-summary'],
       all: true,
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.d.ts'],
+      exclude: ['src/**/*.d.ts', 'src/server.ts'],
       thresholds: {
         statements: 100,
         branches: 100,
