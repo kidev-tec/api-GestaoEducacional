@@ -29,3 +29,7 @@ universal (x64+arm64) pronta no repo; build num Mac: npx electron-builder --mac 
 ## Comandos
 - node scripts/release-manifest.mjs (gera manifest)
 - node scripts/verify-release.mjs (valida, EXIT 1 em divergência)
+
+## Release final
+- staging-local 626e129 → main 1107eb4 → tag anotada v0.1.0. Push NOT RUN (regra).
+- Loop G2..G8 ENCERRADO em 2026-11-09.
