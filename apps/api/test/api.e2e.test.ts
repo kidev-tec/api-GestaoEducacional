@@ -22,11 +22,14 @@ beforeAll(async () => {
   db = await startTestDb();
   app = await buildApp({ pool: db.pool });
   resetLoginLimiter();
+  // E04-A review: registro é admin-only → seed direto no banco (bootstrap de teste)
+  const argon2 = await import('argon2');
+  const hash = await argon2.hash('correct-horse-123', { type: argon2.argon2id });
   for (const tenant of ['A', 'B']) {
-    await app.inject({
-      method: 'POST', url: '/v1/auth/register',
-      payload: { tenantId: tenant, email: `e2e-${tenant.toLowerCase()}@test`, password: 'correct-horse-123' },
-    });
+    await db.pool.query(
+      'INSERT INTO users (id, tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',
+      [crypto.randomUUID(), tenant, `e2e-${tenant.toLowerCase()}@test`, hash, 'operator'],
+    );
     const login = await app.inject({
       method: 'POST', url: '/v1/auth/login',
       payload: { email: `e2e-${tenant.toLowerCase()}@test`, password: 'correct-horse-123' },

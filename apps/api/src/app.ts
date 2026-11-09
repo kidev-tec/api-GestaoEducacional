@@ -27,6 +27,7 @@ import {
   logoutUser,
   registerUser,
   requireAuth,
+  requireRole,
   type AuthenticatedRequest,
 } from './auth.js';
 import { EmailTakenError, SessionInvalidError } from '../../../packages/infra/src/auth-repositories.js';
@@ -145,15 +146,24 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 
   app.get('/health', async () => ({ status: 'ok' }));
 
-  app.post('/v1/auth/register', async (request, reply) => {
-    const body = request.body as { tenantId?: string; email?: string; password?: string; role?: 'admin' | 'operator' | 'viewer' };
-    if (!body.tenantId || !body.email || !body.password || (body.role !== undefined && body.role !== 'viewer')) {
+  // E04-A review: registro é ADMIN-ONLY (SPEC §4) — sem auto-registro público.
+  app.post('/v1/auth/register', {
+    preHandler: [async (request, reply) => {
+      await requireAuth(opts.pool, request, reply);
+      if (reply.sent) return;
+      await requireRole('admin')(request, reply);
+    }],
+  }, async (request, reply) => {
+    const body = request.body as { email?: string; password?: string; role?: 'admin' | 'operator' | 'viewer' };
+    const role = body.role ?? 'viewer';
+    if (!body.email || !body.password || !['admin', 'operator', 'viewer'].includes(role)) {
       return reply.status(400).send({ error: 'invalid registration' });
     }
-    const known = await opts.pool.query('SELECT id FROM tenants WHERE id = $1', [body.tenantId]);
-    if (!known.rowCount) return reply.status(400).send({ error: 'invalid registration' });
     try {
-      const user = await registerUser(opts.pool, { tenantId: body.tenantId, email: body.email, password: body.password, role: 'viewer' });
+      // tenant do novo usuário = tenant do admin criador (sessão), nunca do body
+      const user = await registerUser(opts.pool, {
+        tenantId: (request as AuthenticatedRequest).user.tenantId, email: body.email, password: body.password, role,
+      });
       return reply.status(201).send({ userId: user.id });
     } catch (error) {
       if (error instanceof EmailTakenError || error instanceof Error) return reply.status(400).send({ error: 'invalid registration' });
@@ -190,7 +200,10 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     return reply.send(app.swagger());
   });
 
+  const writeGuard = requireRole('admin', 'operator');
+
   app.post('/v1/enrollments', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Cria matrícula idempotente (Idempotency-Key header)',
       body: {
@@ -227,6 +240,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.post('/v1/enrollments/:id/transition', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Transiciona estado da matrícula',
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
@@ -272,6 +286,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   });
 
   app.post('/v1/ledger/entries', {
+    preHandler: [writeGuard],
     schema: {
       description: 'Lança entrada no ledger (Idempotency-Key header)',
       body: {

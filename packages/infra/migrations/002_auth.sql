@@ -1,9 +1,12 @@
 -- E04-A: autenticação real — usuários e sessões (idempotente)
+-- Review findings: id UUID (não TEXT) e email citext (único case-insensitive no banco).
 -- Senhas: argon2id (hash no app, nunca plaintext). Tokens: SHA-256 do token, nunca o token.
+CREATE EXTENSION IF NOT EXISTS citext;
+
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id TEXT NOT NULL REFERENCES tenants(id),
-  email TEXT NOT NULL UNIQUE,
+  email CITEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('admin','operator','viewer')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -11,8 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES users(id),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id),
   token_hash TEXT NOT NULL UNIQUE,
   expires_at TIMESTAMPTZ NOT NULL,
   revoked_at TIMESTAMPTZ,

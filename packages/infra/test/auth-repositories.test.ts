@@ -19,6 +19,7 @@ import {
   SessionInvalidError,
   UserNotFoundError,
 } from '../src/auth-repositories.js';
+import { randomUUID } from 'node:crypto';
 
 type Row = Record<string, unknown>;
 /** PoolClient fake: queries enfileiradas respondem em ordem. */
