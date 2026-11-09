@@ -24,6 +24,15 @@ const actor = (id: string, tenantId: string, roles: string[]): Actor => ({
 const res = (tenantId: string, type = 'student'): Resource => ({ tenantId, type });
 const ctx = { tenantId: 't1' };
 
+const expectForbidden = (fn: () => void): ForbiddenError => {
+  try {
+    fn();
+    throw new Error('expected ForbiddenError');
+  } catch (e) {
+    return e as ForbiddenError;
+  }
+};
+
 describe('authorization', () => {
   it('allows role with permission in same tenant', () => {
     expect(() =>
@@ -31,28 +40,40 @@ describe('authorization', () => {
     ).not.toThrow();
   });
 
-  it('denies role without permission', () => {
-    expect(() =>
+  it('denies role without permission, named error with actor/action/resource', () => {
+    const err = expectForbidden(() =>
       service.authorize(actor('a2', 't1', ['docente']), 'write', res('t1'), ctx),
-    ).toThrow(ForbiddenError);
+    );
+    expect(err.name).toBe('ForbiddenError');
+    expect(err.message).toBe('actor=a2 denied write on student');
   });
 
   it('denies action not granted to any rule for resource', () => {
-    expect(() =>
+    const err = expectForbidden(() =>
       service.authorize(actor('a3', 't1', ['secretaria']), 'delete', res('t1'), ctx),
-    ).toThrow(ForbiddenError);
+    );
+    expect(err.message).toBe('actor=a3 denied delete on student');
   });
 
   it('denies actor from another tenant even with same role', () => {
-    expect(() =>
+    const err = expectForbidden(() =>
       service.authorize(actor('a4', 't2', ['secretaria']), 'read', res('t1'), ctx),
-    ).toThrow(ForbiddenError);
+    );
+    expect(err.message).toBe('actor=a4 denied read on student');
   });
 
   it('denies resource from another tenant', () => {
     expect(() =>
       service.authorize(actor('a5', 't1', ['secretaria']), 'read', res('t2'), ctx),
     ).toThrow(ForbiddenError);
+  });
+
+  it('filters rules by exact resource type (wrong-type permission does not leak)', () => {
+    const err = expectForbidden(() =>
+      service.authorize(actor('a5b', 't1', ['financeiro']), 'read', res('t1', 'student'), ctx),
+    );
+    // financeiro can read invoice, NOT student
+    expect(err.message).toBe('actor=a5b denied read on student');
   });
 
   it('multiple roles: any match authorizes', () => {
@@ -63,8 +84,8 @@ describe('authorization', () => {
 });
 
 describe('authorization + entitlement', () => {
-  it('denies when module disabled even with permission', () => {
-    expect(() =>
+  it('denies when module disabled even with permission, named error', () => {
+    const err = expectForbidden(() =>
       service.authorizeWithEntitlement(
         actor('a7', 't1', ['secretaria']),
         'read',
@@ -72,7 +93,9 @@ describe('authorization + entitlement', () => {
         ctx,
         false,
       ),
-    ).toThrow(ForbiddenError);
+    );
+    expect(err.name).toBe('ForbiddenError');
+    expect(err.message).toBe('actor=a7 denied read on student');
   });
 
   it('allows when module enabled and permitted', () => {

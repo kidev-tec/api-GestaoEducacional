@@ -43,13 +43,42 @@ describe('audit store', () => {
 });
 
 describe('redactPii', () => {
-  it('redacts known pii keys regardless of case', () => {
-    const out = redactPii({ CPF: '123', email: 'a@b.c', note: 'ok', Telefone: '999' });
-    expect(out).toEqual({ CPF: '[REDACTED]', email: '[REDACTED]', note: 'ok', Telefone: '[REDACTED]' });
+  it('redacts every known pii key', () => {
+    const out = redactPii({
+      cpf: '1',
+      email: 'e',
+      phone: 'p',
+      nome: 'n',
+      name: 'nm',
+      address: 'ad',
+      telefone: 't',
+      keep: 'ok',
+    });
+    expect(out).toEqual({
+      cpf: '[REDACTED]',
+      email: '[REDACTED]',
+      phone: '[REDACTED]',
+      nome: '[REDACTED]',
+      name: '[REDACTED]',
+      address: '[REDACTED]',
+      telefone: '[REDACTED]',
+      keep: 'ok',
+    });
+  });
+
+  it('redaction is case-insensitive per key', () => {
+    const out = redactPii({ EMAIL: 'a@b.c', Phone: '999', NOME: 'X' });
+    expect(out).toEqual({ EMAIL: '[REDACTED]', Phone: '[REDACTED]', NOME: '[REDACTED]' });
   });
 
   it('keeps non-pii keys', () => {
     const out = redactPii({ studentId: 's1', tenantId: 't1' });
     expect(out).toEqual({ studentId: 's1', tenantId: 't1' });
+  });
+
+  it('does not mutate original payload', () => {
+    const original = { email: 'a@b.c', note: 'x' };
+    redactPii(original);
+    expect(original).toEqual({ email: 'a@b.c', note: 'x' });
   });
 });

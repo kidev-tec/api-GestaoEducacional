@@ -15,11 +15,12 @@ describe('module catalog', () => {
     expect(cat.isEnabled('t1', 'finance')).toBe(false);
   });
 
-  it('entitlement is per tenant', () => {
+  it('entitlement is per tenant, disable on unknown tenant is safe', () => {
     const cat = new ModuleCatalog();
     cat.enable('t1', 'enrollment');
     expect(cat.isEnabled('t1', 'enrollment')).toBe(true);
     expect(cat.isEnabled('t2', 'enrollment')).toBe(false);
+    expect(() => cat.disable('tX', 'enrollment')).not.toThrow();
   });
 
   it('require passes when entitled', () => {
@@ -28,8 +29,15 @@ describe('module catalog', () => {
     expect(() => cat.require('t1', 'audit')).not.toThrow();
   });
 
-  it('require throws when not entitled', () => {
+  it('require throws named error with tenant and module', () => {
     const cat = new ModuleCatalog();
-    expect(() => cat.require('t1', 'billing')).toThrow(ModuleNotEntitledError);
+    try {
+      cat.require('t1', 'billing');
+      expect.unreachable('should have thrown');
+    } catch (e) {
+      const err = e as ModuleNotEntitledError;
+      expect(err.name).toBe('ModuleNotEntitledError');
+      expect(err.message).toBe('module billing not entitled for tenant t1');
+    }
   });
 });

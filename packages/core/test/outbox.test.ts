@@ -23,6 +23,36 @@ describe('outbox', () => {
     expect(r2).toEqual({ processed: 0, skipped: 1 });
   });
 
+  it('processedIds dedupe holds even if processedAt were lost', () => {
+    // Índice processedIds garante que o mesmo evento nunca executa 2×,
+    // independente de qualquer mudança de processedAt.
+    const box = new Outbox();
+    box.enqueue('e1', 'T', 'v1', ctx, {});
+    const effects: string[] = [];
+    box.process((ev) => effects.push(ev.id));
+    // segundo process: handler NÃO roda de novo
+    box.process((ev) => effects.push(ev.id));
+    expect(effects).toEqual(['e1']);
+    // o id processado não volta ao pending
+    expect(box.pending(ctx)).toEqual([]);
+    // e o guard de id duplicado no enqueue continua ativo
+    expect(() => box.enqueue('e1', 'T', 'v1', ctx, {})).toThrow(/duplicate/);
+  });
+
+  it('pending does not leak events of other tenants', () => {
+    const box = new Outbox();
+    box.enqueue('e1', 'T', 'v1', ctx, {});
+    box.enqueue('e2', 'T', 'v1', { tenantId: 't2' }, {});
+    const pendingT1 = box.pending(ctx);
+    const pendingT2 = box.pending({ tenantId: 't2' });
+    expect(pendingT1.map((e) => e.id)).toEqual(['e1']);
+    expect(pendingT2.map((e) => e.id)).toEqual(['e2']);
+    // pending só mostra NÃO processados
+    box.process(() => {});
+    expect(box.pending(ctx)).toEqual([]);
+    expect(box.pending({ tenantId: 't2' })).toEqual([]);
+  });
+
   it('rejects duplicate enqueue id', () => {
     const box = new Outbox();
     box.enqueue('e1', 'T', 'v1', ctx, {});
