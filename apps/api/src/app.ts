@@ -41,6 +41,7 @@ import {
   getTuition,
   TuitionRuleError,
 } from '../../../packages/infra/src/tuition-repositories.js';
+import { listOutbox } from '../../../packages/infra/src/outbox-repositories.js';
 import {
   getPerson,
   insertPerson,
@@ -612,6 +613,20 @@ const uuid = { type: 'string' as const, format: 'uuid' as const };
       const { status, message } = mapDomainError(e);
       return reply.status(status).send({ error: message });
     }
+  });
+
+  // E03-A: outbox read-only — observabilidade de eventos (admin/listagem por sessão)
+  app.get('/v1/outbox', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: { status: { type: 'string', enum: ['pending', 'processed', 'dlq'] } },
+        additionalProperties: false,
+      },
+    },
+  }, async (request) => {
+    const q = request.query as { status?: 'pending' | 'processed' | 'dlq' };
+    return { events: await listOutbox(opts.pool, request.tenantId, q) };
   });
 
   return app;

@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import type { Pool, PoolClient } from 'pg';
 import { postLedger, getLedgerEntry } from './repositories.js';
 import { NotFoundError, ConflictError, GuardianRuleError } from './people-repositories.js';
+import { enqueueOutbox } from './outbox-repositories.js';
 
 export interface TuitionPlanRow {
   id: string;
@@ -108,7 +109,13 @@ export async function generateTuition(
     [randomUUID(), params.tenantId, params.planId, params.studentId, params.reference, amount, dueDate, entry.id],
   );
   if (!res.rowCount) throw new ConflictError('tuition already generated for this reference');
-  return toTuition(res.rows[0]);
+  const tuition = toTuition(res.rows[0]);
+  // E03-A: evento de domínio na MESMA transação — atomicidade escrita+outbox
+  await enqueueOutbox(client, {
+    tenantId: params.tenantId, type: 'tuition.generated', version: '1.0.0',
+    payload: { tuitionId: tuition.id, planId: params.planId, studentId: params.studentId, reference: params.reference, amountCents: tuition.amountCents },
+  });
+  return tuition;
 }
 
 export async function settleTuition(

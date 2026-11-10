@@ -72,6 +72,9 @@ describe('generateTuition', () => {
       if (q.text.includes('INSERT INTO tuitions')) {
         return { rows: [tuitionRow({ due_date: q.values?.[6] ?? '2026-03-05' })], rowCount: 1 };
       }
+      if (q.text.includes('INSERT INTO outbox_events')) {
+        return { rows: [{ id: 'ev1', tenant_id: 'A', type: 'tuition.generated', version: '1.0.0', payload: {}, created_at: '2026-11-09T10:00:00Z', processed_at: null, attempts: 0, next_attempt_at: null }], rowCount: 1 };
+      }
       return { rows: [], rowCount: 0 };
     });
   }
@@ -98,6 +101,18 @@ describe('generateTuition', () => {
     const c = genClient();
     const t = await generateTuition(c, { tenantId: 'A', planId: 'p1', studentId: 's1', reference: '2026-03', dueDate: '2026-03-20' });
     expect(t.dueDate).toBe('2026-03-20');
+  });
+
+  it('E03-A: generateTuition enfileira tuition.generated na MESMA sequência (tx única)', async () => {
+    const c = genClient();
+    await generateTuition(c, { tenantId: 'A', planId: 'p1', studentId: 's1', reference: '2026-03' });
+    const texts = c.calls.map((x) => x.text);
+    const tuitionIdx = texts.findIndex((x) => x.includes('INSERT INTO tuitions'));
+    const outboxIdx = texts.findIndex((x) => x.includes('INSERT INTO outbox_events'));
+    expect(outboxIdx).toBeGreaterThan(tuitionIdx);
+    const outboxInsert = c.calls[outboxIdx];
+    expect(outboxInsert?.values?.[2]).toBe('tuition.generated');
+    expect(outboxInsert?.values?.[4]).toContain('tuitionId');
   });
 
   it.each([
