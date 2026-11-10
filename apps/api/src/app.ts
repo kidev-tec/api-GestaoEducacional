@@ -409,7 +409,7 @@ const uuid = { type: 'string' as const, format: 'uuid' as const };
   }, async (request, reply) => {
     const body = request.body as { kind: PersonRow['kind']; name: string; unitId: string; document?: string; email?: string; phone?: string };
     try {
-      // E13-A: enforce max_students do plano vigente (sem plano → 0 → bloqueia novos STUDENT)
+      // E13-A: enforce max_students do plano vigente (sem plano → UNLIMITED trial, liberado)
       if (body.kind === 'STUDENT') {
         const limit = await planLimit(opts.pool, request.tenantId, 'max_students');
         if (limit !== UNLIMITED) {
