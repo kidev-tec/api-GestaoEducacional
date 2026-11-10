@@ -42,6 +42,7 @@ import {
   TuitionRuleError,
 } from '../../../packages/infra/src/tuition-repositories.js';
 import { listOutbox } from '../../../packages/infra/src/outbox-repositories.js';
+import { financeIntegrity } from '../../../packages/infra/src/integrity-repositories.js';
 import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
@@ -365,6 +366,22 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 
   app.get('/v1/audit/count', async (request) => {
     return { count: await auditCount(opts.pool, request.tenantId) };
+  });
+
+  // ─── E07-B: integridade financeira (RF-01..04) ───
+  app.get('/v1/finance/integrity', async (request, reply) => {
+    try {
+      const report = await financeIntegrity(opts.pool, request.tenantId);
+      await opts.pool.query(
+        'INSERT INTO audit_records (tenant_id, actor_id, action, resource_type, resource_id) VALUES ($1,$2,$3,$4,$5)',
+        [request.tenantId, (request as AuthenticatedRequest).user.id ?? 'unknown', 'finance.integrity.run', 'ledger', request.tenantId],
+      );
+      return reply.send(report);
+    } catch (e) {
+      app.log.error({ err: e }, 'finance integrity failed');
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
   });
 
 const NAME_MAX = 200;

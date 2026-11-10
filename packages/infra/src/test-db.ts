@@ -64,7 +64,7 @@ export async function startTestDb(): Promise<TestDb> {
   }
 
   // tenants de teste
-  await pool.query("INSERT INTO tenants (id) VALUES ('A'), ('B') ON CONFLICT DO NOTHING");
+  await pool.query("INSERT INTO tenants (id) VALUES ('A'), ('B'), ('C') ON CONFLICT DO NOTHING");
 
   return {
     pool,
