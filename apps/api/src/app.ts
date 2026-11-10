@@ -43,6 +43,10 @@ import {
 } from '../../../packages/infra/src/tuition-repositories.js';
 import { listOutbox } from '../../../packages/infra/src/outbox-repositories.js';
 import {
+  UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
+} from '../../../packages/infra/src/plan-repositories.js';
+
+import {
   getPerson,
   insertPerson,
   ConflictError,
@@ -97,11 +101,11 @@ export function mapDomainError(e: unknown): { status: number; message: string } 
   if (e instanceof NotFoundError || /not found|must reference the original|cannot reverse|parent unit/i.test(msg)) {
     return { status: 404, message: msg };
   }
-  if (
-    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError ||
-    /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer/i.test(msg)
-  ) return { status: 422, message: msg };
   if (/integer cents|denied/i.test(msg)) return { status: 400, message: msg };
+  if (
+    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof PlanRuleError ||
+    /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer|must be slug|bad limit/i.test(msg)
+  ) return { status: 422, message: msg };
   return { status: 500, message: 'internal error' };
 }
 
@@ -405,6 +409,16 @@ const uuid = { type: 'string' as const, format: 'uuid' as const };
   }, async (request, reply) => {
     const body = request.body as { kind: PersonRow['kind']; name: string; unitId: string; document?: string; email?: string; phone?: string };
     try {
+      // E13-A: enforce max_students do plano vigente (sem plano → 0 → bloqueia novos STUDENT)
+      if (body.kind === 'STUDENT') {
+        const limit = await planLimit(opts.pool, request.tenantId, 'max_students');
+        if (limit !== UNLIMITED) {
+          const n = await countStudents(opts.pool, request.tenantId);
+          if (n >= limit) {
+            return reply.status(403).send({ error: 'plan limit reached for max_students' });
+          }
+        }
+      }
       const person = await withTransaction(opts.pool, (c) => insertPerson(c, { tenantId: request.tenantId, ...body })) as { id: string; kind: PersonRow['kind']; name: string };
       return reply.status(201).send({ id: person.id, kind: person.kind, name: person.name });
     } catch (e) {
@@ -627,6 +641,64 @@ const uuid = { type: 'string' as const, format: 'uuid' as const };
   }, async (request) => {
     const q = request.query as { status?: 'pending' | 'processed' | 'dlq' };
     return { events: await listOutbox(opts.pool, request.tenantId, q) };
+  });
+
+  // ── E13-A: planos comerciais + entitlements ──────────────────────────────
+  app.post('/v1/plans', {
+    preHandler: [writeGuard],
+    schema: {
+      body: {
+        type: 'object', additionalProperties: false, required: ['code', 'name', 'priceCents'],
+        properties: {
+          code: { type: 'string', pattern: '^[a-z0-9-]{2,32}$' },
+          name: { type: 'string', minLength: 1, maxLength: 120 },
+          priceCents: { type: 'integer', minimum: 0 },
+          modules: { type: 'array', items: { type: 'string', pattern: '^[a-z_]{2,20}$' } },
+          limits: {
+            type: 'object',
+            additionalProperties: { type: 'integer', minimum: -1 },
+          },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    const body = request.body as { code: string; name: string; priceCents: number; modules?: string[]; limits?: Record<string, number> };
+    try {
+      const plan = await createCommercialPlan(opts.pool, body);
+      return reply.status(201).send(plan);
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/plans', {}, async () => ({ plans: await listCommercialPlans(opts.pool) }));
+
+  app.get('/v1/plans/current', {}, async (request) => {
+    const plan = await currentPlan(opts.pool, request.tenantId);
+    if (!plan) return { plan: null, modules: await entitledModules(opts.pool, request.tenantId) };
+    return { plan: { id: plan.id, code: plan.code, name: plan.name, priceCents: plan.priceCents }, modules: await entitledModules(opts.pool, request.tenantId) };
+  });
+
+  app.post('/v1/tenants/:id/plan', {
+    preHandler: [writeGuard],
+    schema: {
+      body: {
+        type: 'object', additionalProperties: false, required: ['planId'],
+        properties: { planId: { type: 'string', format: 'uuid' } },
+      },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { planId } = request.body as { planId: string };
+    if (id !== request.tenantId) return reply.status(404).send({ error: 'not found' }); // cross-tenant
+    try {
+      await withTransaction(opts.pool, (c) => assignPlan(c, request.tenantId, planId));
+      return reply.status(204).send();
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
   });
 
   return app;
