@@ -44,6 +44,10 @@ import {
 import { listOutbox } from '../../../packages/infra/src/outbox-repositories.js';
 import { financeIntegrity } from '../../../packages/infra/src/integrity-repositories.js';
 import {
+  createLead, listLeads, moveLeadStage, LeadRuleError,
+  LEAD_STAGES, LEAD_SOURCES, type LeadStage, type LeadSource,
+} from '../../../packages/infra/src/lead-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -103,10 +107,12 @@ export function mapDomainError(e: unknown): { status: number; message: string } 
     return { status: 404, message: msg };
   }
   if (/integer cents|denied/i.test(msg)) return { status: 400, message: msg };
+  if (/consent required for won lead/i.test(msg)) return { status: 403, message: msg };
   if (
-    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof PlanRuleError ||
-    /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer|must be slug|bad limit/i.test(msg)
+    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof PlanRuleError || e instanceof LeadRuleError ||
+    /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer|must be slug|bad limit|lead is already closed|lost_reason is required|valid email is required|invalid lead source|name is required|phone too long|campaign too long/i.test(msg)
   ) return { status: 422, message: msg };
+  if (/consent required for won lead/i.test(msg)) return { status: 403, message: msg };
   return { status: 500, message: 'internal error' };
 }
 
@@ -384,9 +390,69 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     }
   });
 
+  // ─── E06-A: CRM leads + funil (RF-01..05) ───
+  const leadStageSchema = { type: 'string', enum: [...LEAD_STAGES] };
+  const leadSourceSchema = { type: 'string', enum: [...LEAD_SOURCES] };
+
+  app.post('/v1/leads', { preHandler: [writeGuard], schema: { body: {
+    type: 'object', additionalProperties: false, required: ['name', 'email', 'source'],
+    properties: {
+      name: { type: 'string', minLength: 1, maxLength: 200 },
+      email: { type: 'string', format: 'email', maxLength: 200 },
+      phone: { type: 'string', maxLength: 20 },
+      source: leadSourceSchema,
+      campaign: { type: 'string', maxLength: 120 },
+      consent: { type: 'boolean' },
+    },
+  } } }, async (request, reply) => {
+    try {
+      const lead = await createLead(opts.pool, request.tenantId, request.body as Parameters<typeof createLead>[2]);
+      return reply.status(201).send(lead);
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+  app.get('/v1/leads', { schema: { querystring: {
+    type: 'object', additionalProperties: false,
+    properties: {
+      stage: leadStageSchema,
+      source: leadSourceSchema,
+      limit: { type: 'integer', minimum: 1, maximum: 100 },
+      offset: { type: 'integer', minimum: 0 },
+    },
+  } } }, async (request) => {
+    const q = request.query as { stage?: LeadStage; source?: LeadSource; limit?: number; offset?: number };
+    return listLeads(opts.pool, request.tenantId, q);
+  });
+
+  app.patch('/v1/leads/:id/stage', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+    body: {
+      type: 'object', additionalProperties: false, required: ['stage'],
+      properties: {
+        stage: leadStageSchema,
+        lost_reason: { type: 'string', minLength: 3, maxLength: 500 },
+      },
+    },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as { stage: LeadStage; lost_reason?: string };
+    try {
+      const lead = await withTransaction(opts.pool, (c) =>
+        moveLeadStage(c, request.tenantId, id, body.stage, body.lost_reason, (request as AuthenticatedRequest).user.id),
+      );
+      return reply.send(lead);
+    } catch (e) {
+      const { status, message } = mapDomainError(e);
+      return reply.status(status).send({ error: message });
+    }
+  });
+
+const uuid = { type: 'string' as const, format: 'uuid' as const };
 const NAME_MAX = 200;
 const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLength: max });
-const uuid = { type: 'string' as const, format: 'uuid' as const };
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
   app.post('/v1/units', {

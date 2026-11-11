@@ -30,6 +30,18 @@ services:
     expose:
       - "3000"
 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        VITE_API_BASE_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - api
+    expose:
+      - "80"
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -42,6 +54,7 @@ services:
       - caddy_config:/config
     depends_on:
       - api
+      - web
 
 volumes:
   pgdata:
