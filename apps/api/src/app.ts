@@ -96,6 +96,9 @@ import {
   previewTemplate, listVersions, mapTemplateError,
 } from '../../../packages/infra/src/comm-template-repositories.js';
 import {
+  listModules, createModule, updateModule, moduleDependents, mapCatalogError,
+} from '../../../packages/infra/src/module-catalog-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -922,6 +925,48 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E13-01: catálogo de módulos ───
+  const mapCat = (e: unknown) => mapCatalogError(e);
+
+  app.get('/v1/modules', { schema: {
+    querystring: { type: 'object', properties: { activeOnly: { type: 'boolean' } } },
+  } }, async (request) => {
+    const q = request.query as { activeOnly?: boolean };
+    return listModules(opts.pool, { activeOnly: q.activeOnly === true });
+  });
+
+  app.post('/v1/modules', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['key', 'name', 'tier', 'priceCents', 'requires'],
+      properties: { key: str(50), name: str(120), tier: { enum: ['FREE', 'INCLUDED', 'PAID'] },
+        priceCents: { type: 'integer', minimum: 0 }, requires: { type: 'array', items: str(50) } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { key: string; name: string; tier: 'FREE' | 'INCLUDED' | 'PAID'; priceCents: number; requires: string[] };
+      return reply.status(201).send(await createModule(opts.pool, b));
+    } catch (e) { const { status } = mapCat(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.patch('/v1/modules/:key', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['key'], properties: { key: str(50) } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { name: str(120), tier: { enum: ['FREE', 'INCLUDED', 'PAID'] },
+        priceCents: { type: 'integer', minimum: 0 }, requires: { type: 'array', items: str(50) }, active: { type: 'boolean' } } },
+  } }, async (request, reply) => {
+    const { key } = request.params as { key: string };
+    const b = request.body as { name?: string; tier?: 'FREE' | 'INCLUDED' | 'PAID'; priceCents?: number; requires?: string[]; active?: boolean };
+    try {
+      return reply.send(await updateModule(opts.pool, key, b));
+    } catch (e) { const { status } = mapCat(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/modules/:key/dependents', { schema: {
+    params: { type: 'object', required: ['key'], properties: { key: str(50) } },
+  } }, async (request) => {
+    const { key } = request.params as { key: string };
+    return moduleDependents(opts.pool, key);
+  });
+  // ─── E13-01 fim ───
 
   // ─── E09-02: templates versionados ───
   const mapTpl = (e: unknown) => mapTemplateError(e);
