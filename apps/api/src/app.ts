@@ -86,6 +86,12 @@ import {
   dispatchWebhooks, processDelivery, listDeliveries, listDlq, replayDlq, mapWebhookError,
 } from '../../../packages/infra/src/webhook-repositories.js';
 import {
+  createRoom, listRooms, updateRoom,
+  addHoliday, listHolidays, removeHoliday,
+  addSchedule, listSchedules, removeSchedule,
+  expandSessions, rescheduleSession, cancelSession, listSessions, sessionChanges, mapScheduleError,
+} from '../../../packages/infra/src/schedule-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -912,6 +918,138 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E08-02: grade, horários e calendários ───
+  const mapSched = (e: unknown) => mapScheduleError(e);
+
+  app.post('/v1/rooms', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['unitId', 'name', 'capacity'],
+      properties: { unitId: uuid, name: str(120), capacity: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { unitId: string; name: string; capacity: number };
+      return reply.status(201).send(await createRoom(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/rooms', async (request) => listRooms(opts.pool, request.tenantId));
+
+  app.patch('/v1/rooms/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: { name: str(120), capacity: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { name?: string; capacity?: number };
+    try {
+      return reply.send(await updateRoom(opts.pool, request.tenantId, id, b));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/holidays', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['date', 'name'],
+      properties: { date: { type: 'string', format: 'date' }, name: str(120) } },
+  } }, async (request, reply) => {
+    const b = request.body as { date: string; name: string };
+    try {
+      return reply.status(201).send(await withTransaction(opts.pool, (c) => addHoliday(c, request.tenantId, b)));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/holidays', async (request) => listHolidays(opts.pool, request.tenantId));
+
+  app.delete('/v1/holidays/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.send(await removeHoliday(opts.pool, request.tenantId, id));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/classes/:id/schedules', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['weekday', 'startMinute', 'endMinute'],
+      properties: { roomId: uuid, weekday: { type: 'integer', minimum: 0, maximum: 6 },
+        startMinute: { type: 'integer', minimum: 0, maximum: 1440 }, endMinute: { type: 'integer', minimum: 0, maximum: 1440 } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { roomId?: string; weekday: number; startMinute: number; endMinute: number };
+    try {
+      return reply.status(201).send(await addSchedule(opts.pool, request.tenantId, {
+        classId: id, roomId: b.roomId ?? null, weekday: b.weekday, startMinute: b.startMinute, endMinute: b.endMinute,
+      }));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/classes/:id/schedules', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    return listSchedules(opts.pool, request.tenantId, id);
+  });
+
+  app.delete('/v1/classes/:id/schedules/:schedId', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id', 'schedId'], properties: { id: uuid, schedId: uuid } },
+  } }, async (request, reply) => {
+    const { id, schedId } = request.params as { id: string; schedId: string };
+    try {
+      return reply.send(await removeSchedule(opts.pool, request.tenantId, id, schedId));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/classes/:id/sessions/expand', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['from', 'to'],
+      properties: { from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { from: string; to: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => expandSessions(c, request.tenantId, id, b.from, b.to)));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.patch('/v1/sessions/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['date', 'startMinute', 'endMinute', 'reason'],
+      properties: { date: { type: 'string', format: 'date' }, roomId: uuid,
+        startMinute: { type: 'integer', minimum: 0, maximum: 1440 }, endMinute: { type: 'integer', minimum: 0, maximum: 1440 },
+        reason: str(300) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { date: string; startMinute: number; endMinute: number; roomId?: string; reason: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => rescheduleSession(c, request.tenantId, id, {
+        date: b.date, startMinute: b.startMinute, endMinute: b.endMinute, roomId: b.roomId ?? null,
+      }, b.reason)));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/sessions/:id/cancel', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['reason'], properties: { reason: str(300) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { reason } = request.body as { reason: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => cancelSession(c, request.tenantId, id, reason)));
+    } catch (e) { const { status } = mapSched(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/sessions', { schema: {
+    querystring: { type: 'object', properties: { classId: uuid, from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' } } },
+  } }, async (request) => {
+    const q = request.query as { classId?: string; from?: string; to?: string };
+    return listSessions(opts.pool, request.tenantId, q);
+  });
+
+  app.get('/v1/sessions/:id/changes', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    return sessionChanges(opts.pool, request.tenantId, id);
+  });
+  // ─── E08-02 fim ───
 
   // ─── E12-05: webhooks de saída ───
   const mapWh = (e: unknown) => mapWebhookError(e);
