@@ -52,6 +52,10 @@ import {
   getBoard, getMetrics, PipelineError, mapPipelineError,
 } from '../../../packages/infra/src/pipeline-repositories.js';
 import {
+  createTask, completeTask, cancelTask, listTasks, nextInRotation, addToRotation,
+  removeFromRotation, getTimeline, getSlaHours, TaskRuleError,
+} from '../../../packages/infra/src/task-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -559,6 +563,137 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     withTransaction(opts.pool, (c) => getMetrics(c, request.tenantId)));
 
   // ─── E06-B fim ───
+
+  // ─── E06-C: tarefas follow-up + round-robin + timeline ───
+  const mapTaskError = (e: unknown): { status: number } => {
+    if (e instanceof TaskRuleError) return { status: 422 };
+    const { status } = mapPipelineError(e); // NotFound 404 / Pipeline 409-422 fallback uniforme
+    return { status };
+  };
+
+  app.post('/v1/crm/tasks', { preHandler: [writeGuard], schema: {
+    body: {
+      type: 'object', additionalProperties: false, required: ['leadId', 'assignedTo', 'kind', 'dueAt'],
+      properties: {
+        leadId: uuid, assignedTo: uuid,
+        kind: { type: 'string', enum: ['call', 'visit', 'email', 'other'] },
+        dueAt: { type: 'string', format: 'date-time' },
+        notes: { type: 'string', maxLength: 500 },
+      },
+    },
+  } }, async (request, reply) => {
+    const b = request.body as { leadId: string; assignedTo: string; kind: 'call'|'visit'|'email'|'other'; dueAt: string; notes?: string };
+    try {
+      const task = await withTransaction(opts.pool, (c) => createTask(c, request.tenantId, b));
+      return reply.status(201).send(task);
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.post('/v1/crm/tasks/:id/done', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const task = await withTransaction(opts.pool, (c) =>
+        completeTask(c, request.tenantId, id, (request as AuthenticatedRequest).user.id));
+      return reply.send(task);
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.post('/v1/crm/tasks/:id/cancel', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['reason'], properties: { reason: str(200) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { reason } = request.body as { reason: string };
+    try {
+      const task = await withTransaction(opts.pool, (c) =>
+        cancelTask(c, request.tenantId, id, reason, (request as AuthenticatedRequest).user.id));
+      return reply.send(task);
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.get('/v1/crm/tasks', { schema: { querystring: {
+    type: 'object', additionalProperties: false,
+    properties: {
+      assignedTo: uuid,
+      status: { type: 'string', enum: ['open', 'done', 'canceled'] },
+      overdue: { type: 'boolean' },
+      limit: { type: 'integer', minimum: 1, maximum: 200 },
+      offset: { type: 'integer', minimum: 0 },
+    },
+  } } }, async (request) => {
+    const q = request.query as { assignedTo?: string; status?: 'open'|'done'|'canceled'; overdue?: boolean; limit?: number; offset?: number };
+    return withTransaction(opts.pool, (c) => listTasks(c, request.tenantId, q));
+  });
+
+  app.post('/v1/crm/rotation', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['userId'], properties: { userId: uuid } },
+  } }, async (request, reply) => {
+    const { userId } = request.body as { userId: string };
+    await withTransaction(opts.pool, (c) => addToRotation(c, request.tenantId, userId));
+    return reply.status(201).send({ ok: true });
+  });
+
+  app.delete('/v1/crm/rotation/:userId', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['userId'], properties: { userId: uuid } },
+  } }, async (request, reply) => {
+    const { userId } = request.params as { userId: string };
+    try {
+      await withTransaction(opts.pool, (c) => removeFromRotation(c, request.tenantId, userId));
+      return reply.send({ ok: true });
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.post('/v1/crm/rotation/assign', { preHandler: [writeGuard], schema: {
+    body: {
+      type: 'object', additionalProperties: false, required: ['leadId', 'kind', 'dueAt'],
+      properties: { leadId: uuid, kind: { type: 'string', enum: ['call','visit','email','other'] }, dueAt: { type: 'string', format: 'date-time' }, notes: { type: 'string', maxLength: 500 } },
+    },
+  } }, async (request, reply) => {
+    const b = request.body as { leadId: string; kind: 'call'|'visit'|'email'|'other'; dueAt: string; notes?: string };
+    try {
+      const task = await withTransaction(opts.pool, async (c) => {
+        const userId = await nextInRotation(c, request.tenantId);
+        return createTask(c, request.tenantId, { ...b, assignedTo: userId });
+      });
+      return reply.status(201).send(task);
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      if (status === 500) request.log.error(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.get('/v1/leads/:id/timeline', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const timeline = await withTransaction(opts.pool, (c) => getTimeline(c, request.tenantId, id));
+      return reply.send(timeline);
+    } catch (e) {
+      const { status } = mapTaskError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.get('/v1/crm/sla', async (request) =>
+    ({ slaHours: await withTransaction(opts.pool, (c) => getSlaHours(c, request.tenantId)) }));
+
+  // ─── E06-C fim ───
 
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
