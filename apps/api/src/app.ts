@@ -48,6 +48,10 @@ import {
   LEAD_STAGES, LEAD_SOURCES, type LeadStage, type LeadSource,
 } from '../../../packages/infra/src/lead-repositories.js';
 import {
+  createStage, renameStage, archiveStage, reorderStages, moveLeadStage as moveLeadToStage,
+  getBoard, getMetrics, PipelineError, mapPipelineError,
+} from '../../../packages/infra/src/pipeline-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -467,6 +471,95 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
 const uuid = { type: 'string' as const, format: 'uuid' as const };
 const NAME_MAX = 200;
 const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLength: max });
+
+  // ─── E06-B: funil configurável + Kanban + histórico (RF-01..06) ───
+  const stageKindSchema = { type: 'string', enum: ['open', 'won', 'lost'] };
+
+  app.post('/v1/pipelines/default/stages', { preHandler: [writeGuard], schema: {
+    body: {
+      type: 'object', additionalProperties: false, required: ['label', 'kind'],
+      properties: { label: str(100), kind: stageKindSchema, afterPosition: { type: 'integer', minimum: 1 } },
+    },
+  } }, async (request, reply) => {
+    const b = request.body as { label: string; kind: 'open' | 'won' | 'lost'; afterPosition?: number };
+    try {
+      const stage = await withTransaction(opts.pool, (c) =>
+        createStage(c, request.tenantId, b.label, b.kind, b.afterPosition));
+      return reply.status(201).send(stage);
+    } catch (e) {
+      const { status } = mapPipelineError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.patch('/v1/pipelines/default/stages/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: {
+      type: 'object', additionalProperties: false,
+      properties: { label: str(100), archive: { type: 'boolean' } },
+      anyOf: [{ required: ['label'] }, { required: ['archive'] }],
+    },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { label?: string; archive?: boolean };
+    try {
+      await withTransaction(opts.pool, async (c) => {
+        const owned = await c.query('SELECT 1 FROM pipeline_stages WHERE id = $1 AND tenant_id = $2', [id, request.tenantId]);
+        if (!owned.rowCount) throw new NotFoundError('estágio não encontrado');
+        if (b.archive) {
+          await archiveStage(c, request.tenantId, id);
+          return {};
+        }
+        if (b.label === undefined) throw new PipelineError('INVALID_REORDER', 'nada a fazer');
+        return renameStage(c, request.tenantId, id, b.label);
+      });
+      return reply.send({ ok: true });
+    } catch (e) {
+      const { status } = mapPipelineError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.post('/v1/pipelines/default/stages/reorder', { preHandler: [writeGuard], schema: {
+    body: {
+      type: 'object', additionalProperties: false, required: ['orderedIds'],
+      properties: { orderedIds: { type: 'array', items: uuid, minItems: 1 } },
+    },
+  } }, async (request, reply) => {
+    const { orderedIds } = request.body as { orderedIds: string[] };
+    try {
+      await withTransaction(opts.pool, (c) => reorderStages(c, request.tenantId, orderedIds));
+      return reply.send({ ok: true });
+    } catch (e) {
+      const { status } = mapPipelineError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.post('/v1/leads/:id/move', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['toStageId'], properties: { toStageId: uuid } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { toStageId } = request.body as { toStageId: string };
+    try {
+      const r = await withTransaction(opts.pool, (c) =>
+        moveLeadToStage(c, request.tenantId, id, toStageId, (request as AuthenticatedRequest).user.id));
+      return reply.send(r);
+    } catch (e) {
+      const { status } = mapPipelineError(e);
+      return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' });
+    }
+  });
+
+  app.get('/v1/pipelines/default/board', async (request) =>
+    withTransaction(opts.pool, (c) => getBoard(c, request.tenantId)));
+
+  app.get('/v1/pipelines/default/metrics', async (request) =>
+    withTransaction(opts.pool, (c) => getMetrics(c, request.tenantId)));
+
+  // ─── E06-B fim ───
+
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
   app.post('/v1/units', {
