@@ -99,6 +99,9 @@ import {
   listModules, createModule, updateModule, moduleDependents, mapCatalogError,
 } from '../../../packages/infra/src/module-catalog-repositories.js';
 import {
+  listMetrics, getMetric, createMetric, updateMetric, computeMetric, listSnapshots as listMetricSnapshots, mapMetricError,
+} from '../../../packages/infra/src/metric-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -925,6 +928,68 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E11-01: catálogo de métricas ───
+  const mapMet = (e: unknown) => mapMetricError(e);
+
+  app.get('/v1/metrics', async () => listMetrics(opts.pool));
+
+  app.get('/v1/metrics/:key', { schema: { params: { type: 'object', required: ['key'], properties: { key: str(100) } } } },
+    async (request, reply) => {
+      const { key } = request.params as { key: string };
+      try {
+        return await getMetric(opts.pool, key);
+      } catch (e) { const { status } = mapMet(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+    });
+
+  app.post('/v1/metrics', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['key', 'name', 'granularity', 'formulaSql', 'sourceTables'],
+      properties: { key: str(100), name: str(120), description: str(500), granularity: { enum: ['DAY', 'WEEK', 'MONTH', 'QUARTER'] },
+        formulaSql: str(4000), sourceTables: { type: 'array', items: str(50) }, timezone: str(50) } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { key: string; name: string; description?: string; granularity: 'DAY' | 'WEEK' | 'MONTH' | 'QUARTER'; formulaSql: string; sourceTables: string[]; timezone?: string };
+      return reply.status(201).send(await createMetric(opts.pool, {
+        key: b.key, name: b.name, description: b.description ?? '', granularity: b.granularity,
+        formulaSql: b.formulaSql, sourceTables: b.sourceTables,
+        ...(b.timezone != null ? { timezone: b.timezone } : {}),
+      }));
+    } catch (e) { const { status } = mapMet(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.patch('/v1/metrics/:key', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['key'], properties: { key: str(100) } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { name: str(120), description: str(500), owner: uuid, active: { type: 'boolean' } } },
+  } }, async (request, reply) => {
+    const { key } = request.params as { key: string };
+    const b = request.body as { name?: string; description?: string; owner?: string; active?: boolean };
+    try {
+      return reply.send(await updateMetric(opts.pool, key, b));
+    } catch (e) { const { status } = mapMet(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/metrics/:key/compute', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['key'], properties: { key: str(100) } },
+    body: { type: 'object', additionalProperties: false, required: ['from', 'to'],
+      properties: { from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' } } },
+  } }, async (request, reply) => {
+    const { key } = request.params as { key: string };
+    const b = request.body as { from: string; to: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => computeMetric(c, request.tenantId, key, b.from, b.to)));
+    } catch (e) { const { status } = mapMet(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/metrics/:key/snapshots', { schema: {
+    params: { type: 'object', required: ['key'], properties: { key: str(100) } },
+    querystring: { type: 'object', properties: { from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' } } },
+  } }, async (request) => {
+    const { key } = request.params as { key: string };
+    const q = request.query as { from?: string; to?: string };
+    return listMetricSnapshots(opts.pool, request.tenantId, key, q);
+  });
+  // ─── E11-01 fim ───
 
   // ─── E13-01: catálogo de módulos ───
   const mapCat = (e: unknown) => mapCatalogError(e);
