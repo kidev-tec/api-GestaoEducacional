@@ -60,8 +60,9 @@ export async function createLead(client: Queryable, tenantId: string, input: Cre
   if (input.campaign !== undefined && input.campaign !== null && input.campaign.length > 120) throw new LeadRuleError('campaign too long');
   const id = randomUUID();
   const res = await client.query(
-    `INSERT INTO leads (id, tenant_id, name, email, phone, source, campaign, consent)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    `INSERT INTO leads (id, tenant_id, name, email, phone, source, campaign, consent, stage_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,
+       (SELECT id FROM pipeline_stages WHERE tenant_id = $2 AND kind = 'open' AND archived = false ORDER BY position LIMIT 1))
      ON CONFLICT (tenant_id, email) DO NOTHING
      RETURNING id, name, email, phone, source, campaign, consent, stage, lost_reason, created_at`,
     [id, tenantId, input.name.trim(), input.email, input.phone ?? null, input.source, input.campaign ?? null, input.consent ?? false],
@@ -105,7 +106,7 @@ export async function moveLeadStage(
   const lead = cur.rows[0] as { stage: LeadStage; consent: boolean };
   const from = lead.stage;
   if (from === 'WON' || from === 'LOST') throw new LeadRuleError('lead is already closed');
-  const adjacent = ADJACENT[from] ?? [];
+  const adjacent = ADJACENT[from];
   if (to !== 'WON' && to !== 'LOST' && !adjacent.includes(to)) {
     throw new LeadRuleError(STAGE_TRANSITIONS);
   }

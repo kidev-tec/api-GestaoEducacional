@@ -55,16 +55,16 @@ export async function startTestDb(): Promise<TestDb> {
   const pool = new Pool({ connectionString: container.getConnectionUri() });
 
   const migrations = readMigrations();
-  // roda todas 2×: prova idempotência das migrations (QG-3)
+  // 1ª passada: cria schema
   for (const sql of migrations) {
     await pool.query(sql);
   }
-  for (const sql of migrations) {
-    await pool.query(sql);
-  }
-
-  // tenants de teste
+  // tenants de teste ANTES da 2ª passada: bootstrap por tenant (DO block da 010)
+  // precisa enxergá-los; a 2ª passada continua provando idempotência (QG-3).
   await pool.query("INSERT INTO tenants (id) VALUES ('A'), ('B'), ('C') ON CONFLICT DO NOTHING");
+  for (const sql of migrations) {
+    await pool.query(sql);
+  }
 
   return {
     pool,
