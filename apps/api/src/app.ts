@@ -66,6 +66,9 @@ import {
   confirmCredit, listCredits, upsertTarget, targetProgress, mapCommissionError,
 } from '../../../packages/infra/src/commission-repositories.js';
 import {
+  recordTouch, listTouches, snapshotFunnel, listSnapshots, mapAnalyticsError,
+} from '../../../packages/infra/src/analytics-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -854,6 +857,43 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     catch (e) { const { status } = mapCommissionError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
   });
   // ─── E06-06 fim ───
+
+  // ─── E06-07: instrumentação origem/etapa + funil analítico ───
+  app.post('/v1/leads/:id/attribution', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: { campaign: str(120), utmSource: str(120), utmMedium: str(120) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = (request.body ?? {}) as { campaign?: string; utmSource?: string; utmMedium?: string };
+    try {
+      const touch = await withTransaction(opts.pool, (c) => recordTouch(c, request.tenantId, id, b));
+      return reply.status(201).send(touch);
+    } catch (e) { const { status } = mapAnalyticsError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/leads/:id/attribution', { schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } } },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      try { return await listTouches(opts.pool, request.tenantId, id); }
+      catch (e) { const { status } = mapAnalyticsError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+    });
+
+  app.post('/v1/funnel/snapshot', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, properties: { unitId: uuid } },
+  } }, async (request, reply) => {
+    const b = (request.body ?? {}) as { unitId?: string };
+    try {
+      const snap = await withTransaction(opts.pool, (c) => snapshotFunnel(c, request.tenantId, b.unitId));
+      return reply.status(201).send(snap);
+    } catch (e) { const { status } = mapAnalyticsError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/funnel/snapshots', { schema: { querystring: { type: 'object', properties: { unitId: uuid, limit: { type: 'integer', minimum: 1, maximum: 100 } } } } },
+    async (request) => {
+      const q = request.query as { unitId?: string; limit?: number };
+      return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
+    });
+  // ─── E06-07 fim ───
 
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
