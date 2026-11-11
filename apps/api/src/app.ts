@@ -62,6 +62,10 @@ import {
 } from '../../../packages/infra/src/proposal-repositories.js';
 import { convertProposal, mapConversionError } from '../../../packages/infra/src/proposal-conversion.js';
 import {
+  createCommissionRule, listCommissionRules, reconcileCommission,
+  confirmCredit, listCredits, upsertTarget, targetProgress, mapCommissionError,
+} from '../../../packages/infra/src/commission-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -782,6 +786,74 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     } catch (e) { const { status } = mapConversionError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
   });
   // ─── E06-05 fim ───
+
+  // ─── E06-06: comissões + metas comerciais ───
+  app.post('/v1/commission-rules', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['name', 'kind', 'value'],
+      properties: { name: str(120), kind: { enum: ['PERCENT', 'FLAT'] }, value: { type: 'number' },
+        targetUserId: str(120), minTotalCents: { type: 'integer', minimum: 1 }, validFrom: str(10) } },
+  } }, async (request, reply) => {
+    const b = request.body as { name: string; kind: 'PERCENT' | 'FLAT'; value: number; targetUserId?: string; minTotalCents?: number; validFrom?: string };
+    try {
+      const rule = await createCommissionRule(opts.pool, request.tenantId, b, request.userId ?? 'api');
+      return reply.status(201).send(rule);
+    } catch (e) { const { status } = mapCommissionError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/commission-rules', { schema: { querystring: { type: 'object', properties: { active: { type: 'boolean' } } } } },
+    async (request) => {
+      const { active } = request.query as { active?: boolean };
+      return listCommissionRules(opts.pool, request.tenantId, active === true);
+    });
+
+  app.post('/v1/commissions/reconcile', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['enrollmentId', 'userId', 'baseCents', 'sourceEvent', 'sourceId'],
+      properties: { enrollmentId: str(64), userId: str(120), baseCents: { type: 'integer', minimum: 1 },
+        sourceEvent: str(64), sourceId: str(64), reversal: { type: 'boolean' } } },
+  } }, async (request, reply) => {
+    const b = request.body as { enrollmentId: string; userId: string; baseCents: number; sourceEvent: string; sourceId: string; reversal?: boolean };
+    try {
+      const result = await withTransaction(opts.pool, (c) => reconcileCommission(c, request.tenantId, {
+        enrollmentId: b.enrollmentId, userId: b.userId, baseCents: b.baseCents,
+        sourceEvent: b.reversal === true ? 'ledger.reversal' : b.sourceEvent, sourceId: b.sourceId,
+      }));
+      return reply.send(result);
+    } catch (e) { const { status } = mapCommissionError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/commissions/:id/confirm', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const credit = await withTransaction(opts.pool, (c) => confirmCredit(c, request.tenantId, id, request.userRole));
+      return reply.send(credit);
+    } catch (e) { const { status } = mapCommissionError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/commissions', { schema: { querystring: { type: 'object', properties: { userId: str(120), status: str(20) } } } },
+    async (request) => {
+      const q = request.query as { userId?: string; status?: string };
+      return listCredits(opts.pool, request.tenantId, q);
+    });
+
+  app.put('/v1/commissions/targets', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['userId', 'period', 'amountCents'],
+      properties: { userId: str(120), period: str(7), amountCents: { type: 'integer', minimum: 1 } } },
+  } }, async (request) => {
+    const b = request.body as { userId: string; period: string; amountCents: number };
+    return upsertTarget(opts.pool, request.tenantId, b);
+  });
+
+  app.get('/v1/commissions/targets/:period', { schema: {
+    params: { type: 'object', required: ['period'], properties: { period: str(7) } },
+  } }, async (request, reply) => {
+    const { period } = request.params as { period: string };
+    try { return await targetProgress(opts.pool, request.tenantId, period); }
+    catch (e) { const { status } = mapCommissionError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+  // ─── E06-06 fim ───
 
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
