@@ -69,6 +69,10 @@ import {
   recordTouch, listTouches, snapshotFunnel, listSnapshots, mapAnalyticsError,
 } from '../../../packages/infra/src/analytics-repositories.js';
 import {
+  createPolicy, updatePolicy, listPolicies, optOut, optOutStatus,
+  generateReminders, dispatchReminders, listReminders, mapReminderError,
+} from '../../../packages/infra/src/reminder-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -894,6 +898,77 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E06-08: lembretes sob opt-in ───
+  app.post('/v1/reminder-policies', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['name', 'kind'],
+      properties: { name: str(120), kind: { enum: ['TASK_DUE', 'FOLLOWUP'] }, offsetMinutes: { type: 'integer', minimum: 1 },
+        channel: { enum: ['inapp', 'email'] }, maxPerDay: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    const b = request.body as { name: string; kind: 'TASK_DUE' | 'FOLLOWUP'; offsetMinutes?: number; channel?: 'inapp' | 'email'; maxPerDay?: number };
+    try {
+      const p = await createPolicy(opts.pool, request.tenantId, b);
+      return reply.status(201).send(p);
+    } catch (e) { const { status } = mapReminderError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.patch('/v1/reminder-policies/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { enabled: { type: 'boolean' }, offsetMinutes: { type: 'integer', minimum: 1 }, maxPerDay: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { enabled?: boolean; offsetMinutes?: number; maxPerDay?: number };
+    try {
+      const p = await withTransaction(opts.pool, (c) => updatePolicy(c, request.tenantId, id, b));
+      return reply.send(p);
+    } catch (e) { const { status } = mapReminderError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/reminder-policies', async (request) => listPolicies(opts.pool, request.tenantId));
+
+  app.post('/v1/leads/:id/opt-out', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const r = await withTransaction(opts.pool, (c) => optOut(c, request.tenantId, id));
+      return reply.send(r);
+    } catch (e) { const { status } = mapReminderError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/leads/:id/opt-out', { schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } } },
+    async (request) => {
+      const { id } = request.params as { id: string };
+      return optOutStatus(opts.pool, request.tenantId, id);
+    });
+
+  app.post('/v1/reminders/generate', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, properties: { policyId: uuid } },
+  } }, async (request, reply) => {
+    const b = (request.body ?? {}) as { policyId?: string };
+    try {
+      const r = await withTransaction(opts.pool, (c) => generateReminders(c, request.tenantId, b.policyId));
+      return reply.send(r);
+    } catch (e) { const { status } = mapReminderError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/reminders/dispatch', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    try {
+      const r = await withTransaction(opts.pool, (c) => dispatchReminders(c, request.tenantId));
+      return reply.send(r);
+    } catch (e) { const { status } = mapReminderError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/reminders', { schema: { querystring: { type: 'object', properties: { status: str(20), policyId: uuid } } } },
+    async (request) => {
+      const q = request.query as { status?: string; policyId?: string };
+      return listReminders(opts.pool, request.tenantId, q);
+    });
+  // ─── E06-08 fim ───
 
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
