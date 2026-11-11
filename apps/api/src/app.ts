@@ -73,6 +73,11 @@ import {
   generateReminders, dispatchReminders, listReminders, mapReminderError,
 } from '../../../packages/infra/src/reminder-repositories.js';
 import {
+  createCourse, listCourses, archiveCourse,
+  createClass, updateClass, transitionClass, listClasses, classOccupancy,
+  addTeacher, removeTeacher, createOffer, listOffers, updateOffer, mapClassError, ClassRuleError,
+} from '../../../packages/infra/src/class-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -127,7 +132,7 @@ const TENANT_HEADER = 'x-tenant-id';
 /** Mapeia erros de domínio para HTTP status sem vazar stack. */
 export function mapDomainError(e: unknown): { status: number; message: string } {
   const msg = e instanceof Error ? e.message : 'internal error';
-  if (e instanceof ConflictError || /different payload|conflict|already linked|already generated/i.test(msg)) return { status: 409, message: msg };
+  if (e instanceof ConflictError || /different payload|conflict|already linked|already generated|possui turmas ativas/i.test(msg)) return { status: 409, message: msg };
   if (e instanceof NotFoundError || /not found|must reference the original|cannot reverse|parent unit/i.test(msg)) {
     return { status: 404, message: msg };
   }
@@ -135,6 +140,7 @@ export function mapDomainError(e: unknown): { status: number; message: string } 
   if (/consent required for won lead/i.test(msg)) return { status: 403, message: msg };
   if (
     e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof PlanRuleError || e instanceof LeadRuleError ||
+    e instanceof ClassRuleError ||
     /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer|must be slug|bad limit|lead is already closed|lost_reason is required|valid email is required|invalid lead source|name is required|phone too long|campaign too long/i.test(msg)
   ) return { status: 422, message: msg };
   if (/consent required for won lead/i.test(msg)) return { status: 403, message: msg };
@@ -898,6 +904,120 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E08-01: turmas/cursos/ofertas ───
+  const mapCls = (e: unknown) => mapClassError(e);
+
+  app.post('/v1/courses', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['name'], properties: { name: str(120) } },
+  } }, async (request, reply) => {
+    try {
+      const { name } = request.body as { name: string };
+      return reply.status(201).send(await createCourse(opts.pool, request.tenantId, { name }));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/courses', async (request) => listCourses(opts.pool, request.tenantId));
+
+  app.delete('/v1/courses/:id', { preHandler: [writeGuard], schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } } },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      try {
+        return await withTransaction(opts.pool, (c) => archiveCourse(c, request.tenantId, id))
+          .then((r) => reply.send(r))
+          .catch((e) => { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); });
+      } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+    });
+
+  app.post('/v1/classes', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['courseId', 'unitId', 'name', 'capacity'],
+      properties: { courseId: uuid, unitId: uuid, name: str(120), capacity: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { courseId: string; unitId: string; name: string; capacity: number };
+      return reply.status(201).send(await createClass(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/classes', { schema: { querystring: { type: 'object', properties: { courseId: uuid, status: str(20) } } } },
+    async (request) => {
+      const q = request.query as { courseId?: string; status?: string };
+      return listClasses(opts.pool, request.tenantId, q);
+    });
+
+  app.patch('/v1/classes/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: { name: str(120), capacity: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { name?: string; capacity?: number };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => updateClass(c, request.tenantId, id, b)));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/classes/:id/transition', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['to'], properties: { to: { enum: ['PLANNED', 'OPEN', 'RUNNING', 'CLOSED'] } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { to } = request.body as { to: 'PLANNED' | 'OPEN' | 'RUNNING' | 'CLOSED' };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => transitionClass(c, request.tenantId, id, to)));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/classes/:id/occupancy', { schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } } },
+    async (request) => {
+      const { id } = request.params as { id: string };
+      return classOccupancy(opts.pool, request.tenantId, id);
+    });
+
+  app.post('/v1/classes/:id/teachers', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['userId'], properties: { userId: { type: 'string' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { userId } = request.body as { userId: string };
+    try {
+      return reply.status(201).send(await addTeacher(opts.pool, request.tenantId, id, userId));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.delete('/v1/classes/:id/teachers/:userId', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id', 'userId'], properties: { id: uuid, userId: { type: 'string' } } },
+  } }, async (request, reply) => {
+    const { id, userId } = request.params as { id: string; userId: string };
+    return removeTeacher(opts.pool, request.tenantId, id, userId);
+  });
+
+  app.post('/v1/offers', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['classId', 'name', 'priceCents'],
+      properties: { classId: uuid, name: str(120), priceCents: { type: 'integer', minimum: 0 } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { classId: string; name: string; priceCents: number };
+      return reply.status(201).send(await createOffer(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/classes/:id/offers', { schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } } },
+    async (request) => {
+      const { id } = request.params as { id: string };
+      return listOffers(opts.pool, request.tenantId, id);
+    });
+
+  app.patch('/v1/offers/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: { name: str(120), priceCents: { type: 'integer', minimum: 0 }, active: { type: 'boolean' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { name?: string; priceCents?: number; active?: boolean };
+    try {
+      return reply.send(await updateOffer(opts.pool, request.tenantId, id, b));
+    } catch (e) { const { status } = mapCls(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+  // ─── E08-01 fim ───
 
   // ─── E06-08: lembretes sob opt-in ───
   app.post('/v1/reminder-policies', { preHandler: [writeGuard], schema: {
