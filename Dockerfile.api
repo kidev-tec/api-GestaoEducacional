@@ -1,0 +1,34 @@
+# ERP Platform — API (multi-stage, Node 22 slim)
+# Deploy alvo: Hostinger + Caddy reverse proxy (decisão Rafael 10/11/2026)
+# NOTA: a API roda TS direto via tsx (padrão do repo — sem build JS)
+FROM node:22-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY packages/core/package.json packages/core/package.json
+COPY packages/infra/package.json packages/infra/package.json
+RUN npm ci --omit=dev --workspaces --if-present 2>/dev/null || npm ci --omit=dev
+
+FROM node:22-slim AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+RUN groupadd -r erp && useradd -r -g erp erp
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/api/src ./apps/api/src
+COPY packages/core/package.json ./packages/core/package.json
+COPY packages/core/src ./packages/core/src
+COPY packages/infra/package.json ./packages/infra/package.json
+COPY packages/infra/src ./packages/infra/src
+# migrations rodam no boot (padrão do repo — idempotentes 001..007)
+COPY packages/infra/migrations ./packages/infra/migrations
+RUN npm install -g tsx@4 && chown -R erp:erp /app
+USER erp
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+# Migrations idempotentes (001..007) antes do server — padrão do repo (apply-migrations)
+COPY apps/api/scripts ./apps/api/scripts
+COPY scripts ./scripts
+CMD ["sh", "-c", "tsx apps/api/scripts/migrate.ts && exec tsx apps/api/src/server.ts"]
