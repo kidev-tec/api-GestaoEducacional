@@ -82,6 +82,10 @@ import {
   enqueueMessage, deliverMessage, listMessages, commStats, syncFromOutbox, mapCommError,
 } from '../../../packages/infra/src/comm-repositories.js';
 import {
+  createEndpoint, listEndpoints, updateEndpoint, rotateSecret,
+  dispatchWebhooks, processDelivery, listDeliveries, listDlq, replayDlq, mapWebhookError,
+} from '../../../packages/infra/src/webhook-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -908,6 +912,81 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E12-05: webhooks de saída ───
+  const mapWh = (e: unknown) => mapWebhookError(e);
+
+  app.post('/v1/webhook-endpoints', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['url'],
+      properties: { url: str(500), secret: str(200), events: { type: 'array', items: str(100) } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { url: string; secret?: string; events?: string[] };
+      return reply.status(201).send(await createEndpoint(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/webhook-endpoints', async (request) => listEndpoints(opts.pool, request.tenantId));
+
+  app.patch('/v1/webhook-endpoints/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { enabled: { type: 'boolean' }, events: { type: 'array', items: str(100) }, url: str(500) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { enabled?: boolean; events?: string[]; url?: string };
+    try {
+      return reply.send(await updateEndpoint(opts.pool, request.tenantId, id, b));
+    } catch (e) { const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/webhook-endpoints/:id/rotate-secret', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.status(201).send(await rotateSecret(opts.pool, request.tenantId, id));
+    } catch (e) { const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/webhook-dispatch', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => dispatchWebhooks(c, request.tenantId)));
+    } catch (e) { request.log.error(e); const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/webhook-deliveries/:id/process', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      // adapter local: entrega com sucesso (sem rede nesta fase)
+      return reply.send(await withTransaction(opts.pool, (c) => processDelivery(c, request.tenantId, id)));
+    } catch (e) { const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/webhook-deliveries', { schema: { querystring: { type: 'object', properties: { status: str(20), endpointId: uuid } } } },
+    async (request) => {
+      const q = request.query as { status?: string; endpointId?: string };
+      return listDeliveries(opts.pool, request.tenantId, q);
+    });
+
+  app.get('/v1/webhook-dlq', async (request) => listDlq(opts.pool, request.tenantId));
+
+  app.post('/v1/webhook-dlq/:id/replay', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.send(await replayDlq(opts.pool, request.tenantId, id));
+    } catch (e) { const { status } = mapWh(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+  // ─── E12-05 fim ───
 
   // ─── E09-01: comunicação — eventos e fila local ───
   const mapComm = (e: unknown) => mapCommError(e);
