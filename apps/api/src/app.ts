@@ -374,6 +374,20 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     return { count: await auditCount(opts.pool, request.tenantId) };
   });
 
+  // ─── E03-C: stats do outbox por tenant (read-only) ───
+  app.get('/v1/outbox/stats', async (request) => {
+    const r = await opts.pool.query(
+      `SELECT
+         COUNT(*) FILTER (WHERE processed_at IS NOT NULL) AS processed,
+         COUNT(*) FILTER (WHERE processed_at IS NULL AND attempts < 5) AS pending,
+         COUNT(*) FILTER (WHERE processed_at IS NULL AND attempts >= 5) AS dlq
+       FROM outbox_events WHERE tenant_id = $1`,
+      [request.tenantId],
+    );
+    const row = r.rows[0] as { processed: string; pending: string; dlq: string };
+    return { pending: Number(row.pending), processed: Number(row.processed), dlq: Number(row.dlq) };
+  });
+
   // ─── E07-B: integridade financeira (RF-01..04) ───
   app.get('/v1/finance/integrity', async (request, reply) => {
     try {
