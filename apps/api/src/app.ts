@@ -78,6 +78,10 @@ import {
   addTeacher, removeTeacher, createOffer, listOffers, updateOffer, mapClassError, ClassRuleError,
 } from '../../../packages/infra/src/class-repositories.js';
 import {
+  upsertEventDef, listEventDefs, updateEventDef,
+  enqueueMessage, deliverMessage, listMessages, commStats, syncFromOutbox, mapCommError,
+} from '../../../packages/infra/src/comm-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -904,6 +908,77 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E09-01: comunicação — eventos e fila local ───
+  const mapComm = (e: unknown) => mapCommError(e);
+
+  app.post('/v1/comm-event-defs', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['eventKey', 'channel', 'name', 'templateBody'],
+      properties: { eventKey: { type: 'string', pattern: '^[a-z0-9._-]+$' }, channel: { enum: ['inapp', 'email'] },
+        name: str(120), templateSubject: str(200), templateBody: str(4000) } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { eventKey: string; channel: 'inapp' | 'email'; name: string; templateBody: string; templateSubject?: string };
+      return reply.status(201).send(await upsertEventDef(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapComm(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/comm-event-defs', async (request) => listEventDefs(opts.pool, request.tenantId));
+
+  app.patch('/v1/comm-event-defs/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { enabled: { type: 'boolean' }, templateSubject: str(200), templateBody: str(4000) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { enabled?: boolean; templateSubject?: string; templateBody?: string };
+    try {
+      return reply.send(await updateEventDef(opts.pool, request.tenantId, id, b));
+    } catch (e) { const { status } = mapComm(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/comm-messages', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['eventKey', 'channel'],
+      properties: { eventKey: str(100), channel: { enum: ['inapp', 'email'] }, recipientUserId: { type: 'string' },
+        leadId: str(64), payload: { type: 'object' } } },
+  } }, async (request, reply) => {
+    const b = request.body as { eventKey: string; channel: 'inapp' | 'email'; recipientUserId?: string; leadId?: string; payload?: unknown };
+    try {
+      const m = await withTransaction(opts.pool, (c) => enqueueMessage(c, request.tenantId, {
+        eventKey: b.eventKey, channel: b.channel, payload: b.payload ?? {},
+        ...(b.recipientUserId != null ? { recipientUserId: b.recipientUserId } : {}),
+        ...(b.leadId != null ? { leadId: b.leadId } : {}),
+      }));
+      return reply.status(201).send(m);
+    } catch (e) { const { status } = mapComm(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/comm-messages', { schema: { querystring: { type: 'object', properties: { status: str(20), eventKey: str(100) } } } },
+    async (request) => {
+      const q = request.query as { status?: string; eventKey?: string };
+      return listMessages(opts.pool, request.tenantId, q);
+    });
+
+  app.post('/v1/comm-messages/:id/deliver', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => deliverMessage(c, request.tenantId, id)));
+    } catch (e) { const { status } = mapComm(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/comm-stats', async (request) => commStats(opts.pool, request.tenantId));
+
+  app.post('/v1/comm-sync', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => syncFromOutbox(c, request.tenantId)));
+    } catch (e) { request.log.error(e); const { status } = mapComm(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+  // ─── E09-01 fim ───
 
   // ─── E08-01: turmas/cursos/ofertas ───
   const mapCls = (e: unknown) => mapClassError(e);
