@@ -56,6 +56,11 @@ import {
   removeFromRotation, getTimeline, getSlaHours, TaskRuleError,
 } from '../../../packages/infra/src/task-repositories.js';
 import {
+  createPriceItem, supersedePriceItem, listActivePriceItems,
+  createProposal, transitionProposal, getProposal, listProposals,
+  computeSimulation, ProposalRuleError, mapProposalError,
+} from '../../../packages/infra/src/proposal-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -186,6 +191,8 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
     await requireAuth(opts.pool, request, reply);
     if (reply.sent) return;
     request.tenantId = (request as AuthenticatedRequest).user.tenantId;
+    request.userId = (request as AuthenticatedRequest).user.id;
+    request.userRole = (request as AuthenticatedRequest).user.role;
   });
 
   app.setNotFoundHandler((_req, reply) => {
@@ -695,6 +702,73 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
 
   // ─── E06-C fim ───
 
+  // ─── E06-04: propostas + tabela de preços versionada ───
+  app.get('/v1/price-items', { schema: { querystring: { type: 'object', properties: { active: { type: 'boolean' } } } } },
+    async (request) => listActivePriceItems(opts.pool, request.tenantId));
+
+  app.post('/v1/price-items', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['courseName', 'durationMonths', 'priceCents'],
+      properties: { courseName: str(200), durationMonths: { type: 'integer', minimum: 1 }, priceCents: { type: 'integer', minimum: 1 }, supersedeId: uuid } },
+  } }, async (request, reply) => {
+    const b = request.body as { courseName: string; durationMonths: number; priceCents: number; supersedeId?: string };
+    try {
+      const item = await withTransaction(opts.pool, (c) =>
+        b.supersedeId
+          ? supersedePriceItem(c, request.tenantId, b.supersedeId, b, request.userId ?? 'api')
+          : createPriceItem(c, request.tenantId, b, request.userId ?? 'api'));
+      return reply.status(201).send(item);
+    } catch (e) { const { status } = mapProposalError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/proposals/simulate', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['priceCents'],
+      properties: { priceCents: { type: 'integer', minimum: 1 }, discountCents: { type: 'integer', minimum: 0 }, discountPct: { type: 'number', minimum: 0 } } },
+  } }, async (request, reply) => {
+    const b = request.body as { priceCents: number; discountCents?: number; discountPct?: number };
+    try { return computeSimulation(b.priceCents, b.discountCents ?? 0, b.discountPct ?? null); }
+    catch (e) { const { status } = mapProposalError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/proposals', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['leadId', 'priceItemId'],
+      properties: { leadId: uuid, priceItemId: uuid, discountCents: { type: 'integer', minimum: 0 }, discountPct: { type: 'number', minimum: 0 }, validDays: { type: 'integer', minimum: 1 } } },
+  } }, async (request, reply) => {
+    const b = request.body as { leadId: string; priceItemId: string; discountCents?: number; discountPct?: number; validDays?: number };
+    try {
+      const p = await withTransaction(opts.pool, (c) => createProposal(c, request.tenantId, { ...b, actor: request.userId ?? 'api' }));
+      return reply.status(201).send(p);
+    } catch (e) { const { status } = mapProposalError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/proposals/:id/:action', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id', 'action'], properties: { id: uuid, action: { enum: ['approve', 'send', 'accept', 'reject', 'cancel'] } },
+    },
+    body: { type: 'object', additionalProperties: false, properties: { signedByName: str(200) } },
+  } }, async (request, reply) => {
+    const { id, action } = request.params as { id: string; action: string };
+    const b = (request.body ?? {}) as { signedByName?: string };
+    try {
+      const toStatus = action === 'approve' ? 'approved' : action === 'accept' ? 'accepted'
+        : action === 'reject' ? 'rejected' : action === 'cancel' ? 'canceled' : action === 'send' ? 'sent' : action;
+      const p = await withTransaction(opts.pool, (c) => transitionProposal(c, request.tenantId, id, toStatus, request.userId ?? 'api',
+        { ...(request.userRole !== undefined ? { approverRole: request.userRole } : {}), ...(b.signedByName !== undefined ? { signedByName: b.signedByName } : {}) }));
+      return reply.send(p);
+    } catch (e) { const { status } = mapProposalError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/proposals/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try { return await getProposal(opts.pool, request.tenantId, id); }
+    catch (e) { const { status } = mapProposalError(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/proposals', { schema: { querystring: { type: 'object', properties: { leadId: uuid } } } },
+    async (request) => {
+      const { leadId } = request.query as { leadId?: string };
+      return listProposals(opts.pool, request.tenantId, leadId);
+    });
+  // ─── E06-04 fim ───
+
 
   // ─── E05-A: unidades, pessoas e responsáveis ───
   app.post('/v1/units', {
@@ -1033,5 +1107,7 @@ declare module 'fastify' {
   interface FastifyRequest {
     tenantId: string;
     requestId: string;
+    userId?: string;
+    userRole?: string;
   }
 }
