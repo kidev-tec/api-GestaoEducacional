@@ -60,6 +60,7 @@ import {
   createProposal, transitionProposal, getProposal, listProposals,
   computeSimulation, ProposalRuleError, mapProposalError,
 } from '../../../packages/infra/src/proposal-repositories.js';
+import { convertProposal, mapConversionError } from '../../../packages/infra/src/proposal-conversion.js';
 import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
@@ -768,6 +769,19 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listProposals(opts.pool, request.tenantId, leadId);
     });
   // ─── E06-04 fim ───
+
+  // ─── E06-05: converter proposta em matrícula ───
+  app.post('/v1/proposals/:id/convert', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const result = await withTransaction(opts.pool, (c) => convertProposal(c, request.tenantId, id, request.userId ?? 'api'));
+      return reply.status(result.idempotentReplay ? 200 : 201).send(result);
+    } catch (e) { const { status } = mapConversionError(e); if (status === 500) request.log.error(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+  // ─── E06-05 fim ───
 
 
   // ─── E05-A: unidades, pessoas e responsáveis ───

@@ -208,7 +208,10 @@ export async function createEnrollment(
      VALUES ($1, $2, $3, $4, 'DRAFT') RETURNING id, tenant_id, student_id, offer_id, state`,
     [params.id, params.tenantId, params.studentId, params.offerId],
   );
-  const enrollment = inserted.rows[0] as EnrollmentRow;
+  const row0 = inserted.rows[0] as unknown as EnrollmentRow & { tenant_id: string; student_id: string; offer_id: string };
+  const enrollment: EnrollmentRow = {
+    id: row0.id, tenantId: row0.tenant_id, studentId: row0.student_id, offerId: row0.offer_id, state: row0.state,
+  };
   await client.query(
     'INSERT INTO enrollment_idempotency (tenant_id, idempotency_key, enrollment_id, fingerprint) VALUES ($1, $2, $3, $4)',
     [params.tenantId, params.idempotencyKey, enrollment.id, fingerprint],
@@ -241,7 +244,8 @@ export async function transitionEnrollment(
     'INSERT INTO audit_records (tenant_id, actor_id, action, resource_type, resource_id) VALUES ($1, $2, $3, $4, $5)',
     [params.tenantId, params.actorId, `enrollment.transition.${params.to}`, 'enrollment', params.id],
   );
-  return updated.rows[0] as EnrollmentRow;
+  const u = updated.rows[0] as unknown as EnrollmentRow & { tenant_id: string; student_id: string; offer_id: string };
+  return { id: u.id, tenantId: u.tenant_id, studentId: u.student_id, offerId: u.offer_id, state: u.state };
 }
 
 export async function getEnrollment(
@@ -254,7 +258,8 @@ export async function getEnrollment(
     [id, tenantId],
   );
   if (!res.rowCount) throw new Error(`enrollment ${id} not found`);
-  return res.rows[0] as EnrollmentRow;
+  const r = res.rows[0] as unknown as EnrollmentRow & { tenant_id: string; student_id: string; offer_id: string };
+  return { id: r.id, tenantId: r.tenant_id, studentId: r.student_id, offerId: r.offer_id, state: r.state };
 }
 
 export async function auditCount(client: PoolClient | Pool, tenantId: string): Promise<number> {
