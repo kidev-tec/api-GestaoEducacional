@@ -92,6 +92,10 @@ import {
   expandSessions, rescheduleSession, cancelSession, listSessions, sessionChanges, mapScheduleError,
 } from '../../../packages/infra/src/schedule-repositories.js';
 import {
+  createTemplateVersion, listTemplates, updateDraft, approveTemplate,
+  previewTemplate, listVersions, mapTemplateError,
+} from '../../../packages/infra/src/comm-template-repositories.js';
+import {
   UNLIMITED, assignPlan, countStudents, createCommercialPlan, currentPlan, entitledModules, listCommercialPlans, planLimit, PlanRuleError,
 } from '../../../packages/infra/src/plan-repositories.js';
 
@@ -918,6 +922,69 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return listSnapshots(opts.pool, request.tenantId, q.unitId, Math.min(q.limit ?? 20, 100));
     });
   // ─── E06-07 fim ───
+
+  // ─── E09-02: templates versionados ───
+  const mapTpl = (e: unknown) => mapTemplateError(e);
+
+  app.post('/v1/comm-templates', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', additionalProperties: false, required: ['eventKey', 'channel', 'locale', 'subject', 'body', 'samplePayload'],
+      properties: { eventKey: str(100), channel: { enum: ['inapp', 'email'] }, locale: { enum: ['pt', 'en', 'es'] },
+        subject: str(200), body: str(4000), samplePayload: { type: 'object' } } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { eventKey: string; channel: 'inapp' | 'email'; locale: 'pt' | 'en' | 'es'; subject: string; body: string; samplePayload: Record<string, unknown> };
+      return reply.status(201).send(await createTemplateVersion(opts.pool, request.tenantId, b));
+    } catch (e) { const { status } = mapTpl(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/comm-templates', { schema: {
+    querystring: { type: 'object', properties: { eventKey: str(100), channel: str(10), locale: str(5), status: str(10) } },
+  } }, async (request) => {
+    const q = request.query as { eventKey?: string; channel?: string; locale?: string; status?: string };
+    return listTemplates(opts.pool, request.tenantId, q);
+  });
+
+  app.patch('/v1/comm-templates/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false,
+      properties: { subject: str(200), body: str(4000), samplePayload: { type: 'object' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { subject?: string; body?: string; samplePayload?: Record<string, unknown> };
+    try {
+      return reply.send(await withTransaction(opts.pool, (c) => updateDraft(c, request.tenantId, id, b)));
+    } catch (e) { const { status } = mapTpl(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/comm-templates/:id/approve', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, properties: {} },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const userId = (request as AuthenticatedRequest).user.id;
+      return reply.send(await withTransaction(opts.pool, (c) => approveTemplate(c, request.tenantId, id, userId)));
+    } catch (e) { const { status } = mapTpl(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.post('/v1/comm-templates/:id/preview', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+    body: { type: 'object', additionalProperties: false, required: ['payload'], properties: { payload: { type: 'object' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { payload } = request.body as { payload: Record<string, unknown> };
+    try {
+      return reply.send(await previewTemplate(opts.pool, request.tenantId, id, payload));
+    } catch (e) { const { status } = mapTpl(e); return reply.status(status).send({ error: e instanceof Error ? e.message : 'erro' }); }
+  });
+
+  app.get('/v1/comm-templates/:id/versions', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: uuid } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    return listVersions(opts.pool, request.tenantId, id);
+  });
+  // ─── E09-02 fim ───
 
   // ─── E08-02: grade, horários e calendários ───
   const mapSched = (e: unknown) => mapScheduleError(e);
