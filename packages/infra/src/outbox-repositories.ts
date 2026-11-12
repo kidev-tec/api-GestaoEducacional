@@ -58,12 +58,11 @@ export async function enqueueOutbox(
  */
 export async function claimPending(
   pool: Pool | PoolClient,
-  params: { limit: number; now?: Date; backoffMs?: number },
+  params: { limit: number; backoffMs?: number },
 ): Promise<OutboxRow[]> {
   if (!Number.isInteger(params.limit) || params.limit <= 0 || params.limit > 100) {
     throw new OutboxRuleError('limit must be integer 1..100');
   }
-  const now = params.now ?? new Date();
   const backoffMs = params.backoffMs ?? 30_000;
   const client = await (pool as Pool).connect();
   try {
@@ -71,18 +70,18 @@ export async function claimPending(
     const res = await client.query(
       `SELECT id, tenant_id, type, version, payload, created_at, processed_at, attempts, next_attempt_at
        FROM outbox_events
-       WHERE processed_at IS NULL AND (next_attempt_at IS NULL OR next_attempt_at <= $1)
-         AND attempts < $2
+       WHERE processed_at IS NULL AND (next_attempt_at IS NULL OR next_attempt_at <= now())
+         AND attempts < $1
        ORDER BY created_at ASC
-       LIMIT $3
+       LIMIT $2
        FOR UPDATE SKIP LOCKED`,
-      [now.toISOString(), MAX_ATTEMPTS, params.limit],
+      [MAX_ATTEMPTS, params.limit],
     );
     const ids = (res.rows as Record<string, unknown>[]).map((r) => r.id as string);
     if (ids.length) {
       await client.query(
-        'UPDATE outbox_events SET next_attempt_at = $1 WHERE id = ANY($2) AND processed_at IS NULL',
-        [new Date(now.getTime() + backoffMs).toISOString(), ids],
+        'UPDATE outbox_events SET next_attempt_at = now() + ($1::text::interval) WHERE id = ANY($2) AND processed_at IS NULL',
+        [`${backoffMs} milliseconds`, ids],
       );
     }
     await client.query('COMMIT');

@@ -84,10 +84,10 @@ describe('claimPending', () => {
     const { pool, tx } = fakePool((q) => q.text.includes('FOR UPDATE SKIP LOCKED')
       ? { rows: [row(), row({ id: 'ev2' })], rowCount: 2 }
       : empty);
-    const evs = await claimPending(pool, { limit: 10, now: new Date('2026-11-09T10:00:00Z'), backoffMs: 30_000 });
+    const evs = await claimPending(pool, { limit: 10, backoffMs: 30_000 });
     expect(evs.map((e) => e.id)).toEqual(['ev1', 'ev2']);
     const update = tx.find((q) => q.text.includes('UPDATE outbox_events SET next_attempt_at'));
-    expect(update?.values?.[0]).toBe('2026-11-09T10:00:30.000Z');
+    expect(update?.values?.[0]).toBe('30000 milliseconds');
     expect(update?.values?.[1]).toEqual(['ev1', 'ev2']);
     expect(tx[0]?.text).toBe('BEGIN');
     expect(tx.at(-1)?.text).toBe('COMMIT');
