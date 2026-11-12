@@ -1,0 +1,35 @@
+name: gates
+on:
+  push:
+    branches: [main, staging-local, 'feat/**']
+  pull_request:
+    branches: [main, staging-local]
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - name: Instala dependências
+        run: npm ci
+      - name: Typecheck (apps/api)
+        run: npm run typecheck
+      - name: Unit + coverage @100×4 (packages/infra + demais workspaces)
+        run: npm test
+      - name: Audit DoD (migrations idempotentes, secrets, console.log)
+        run: node scripts/audit-dod.mjs --full
+      - name: Upload coverage summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: |
+            packages/infra/coverage/coverage-summary.json
+            apps/api/coverage/coverage-summary.json
+          if-no-files-found: ignore
+          retention-days: 7
