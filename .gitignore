@@ -9,3 +9,6 @@ coverage/
 .env.*
 !.env.example
 .DS_Store
+apps/desktop/release/
+apps/desktop/lib.js
+apps/desktop/main.js
