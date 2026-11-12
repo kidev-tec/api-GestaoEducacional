@@ -19,6 +19,10 @@ import {
   createTrial, transitionSubscription, listTransitions, exportTenantData,
   TrialRuleError, TransitionRuleError, SubscriptionNotFoundError, NotFoundError as STNotFoundError,
 } from '@erp/infra/src/subscription-transition-repositories.js';
+import {
+  enqueueMessage as msgEnqueue, listDeliveries as msgListDeliveries, MessagingError,
+  optOut as msgOptOut, recordDeliveryUpdate as msgRecordDeliveryUpdate, upsertProvider as msgUpsertProvider,
+} from '@erp/infra/src/messaging-repositories.js';
 import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
   withTransaction,
@@ -241,7 +245,7 @@ export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
   app.addHook('onRequest', async (request, reply) => {
     const path = request.url.split('?')[0] ?? '';
     // Superfícies públicas: health/docs e auth. Demais rotas só via sessão.
-    if (path === '/health' || path === '/ready' || path.startsWith('/docs') || path === '/openapi.json' || path.startsWith('/v1/auth/')) return;
+    if (path === '/health' || path === '/ready' || path.startsWith('/docs') || path === '/openapi.json' || path.startsWith('/v1/auth/') || path.startsWith('/v1/messaging/webhook/')) return;
     await requireAuth(opts.pool, request, reply);
     if (reply.sent) return;
     request.tenantId = (request as AuthenticatedRequest).user.tenantId;
@@ -1357,6 +1361,82 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
     return exportTenantData(opts.pool, p.id);
   });
+  // ─── E09-03: mensageria omnichannel ───
+  const mapMsgError = (e: unknown): { status: number; message: string } => {
+    if (e instanceof MessagingError) return { status: 422, message: e.message };
+    if (e instanceof Error && /internal|invalid input syntax/i.test(e.message)) return { status: 500, message: 'erro interno' };
+    return { status: 500, message: 'erro interno' };
+  };
+
+  app.put('/v1/tenants/:id/messaging/providers', { preHandler: [adminGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    body: { type: 'object', additionalProperties: false, required: ['channel', 'providerName', 'config'],
+      properties: { channel: { type: 'string', enum: ['WHATSAPP', 'EMAIL', 'SMS'] },
+        providerName: str(80), config: { type: 'object' }, active: { type: 'boolean' } } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    const b = request.body as { channel: 'WHATSAPP' | 'EMAIL' | 'SMS'; providerName: string; config: Record<string, unknown>; active?: boolean };
+    try {
+      return reply.send(await msgUpsertProvider(opts.pool, p.id, b));
+    } catch (e) { const m = mapMsgError(e); return reply.code(m.status).send({ error: m.message }); }
+  });
+
+  app.post('/v1/tenants/:id/messaging/send', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    body: { type: 'object', additionalProperties: false, required: ['channel', 'recipient'],
+      properties: { channel: { type: 'string', enum: ['WHATSAPP', 'EMAIL', 'SMS'] },
+        recipient: str(320), templateId: uuid, payload: { type: 'object' } } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    const b = request.body as { channel: 'WHATSAPP' | 'EMAIL' | 'SMS'; recipient: string; templateId?: string; payload?: Record<string, unknown> };
+    try {
+      return reply.status(201).send(await msgEnqueue(opts.pool, p.id, b));
+    } catch (e) { const m = mapMsgError(e); return reply.code(m.status).send({ error: m.message }); }
+  });
+
+  app.post('/v1/tenants/:id/messaging/opt-out', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    body: { type: 'object', additionalProperties: false, required: ['channel', 'recipient'],
+      properties: { channel: { type: 'string', enum: ['WHATSAPP', 'EMAIL', 'SMS'] }, recipient: str(320) } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    const b = request.body as { channel: 'WHATSAPP' | 'EMAIL' | 'SMS'; recipient: string };
+    try {
+      await msgOptOut(opts.pool, p.id, b);
+      return reply.status(204).send();
+    } catch (e) { const m = mapMsgError(e); return reply.code(m.status).send({ error: m.message }); }
+  });
+
+  app.get('/v1/tenants/:id/messaging/deliveries', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    querystring: { type: 'object', properties: { status: { type: 'string', enum: ['QUEUED', 'SENT', 'DELIVERED', 'FAILED', 'OPT_OUT'] } } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    const q = request.query as { status?: 'QUEUED' | 'SENT' | 'DELIVERED' | 'FAILED' | 'OPT_OUT' };
+    return { deliveries: await msgListDeliveries(opts.pool, p.id, q) };
+  });
+
+  app.post('/v1/messaging/webhook/:channel', { schema: {
+    params: { type: 'object', required: ['channel'], properties: { channel: { type: 'string', enum: ['WHATSAPP', 'EMAIL', 'SMS'] } } },
+    body: { type: 'object', additionalProperties: true },
+  } }, async (request, reply) => {
+    const p = request.params as { channel: 'WHATSAPP' | 'EMAIL' | 'SMS' };
+    const sig = request.headers['x-webhook-signature'];
+    if (typeof sig !== 'string' || sig.length === 0 || sig.length > 500) return reply.code(401).send({ error: 'assinatura inválida' });
+    const b = request.body as { providerMessageId?: string; status?: 'SENT' | 'DELIVERED' | 'FAILED' };
+    if (!b?.providerMessageId || !b?.status) return reply.code(400).send({ error: 'payload inválido' });
+    try {
+      return reply.send(await msgRecordDeliveryUpdate(opts.pool, { providerMessageId: b.providerMessageId, status: b.status }));
+    } catch (e) {
+      if (e instanceof MessagingError) return reply.code(404).send({ error: e.message });
+      return reply.code(500).send({ error: 'erro interno' });
+    }
+  });
+  // ─── E09-03 fim ───
   // ─── E13-04 fim ───
 
   // ─── E13-01: catálogo de módulos ───
