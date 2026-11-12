@@ -20,6 +20,7 @@ async function login(email: string, tenant: string) {
   return (r.json() as { token: string }).token;
 }
 
+// NOTA E14-01: catálogo de módulos é GLOBAL (sem tenant_id) — tenant isolation não se aplica.
 describe('E13-01 catálogo de módulos', () => {
   beforeAll(async () => {
     db = await startTestDb();
