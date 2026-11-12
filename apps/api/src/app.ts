@@ -8,6 +8,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifyApiReference from '@scalar/fastify-api-reference';
 import cors from '@fastify/cors';
 import type { Pool } from 'pg';
+import { grantEntitlement, updateEntitlement, hasEntitlement, listEntitlements, entitlementAudit, mapEntitlementError } from '@erp/infra/src/entitlement-repositories.js';
 import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
   withTransaction,
@@ -1044,6 +1045,52 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
   });
   // ─── E12-02 fim ───
   // ─── E11-01 fim ───
+
+  // ─── E13-02: entitlements por tenant ───
+  const mapEntErr = (e: unknown) => mapEntitlementError(e);
+
+  app.get('/v1/entitlements', async (request) => listEntitlements(opts.pool, request.tenantId));
+
+  app.get('/v1/entitlements/:moduleKey/audit', { schema: {
+    params: { type: 'object', required: ['moduleKey'], properties: { moduleKey: str(100) } },
+  } }, async (request) => {
+    const { moduleKey } = request.params as { moduleKey: string };
+    return entitlementAudit(opts.pool, request.tenantId, moduleKey);
+  });
+
+  app.post('/v1/entitlements', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', required: ['moduleKey'], properties: {
+      moduleKey: str(100), seats: { type: 'integer', minimum: 1 },
+      startsAt: { type: 'string', format: 'date' }, endsAt: { type: 'string', format: 'date' },
+      note: { type: 'string', maxLength: 500 },
+    } },
+  } }, async (request, reply) => {
+    const b = request.body as { moduleKey: string; seats?: number; startsAt?: string; endsAt?: string; note?: string };
+    try {
+      const ent = await withTransaction(opts.pool, (c) => grantEntitlement(c, request.tenantId, b));
+      return reply.code(201).send(ent);
+    } catch (e) {
+      const { status } = mapEntErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+
+  app.patch('/v1/entitlements/:moduleKey', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['moduleKey'], properties: { moduleKey: str(100) } },
+    body: { type: 'object', properties: {
+      seats: { type: 'integer', minimum: 1 }, active: { type: 'boolean' }, note: { type: 'string', maxLength: 500 },
+    } },
+  } }, async (request, reply) => {
+    const { moduleKey } = request.params as { moduleKey: string };
+    const b = request.body as { seats?: number; active?: boolean; note?: string };
+    try {
+      return await withTransaction(opts.pool, (c) => updateEntitlement(c, request.tenantId, moduleKey, b));
+    } catch (e) {
+      const { status } = mapEntErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+  // ─── E13-02 fim ───
 
   // ─── E13-01: catálogo de módulos ───
   const mapCat = (e: unknown) => mapCatalogError(e);
