@@ -43,6 +43,21 @@ describe('E06-08 lembretes', () => {
   }, 180_000);
   afterAll(async () => { await app?.close(); await db?.teardown(); });
 
+
+  it('ISOL: token de outro tenant não vê dados', async () => {
+    const t2 = await db.pool.query('INSERT INTO tenants (id) VALUES ($1) RETURNING id', [crypto.randomUUID()]);
+    const t2id = t2.rows[0]!.id as string;
+    const argon = await import('argon2');
+    await db.pool.query(
+      'INSERT INTO users (id, tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',
+      [crypto.randomUUID(), t2id, 'isol-rem@test.com', await argon.hash('correct-horse-123', { type: argon.argon2id }), 'operator'],
+    );
+    const r = await app.inject({ method: 'POST', url: '/v1/auth/login', payload: { email: 'isol-rem@test.com', password: 'correct-horse-123' } });
+    const tok2 = (r.json() as { token: string }).token;
+    const list = await app.inject({ method: 'GET', url: '/v1/reminder-policies', headers: { authorization: `Bearer ${tok2}` } });
+    expect(list.statusCode).toBe(200);
+    expect(list.json() as unknown[]).toHaveLength(0);
+  });
   it('ciclo feliz: policy → task due → generate → dispatch SENT → supervisão; geração idempotente', async () => {
     const { leadId, taskId } = await leadWithTaskDue('e0608-ok@test.com', true);
     const pol = await app.inject({ method: 'POST', url: '/v1/reminder-policies', headers: H(), payload: { name: 'due-30', kind: 'TASK_DUE', offsetMinutes: 60, maxPerDay: 3 } });
