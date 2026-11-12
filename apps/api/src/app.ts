@@ -8,6 +8,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifyApiReference from '@scalar/fastify-api-reference';
 import cors from '@fastify/cors';
 import type { Pool } from 'pg';
+import { recordAttendance, reviseAttendance, attendanceReport, getSessionAttendance, attendanceChanges, mapAttendanceError } from '@erp/infra/src/attendance-repositories.js';
 import { grantEntitlement, updateEntitlement, hasEntitlement, listEntitlements, entitlementAudit, mapEntitlementError } from '@erp/infra/src/entitlement-repositories.js';
 import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
@@ -1090,6 +1091,77 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       return reply.code(status).send({ error: (e as Error).message });
     }
   });
+
+  // ─── E08-03: chamada e presença auditável ───
+  const mapAttErr = (e: unknown) => mapAttendanceError(e);
+  const attStatus = { type: 'string', enum: ['PRESENT', 'ABSENT', 'LATE', 'JUSTIFIED'] };
+
+  app.post('/v1/sessions/:id/attendance', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+    body: { type: 'object', required: ['entries'], properties: {
+      entries: { type: 'array', minItems: 1, maxItems: 200, items: { type: 'object', required: ['enrollmentId', 'status'], properties: {
+        enrollmentId: { type: 'string', maxLength: 100 }, status: attStatus,
+        minutesLate: { type: 'integer', minimum: 1 }, justification: { type: 'string', maxLength: 500 },
+      } } },
+    } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { entries: Array<{ enrollmentId: string; status: string; minutesLate?: number; justification?: string }> };
+    try {
+      const saved = await withTransaction(opts.pool, (c) => recordAttendance(c, request.tenantId, { sessionId: id, recordedBy: request.userId!, entries: b.entries }));
+      return reply.code(201).send(saved);
+    } catch (e) {
+      const { status } = mapAttErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+
+  app.get('/v1/sessions/:id/attendance', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    return getSessionAttendance(opts.pool, request.tenantId, id);
+  });
+
+  app.patch('/v1/attendance/:id', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+    body: { type: 'object', required: ['status', 'reason'], properties: {
+      status: attStatus, reason: { type: 'string', minLength: 1, maxLength: 500 },
+      justification: { type: 'string', maxLength: 500 },
+    } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { status: string; reason: string; justification?: string };
+    try {
+      return await withTransaction(opts.pool, (c) => reviseAttendance(c, request.tenantId, id,
+        b.justification === undefined
+          ? { newStatus: b.status, reason: b.reason, reviewerId: request.userId! }
+          : { newStatus: b.status, reason: b.reason, reviewerId: request.userId!, justification: b.justification }));
+    } catch (e) {
+      const { status } = mapAttErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+
+  app.get('/v1/attendance/:id/changes', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    return attendanceChanges(opts.pool, request.tenantId, id);
+  });
+
+  app.get('/v1/classes/:id/attendance-report', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: str(100) } },
+    querystring: { type: 'object', required: ['from', 'to'], properties: {
+      from: { type: 'string', format: 'date' }, to: { type: 'string', format: 'date' },
+    } },
+  } }, async (request) => {
+    const { id } = request.params as { id: string };
+    const q = request.query as { from: string; to: string };
+    return attendanceReport(opts.pool, request.tenantId, id, q);
+  });
+  // ─── E08-03 fim ───
+
   // ─── E13-02 fim ───
 
   // ─── E13-01: catálogo de módulos ───
