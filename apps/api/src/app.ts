@@ -10,6 +10,11 @@ import cors from '@fastify/cors';
 import type { Pool } from 'pg';
 import { recordAttendance, reviseAttendance, attendanceReport, getSessionAttendance, attendanceChanges, mapAttendanceError } from '@erp/infra/src/attendance-repositories.js';
 import { grantEntitlement, updateEntitlement, hasEntitlement, listEntitlements, entitlementAudit, mapEntitlementError } from '@erp/infra/src/entitlement-repositories.js';
+import {
+  createPlanVersion, publishPlanVersion, listPlanVersions, getPlanVersion, quotePlan,
+  getSubscription, upsertSubscription,
+  PlanRuleError as PVPlanRuleError, NotFoundError as PVNotFoundError, PlanVersionConflictError,
+} from '@erp/infra/src/plan-version-repositories.js';
 import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
   withTransaction,
@@ -1163,6 +1168,134 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
   // ─── E08-03 fim ───
 
   // ─── E13-02 fim ───
+
+  // ─── E13-03: planos versionados, limites e simulador ───
+  const mapPVError = (e: unknown): { status: number; message: string } => {
+    if (e instanceof PVPlanRuleError) return { status: 422, message: e.message };
+    if (e instanceof PVNotFoundError) return { status: 404, message: e.message };
+    if (e instanceof PlanVersionConflictError) return { status: 409, message: e.message };
+    const msg = e instanceof Error ? e.message : 'internal error';
+    return { status: 500, message: /internal|invalid input syntax/i.test(msg) ? 'internal error' : msg };
+  };
+  const adminGuard = requireRole('admin');
+
+  app.post('/v1/plan-versions', {
+    preHandler: [adminGuard],
+    schema: {
+      body: {
+        type: 'object', additionalProperties: false,
+        required: ['key', 'name', 'planType', 'billingPeriod', 'unitPriceCents'],
+        properties: {
+          key: { type: 'string', pattern: '^[a-z0-9-]{2,32}$' },
+          name: { type: 'string', minLength: 1, maxLength: 120 },
+          planType: { type: 'string', enum: ['STANDARD', 'PILOT', 'FRANCHISE'] },
+          billingPeriod: { type: 'string', enum: ['MONTHLY', 'ANNUAL'] },
+          unitPriceCents: { type: 'integer', minimum: 0 },
+          seatPriceCents: { type: 'integer', minimum: 0 },
+          minUnits: { type: 'integer', minimum: 1 },
+          maxUnits: { type: 'integer', minimum: 1 },
+          trialDays: { type: 'integer', minimum: 0 },
+          notes: { type: 'string', maxLength: 500 },
+          limits: {
+            type: 'array', maxItems: 50,
+            items: {
+              type: 'object', additionalProperties: false, required: ['key', 'value'],
+              properties: { key: { type: 'string', pattern: '^[a-z_]{2,40}$' }, value: { type: ['integer', 'null'], minimum: 0 } },
+            },
+          },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    const b = request.body as {
+      key: string; name: string; planType: 'STANDARD' | 'PILOT' | 'FRANCHISE';
+      billingPeriod: 'MONTHLY' | 'ANNUAL'; unitPriceCents: number; seatPriceCents?: number;
+      minUnits?: number; maxUnits?: number; trialDays?: number; notes?: string;
+      limits?: { key: string; value: number | null }[];
+    };
+    try {
+      return reply.status(201).send(await createPlanVersion(opts.pool, b));
+    } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
+  });
+
+  app.get('/v1/plan-versions', { schema: {
+    querystring: { type: 'object', properties: { all: { type: 'boolean' } } },
+  } }, async (request) => {
+    const q = request.query as { all?: boolean };
+    return { planVersions: await listPlanVersions(opts.pool, { includeUnpublished: q.all === true }) };
+  });
+
+  app.get('/v1/plan-versions/:id', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return await getPlanVersion(opts.pool, id);
+    } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
+  });
+
+  app.post('/v1/plan-versions/:id/publish', {
+    preHandler: [adminGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string', format: 'uuid' } } },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return await publishPlanVersion(opts.pool, id);
+    } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
+  });
+
+  app.post('/v1/plans/quote', {
+    schema: {
+      body: {
+        type: 'object', additionalProperties: false, required: ['planId', 'units', 'seats'],
+        properties: {
+          planId: { type: 'string', format: 'uuid' },
+          units: { type: 'integer', minimum: 1 },
+          seats: { type: 'integer', minimum: 0 },
+          priceOverrideCents: { type: 'integer', minimum: 0 },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    const b = request.body as { planId: string; units: number; seats: number; priceOverrideCents?: number };
+    try {
+      return await quotePlan(opts.pool, b);
+    } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
+  });
+
+  app.get('/v1/tenants/:id/subscription', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    if (id !== request.tenantId) return reply.status(404).send({ error: 'not found' }); // cross-tenant
+    return { subscription: await getSubscription(opts.pool, request.tenantId) };
+  });
+
+  app.post('/v1/tenants/:id/subscription', {
+    preHandler: [adminGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object', additionalProperties: false, required: ['planVersionId', 'status'],
+        properties: {
+          planVersionId: { type: 'string', format: 'uuid' },
+          status: { type: 'string', enum: ['TRIAL', 'ACTIVE', 'PAST_DUE', 'CANCELED'] },
+          currentPeriodEnd: { type: ['string', 'null'], format: 'date' },
+          priceOverrideCents: { type: 'integer', minimum: 0 },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const b = request.body as { planVersionId: string; status: 'TRIAL' | 'ACTIVE' | 'PAST_DUE' | 'CANCELED'; currentPeriodEnd?: string; priceOverrideCents?: number };
+    if (id !== request.tenantId) return reply.status(404).send({ error: 'not found' }); // cross-tenant
+    try {
+      return reply.status(201).send(await upsertSubscription(opts.pool, { tenantId: request.tenantId, ...b }));
+    } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
+  });
+  // ─── E13-03 fim ───
 
   // ─── E13-01: catálogo de módulos ───
   const mapCat = (e: unknown) => mapCatalogError(e);
