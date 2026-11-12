@@ -28,6 +28,21 @@ describe('E09-01 comunicação', () => {
   }, 180_000);
   afterAll(async () => { await app?.close(); await db?.teardown(); });
 
+
+  it('ISOL: token de outro tenant não vê dados', async () => {
+    const t2 = await db.pool.query('INSERT INTO tenants (id) VALUES ($1) RETURNING id', [crypto.randomUUID()]);
+    const t2id = t2.rows[0]!.id as string;
+    const argon = await import('argon2');
+    await db.pool.query(
+      'INSERT INTO users (id, tenant_id, email, password_hash, role) VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',
+      [crypto.randomUUID(), t2id, 'isol-comm@test.com', await argon.hash('correct-horse-123', { type: argon.argon2id }), 'operator'],
+    );
+    const r = await app.inject({ method: 'POST', url: '/v1/auth/login', payload: { email: 'isol-comm@test.com', password: 'correct-horse-123' } });
+    const tok2 = (r.json() as { token: string }).token;
+    const list = await app.inject({ method: 'GET', url: '/v1/comm-messages', headers: { authorization: `Bearer ${tok2}` } });
+    expect(list.statusCode).toBe(200);
+    expect(list.json() as unknown[]).toHaveLength(0);
+  });
   it('ciclo: def → enqueue → deliver → stats; regras adversariais; opt-out → SKIPPED', async () => {
     // def inválida (slug) → AJV 400
     const badDef = await app.inject({ method: 'POST', url: '/v1/comm-event-defs', headers: H(), payload: { eventKey: 'BAD KEY', channel: 'inapp', name: 'x', templateBody: 'y' } });
