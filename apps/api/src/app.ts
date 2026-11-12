@@ -15,6 +15,10 @@ import {
   getSubscription, upsertSubscription,
   PlanRuleError as PVPlanRuleError, NotFoundError as PVNotFoundError, PlanVersionConflictError,
 } from '@erp/infra/src/plan-version-repositories.js';
+import {
+  createTrial, transitionSubscription, listTransitions, exportTenantData,
+  TrialRuleError, TransitionRuleError, SubscriptionNotFoundError, NotFoundError as STNotFoundError,
+} from '@erp/infra/src/subscription-transition-repositories.js';
 import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
   withTransaction,
@@ -1296,6 +1300,64 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     } catch (e) { return reply.status(mapPVError(e).status).send({ error: mapPVError(e).message }); }
   });
   // ─── E13-03 fim ───
+
+  // ─── E13-04: trials e transições seguras ───
+  const mapSTError = (e: unknown): { status: number; message: string } => {
+    if (e instanceof TrialRuleError) return { status: 422, message: e.message };
+    if (e instanceof TransitionRuleError) return { status: 422, message: e.message };
+    if (e instanceof STNotFoundError) return { status: 404, message: e.message };
+    if (e instanceof SubscriptionNotFoundError) return { status: 404, message: e.message };
+    return { status: 500, message: /internal|invalid input syntax/i.test(String(e)) ? 'internal error' : String(e) };
+  };
+
+  app.post('/v1/trials', { preHandler: [adminGuard], schema: {
+    body: { type: 'object', required: ['name', 'planVersionId'], additionalProperties: false, properties: {
+      name: { type: 'string', minLength: 2, maxLength: 80 },
+      planVersionId: { type: 'string', format: 'uuid' },
+    } },
+  } }, async (request, reply) => {
+    try {
+      const b = request.body as { name: string; planVersionId: string };
+      const r = await withTransaction(opts.pool, async (c) => createTrial(c, { name: b.name, planVersionId: b.planVersionId, ...(request.userId ? { actorUserId: request.userId } : {}) }));
+      return reply.code(201).send(r);
+    } catch (e) { const m = mapSTError(e); return reply.code(m.status).send({ error: m.message }); }
+  });
+
+  app.post('/v1/tenants/:id/subscription/transition', { preHandler: [adminGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    body: { type: 'object', required: ['planVersionId', 'mode'], additionalProperties: false, properties: {
+      planVersionId: { type: 'string', format: 'uuid' },
+      mode: { type: 'string', enum: ['TRIAL', 'UPGRADE', 'DOWNGRADE', 'CANCEL'] },
+      notes: { type: 'string', maxLength: 500 },
+    } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    try {
+      const b = request.body as { planVersionId: string; mode: 'TRIAL' | 'UPGRADE' | 'DOWNGRADE' | 'CANCEL'; notes?: string };
+      const r = await withTransaction(opts.pool, async (c) => transitionSubscription(c, p.id, {
+        planVersionId: b.planVersionId, mode: b.mode, ...(request.userId ? { actorUserId: request.userId } : {}), ...(b.notes !== undefined ? { notes: b.notes } : {}),
+      }));
+      return r;
+    } catch (e) { const m = mapSTError(e); return reply.code(m.status).send({ error: m.message }); }
+  });
+
+  app.get('/v1/tenants/:id/subscription/transitions', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    return { transitions: await listTransitions(opts.pool, p.id) };
+  });
+
+  app.get('/v1/tenants/:id/export', { preHandler: [adminGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+  } }, async (request, reply) => {
+    const p = request.params as { id: string };
+    if (p.id !== request.tenantId) return reply.code(404).send({ error: 'not found' });
+    return exportTenantData(opts.pool, p.id);
+  });
+  // ─── E13-04 fim ───
 
   // ─── E13-01: catálogo de módulos ───
   const mapCat = (e: unknown) => mapCatalogError(e);
