@@ -8,6 +8,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifyApiReference from '@scalar/fastify-api-reference';
 import cors from '@fastify/cors';
 import type { Pool } from 'pg';
+import { createImportJob, commitImport, getImportJob, listImports, mapImportError } from '@erp/infra/src/import-repositories.js';
 import {
   withTransaction,
   postLedger,
@@ -172,7 +173,7 @@ export function mapDomainError(e: unknown): { status: number; message: string } 
 }
 
 export async function buildApp(opts: BuildOptions): Promise<FastifyInstance> {
-  const app = Fastify({ logger: opts.logger ?? false });
+  const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 3 * 1024 * 1024 });
 
   await app.register(cors, {
     origin: opts.corsOrigins ?? ['http://localhost:5173', 'http://127.0.0.1:5173'],
@@ -989,6 +990,59 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
     const q = request.query as { from?: string; to?: string };
     return listMetricSnapshots(opts.pool, request.tenantId, key, q);
   });
+
+  // ─── E12-02: importador CSV ───
+  const mapImportErr = (e: unknown) => mapImportError(e);
+
+  app.get('/v1/imports', async (request) => listImports(opts.pool, request.tenantId));
+
+  app.get('/v1/imports/:id', { schema: {
+    params: { type: 'object', required: ['id'], properties: { id: str(100) } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return await getImportJob(opts.pool, request.tenantId, id);
+    } catch (e) {
+      const { status } = mapImportErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+
+  app.post('/v1/imports', { preHandler: [writeGuard], schema: {
+    body: { type: 'object', required: ['entity', 'csv', 'mapping'], properties: {
+      entity: { type: 'string', enum: ['people'] },
+      csv: { type: 'string', maxLength: 2 * 1024 * 1024 },
+      mapping: { type: 'object' },
+    } },
+  } }, async (request, reply) => {
+    const b = request.body as { entity: 'people'; csv: string; mapping: Record<string, string> };
+    try {
+      const createdBy = request.userId;
+      const job = await withTransaction(opts.pool, (c) =>
+        createImportJob(c, request.tenantId, createdBy
+          ? { entity: b.entity, csv: b.csv, mapping: b.mapping, createdBy }
+          : { entity: b.entity, csv: b.csv, mapping: b.mapping }));
+      return reply.code(201).send(job);
+    } catch (e) {
+      const { status } = mapImportErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+
+  app.post('/v1/imports/:id/commit', { preHandler: [writeGuard], schema: {
+    params: { type: 'object', required: ['id'], properties: { id: str(100) } },
+    body: { type: 'object', required: ['unitId'], properties: { unitId: { type: 'string', maxLength: 100 } } },
+  } }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { unitId } = request.body as { unitId: string };
+    try {
+      return await withTransaction(opts.pool, (c) => commitImport(c, request.tenantId, id, unitId));
+    } catch (e) {
+      const { status } = mapImportErr(e);
+      return reply.code(status).send({ error: (e as Error).message });
+    }
+  });
+  // ─── E12-02 fim ───
   // ─── E11-01 fim ───
 
   // ─── E13-01: catálogo de módulos ───
