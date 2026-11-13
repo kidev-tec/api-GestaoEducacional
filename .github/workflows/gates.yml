@@ -1,9 +1,9 @@
 name: gates
 on:
   push:
-    branches: [main, staging-local, 'feat/**']
+    branches: [main, staging, staging-local, 'feat/**']
   pull_request:
-    branches: [main, staging-local]
+    branches: [main, staging, staging-local]
 jobs:
   gates:
     runs-on: ubuntu-latest
