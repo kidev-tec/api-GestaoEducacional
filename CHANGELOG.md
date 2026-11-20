@@ -3,6 +3,34 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 Versionamento local (SemVer) até repo oficial — nenhum push.
 
+## [0.2.0] — 2026-11-19
+
+Fechamento E06 (contratos escolares) + verificação de evidência INT-002 kit2
+(171 itens in-scope reconciliados: 40 DONE-EVIDENCED, 39 PARTIAL, 73 MISSING,
+18 BLOCKED gate humano, 1 TODO out-of-scope). MVP P0 declarado não-completo;
+esta release é interna (borda de qualidade), não go-live.
+
+### Added — E06 Contratos Escolares
+- `POST /v1/contracts` criação com idempotência por key, payload divergente →
+  CONFLICT; parcelas geradas; RBAC owner/admin; audit trail.
+- Ativação/cancelamento com lançamento REVERSAL vinculado não-cadeável.
+- Repositório 15 casos unitários (fakeClient pattern) @100×4.
+- E2E contracts 10/10 (POST happy, idempotência, conflito, ativação,
+  cancelamento, RBAC, isolamento tenant A/B, audit, listagem, GET 404).
+- Migration 029 school_contracts; integração tuitions/entitlements.
+
+### Changed — E13 Billing/Subscription
+- Transições trial/upgrade/downgrade criam/revogam entitlements (E2E 5/5).
+
+### Changed — Qualidade
+- Gates CI `gates.yml` nos 3 splits (api/site/app); run 44649318389 verde.
+- Coverage 100×4 mantida nos domínios críticos (API 184/184; infra 401/401).
+
+### Known Issues (não bloqueiam release interna)
+- `create enrollment` não valida FKs plan/class (E05-04, dívida registrada).
+- 18 itens BLOCKED em gate humano (ICP, PSP, mensageria, marca/domínio, UAT).
+- Portais aluno/responsável, NFSe, certificados, offline: MISSING (pós-MVP).
+
 ## [0.1.0] — 2026-11-09
 
 Primeira release fechada do ERP Platform (vertical educação). Entregável
