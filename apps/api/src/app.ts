@@ -58,6 +58,9 @@ import {
   TuitionRuleError,
 } from '../../../packages/infra/src/tuition-repositories.js';
 import { listOutbox } from '../../../packages/infra/src/outbox-repositories.js';
+import {
+  createSchoolContract, listSchoolContracts, getSchoolContract, activateSchoolContract, cancelSchoolContract, ContractRuleError,
+} from '../../../packages/infra/src/school-contract-repositories.js';
 import { financeIntegrity } from '../../../packages/infra/src/integrity-repositories.js';
 import {
   createLead, listLeads, moveLeadStage, LeadRuleError,
@@ -179,7 +182,7 @@ export function mapDomainError(e: unknown): { status: number; message: string } 
   if (/integer cents|denied/i.test(msg)) return { status: 400, message: msg };
   if (/consent required for won lead/i.test(msg)) return { status: 403, message: msg };
   if (
-    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof PlanRuleError || e instanceof LeadRuleError ||
+    e instanceof UnitCycleError || e instanceof GuardianRuleError || e instanceof TuitionRuleError || e instanceof ContractRuleError || e instanceof PlanRuleError || e instanceof LeadRuleError ||
     e instanceof ClassRuleError ||
     /invalid .* transition|cycle|depth|inactive|must have kind|cannot be their own|only OPEN can|must exactly match|no charge to reverse|YYYY-MM|must be between|positive integer|must be slug|bad limit|lead is already closed|lost_reason is required|valid email is required|invalid lead source|name is required|phone too long|campaign too long/i.test(msg)
   ) return { status: 422, message: msg };
@@ -2264,6 +2267,46 @@ const str = (max = NAME_MAX) => ({ type: 'string' as const, minLength: 1, maxLen
       const { status, message } = mapDomainError(e);
       return reply.status(status).send({ error: message });
     }
+  });
+
+  // E06-CONTRACT: contrato escolar; financeiro da escola, nunca billing SaaS.
+  app.post('/v1/contracts', {
+    preHandler: [writeGuard],
+    schema: { body: { type: 'object', additionalProperties: false,
+      required: ['enrollmentId', 'planId', 'monthlyPriceCents', 'installments', 'startReference'],
+      properties: { enrollmentId: { type: 'string', minLength: 1 }, planId: uuid, monthlyPriceCents: { type: 'integer', minimum: 1 }, installments: { type: 'integer', minimum: 1, maximum: 12 }, startReference: referenceSchema },
+    } },
+  }, async (request, reply) => {
+    const key = request.headers['idempotency-key'];
+    if (typeof key !== 'string' || !key) return reply.status(400).send({ error: 'missing idempotency-key header' });
+    const b = request.body as { enrollmentId: string; planId: string; monthlyPriceCents: number; installments: number; startReference: string };
+    try {
+      const result = await withTransaction(opts.pool, (c) => createSchoolContract(c, { ...b, tenantId: request.tenantId, createdBy: request.userId ?? 'api', idempotencyKey: key }));
+      return reply.status(result.idempotentReplay ? 200 : 201).send({ contract: result.contract, replay: result.idempotentReplay });
+    } catch (e) { const { status, message } = mapDomainError(e); return reply.status(status).send({ error: message }); }
+  });
+
+  app.get('/v1/contracts', async (request) => ({ contracts: await listSchoolContracts(opts.pool, request.tenantId) }));
+
+  app.get('/v1/contracts/:id', {
+    schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
+    try { return await getSchoolContract(opts.pool, request.tenantId, (request.params as { id: string }).id); }
+    catch (e) { const { status, message } = mapDomainError(e); return reply.status(status).send({ error: message }); }
+  });
+
+  app.post('/v1/contracts/:id/activate', {
+    preHandler: [writeGuard], schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
+    try { return await activateSchoolContract(opts.pool, request.tenantId, (request.params as { id: string }).id, request.userId ?? 'api'); }
+    catch (e) { const { status, message } = mapDomainError(e); return reply.status(status).send({ error: message }); }
+  });
+
+  app.post('/v1/contracts/:id/cancel', {
+    preHandler: [writeGuard], schema: { params: { type: 'object', required: ['id'], properties: { id: uuid } } },
+  }, async (request, reply) => {
+    try { return await cancelSchoolContract(opts.pool, request.tenantId, (request.params as { id: string }).id, request.userId ?? 'api'); }
+    catch (e) { const { status, message } = mapDomainError(e); return reply.status(status).send({ error: message }); }
   });
 
   // E03-A: outbox read-only — observabilidade de eventos (admin/listagem por sessão)
